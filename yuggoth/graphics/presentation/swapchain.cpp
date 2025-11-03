@@ -1,0 +1,141 @@
+#include "swapchain.h"
+#include "yuggoth/graphics/image/image.h"
+#include <algorithm>
+#include <span>
+#include <limits>
+#include <GLFW/glfw3.h>
+
+namespace Yuggoth {
+
+std::vector<const char *> Swapchain::GetSwapchainExtensions() {
+  uint32_t extensions_count = 0;
+  auto status = glfwInit();
+  auto extensions = glfwGetRequiredInstanceExtensions(&extensions_count);
+  return std::vector(extensions, extensions + extensions_count);
+}
+
+uint32_t ComputeImageCount(const VkSurfaceCapabilitiesKHR &capabilities) {
+  constexpr auto infinity = std::numeric_limits<uint32_t>::max();
+  return std::min(capabilities.minImageCount + 1, capabilities.maxImageCount > 0 ? capabilities.maxImageCount : infinity);
+}
+
+VkSurfaceFormatKHR SelectSurfaceFormat(const VkSurfaceKHR surface, std::span<const VkSurfaceFormatKHR> required_formats) {
+  auto predicat = [](const VkSurfaceFormatKHR &a, const VkSurfaceFormatKHR &b) { return a.format == b.format && a.colorSpace == b.colorSpace; };
+  auto supported_formats =
+    Enumerate<VkSurfaceFormatKHR>(vkGetPhysicalDeviceSurfaceFormatsKHR, GraphicsContext::Get()->GetPhysicalDevice(), surface);
+  auto it = std::ranges::find_first_of(supported_formats, required_formats, predicat);
+  return (it != supported_formats.end()) ? *it : supported_formats[0];
+}
+
+VkPresentModeKHR SelectPresentMode(const VkSurfaceKHR surface) {
+  std::array required_modes = {VK_PRESENT_MODE_MAILBOX_KHR, VK_PRESENT_MODE_IMMEDIATE_KHR, VK_PRESENT_MODE_FIFO_KHR};
+  auto supported_modes =
+    Enumerate<VkPresentModeKHR>(vkGetPhysicalDeviceSurfacePresentModesKHR, GraphicsContext::Get()->GetPhysicalDevice(), surface);
+  auto it = std::ranges::find_first_of(required_modes, supported_modes);
+  return *it;
+}
+
+VkSurfaceCapabilitiesKHR GetSurfaceCapabilities(const VkSurfaceKHR surface) {
+  VkSurfaceCapabilitiesKHR surface_capabilities{};
+  VK_CHECK(vkGetPhysicalDeviceSurfaceCapabilitiesKHR(GraphicsContext::Get()->GetPhysicalDevice(), surface, &surface_capabilities));
+  return surface_capabilities;
+}
+
+void Swapchain::CreateSurface(GLFWwindow *native_window) {
+  VK_CHECK(glfwCreateWindowSurface(GraphicsContext::Get()->GetInstance(), native_window, nullptr, &surface_));
+
+  std::vector<VkSurfaceFormatKHR> required_formats{{VK_FORMAT_R8G8B8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR},
+                                                   {VK_FORMAT_B8G8R8A8_SRGB, VK_COLOR_SPACE_SRGB_NONLINEAR_KHR}};
+
+  surface_format_ = SelectSurfaceFormat(surface_, required_formats);
+}
+
+Swapchain::Swapchain(GLFWwindow *native_window) {
+  CreateSurface(native_window);
+  CreateSwapchain();
+  images_ = Enumerate<VkImage>(vkGetSwapchainImagesKHR, GraphicsContext::Get()->GetDevice(), swapchain_current_);
+  image_views_.resize(images_.size());
+  for (auto i = 0; i < images_.size(); i++) {
+    image_views_[i] = Image::CreateImageView(images_[i], surface_format_.format);
+  }
+}
+
+Swapchain::~Swapchain() {
+}
+
+void Swapchain::CreateSwapchain() {
+  auto surface_capabilities = GetSurfaceCapabilities(surface_);
+  surface_extent_ = surface_capabilities.currentExtent;
+
+  VkSwapchainCreateInfoKHR swapchain_ci{};
+  {
+    swapchain_ci.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+    swapchain_ci.surface = surface_;
+    swapchain_ci.minImageCount = ComputeImageCount(surface_capabilities);
+    swapchain_ci.imageFormat = surface_format_.format;
+    swapchain_ci.imageColorSpace = surface_format_.colorSpace;
+    swapchain_ci.imageExtent = surface_capabilities.currentExtent;
+    swapchain_ci.imageArrayLayers = 1;
+    swapchain_ci.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+    swapchain_ci.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    swapchain_ci.preTransform = surface_capabilities.currentTransform;
+    swapchain_ci.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
+    swapchain_ci.presentMode = SelectPresentMode(surface_);
+    swapchain_ci.clipped = true;
+    swapchain_ci.oldSwapchain = swapchain_previous_;
+  }
+  VK_CHECK(vkCreateSwapchainKHR(GraphicsContext::Get()->GetDevice(), &swapchain_ci, nullptr, &swapchain_current_));
+}
+
+void Swapchain::Present(const VkSemaphore *wait_semaphore) {
+  VkPresentInfoKHR present_info{};
+  {
+    present_info.sType = VK_STRUCTURE_TYPE_PRESENT_INFO_KHR;
+    present_info.waitSemaphoreCount = 1;
+    present_info.pWaitSemaphores = wait_semaphore;
+    present_info.swapchainCount = 1;
+    present_info.pSwapchains = &swapchain_current_;
+    present_info.pImageIndices = &image_index_;
+  }
+
+  auto status = vkQueuePresentKHR(GraphicsContext::Get()->GetGraphicsQueue(), &present_info);
+}
+
+VkResult Swapchain::AcquireNextImage(const VkSemaphore semaphore) {
+  auto status = vkAcquireNextImageKHR(GraphicsContext::Get()->GetDevice(), swapchain_current_, UINT64_MAX, semaphore, nullptr, &image_index_);
+  return status;
+}
+
+VkImage Swapchain::GetImage(uint32_t index) const {
+  return images_[index];
+}
+
+VkImageView Swapchain::GetImageView(uint32_t index) const {
+  return image_views_[index];
+}
+
+std::span<const VkImageView> Swapchain::GetImageViews() const {
+  return image_views_;
+}
+
+VkImage Swapchain::GetCurrentImage() const {
+  return GetImage(image_index_);
+}
+
+VkImageView Swapchain::GetCurrentImageView() const {
+  return GetImageView(image_index_);
+}
+
+std::size_t Swapchain::GetNumberOfImages() const {
+  return image_views_.size();
+}
+
+const VkExtent2D &Swapchain::GetExtent() const {
+  return surface_extent_;
+}
+
+uint32_t Swapchain::GetImageIndex() const {
+  return image_index_;
+}
+
+} // namespace Yuggoth
