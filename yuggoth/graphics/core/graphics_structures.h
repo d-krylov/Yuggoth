@@ -20,7 +20,7 @@ struct BaseOutStructure {
   operator NativeType *() noexcept;
 
   StructureType sType = {};
-  BaseOutStructure *pNext = {};
+  struct BaseOutStructure *pNext = {};
 };
 
 struct BaseInStructure {
@@ -35,7 +35,7 @@ struct BaseInStructure {
   operator NativeType *() noexcept;
 
   StructureType sType = {};
-  BaseInStructure *pNext = {};
+  const struct BaseInStructure *pNext = {};
 };
 
 struct Offset2D {
@@ -371,10 +371,10 @@ struct ApplicationInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  char *pApplicationName = {};
+  const void *pNext = {};
+  const char *pApplicationName = {};
   uint32_t applicationVersion = {};
-  char *pEngineName = {};
+  const char *pEngineName = {};
   uint32_t engineVersion = {};
   uint32_t apiVersion = {};
 };
@@ -411,11 +411,11 @@ struct DeviceQueueCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DeviceQueueCreateMask flags = {};
   uint32_t queueFamilyIndex = {};
   uint32_t queueCount = {};
-  float *pQueuePriorities = {};
+  const float *pQueuePriorities = {};
 };
 
 struct PhysicalDeviceFeatures {
@@ -499,15 +499,15 @@ struct DeviceCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DeviceCreateMask flags = {};
   uint32_t queueCreateInfoCount = {};
-  DeviceQueueCreateInfo *pQueueCreateInfos = {};
+  const DeviceQueueCreateInfo *pQueueCreateInfos = {};
   uint32_t enabledLayerCount = {};
-  char *const *ppEnabledLayerNames = {};
+  const char *const *ppEnabledLayerNames = {};
   uint32_t enabledExtensionCount = {};
-  char *const *ppEnabledExtensionNames = {};
-  PhysicalDeviceFeatures *pEnabledFeatures = {};
+  const char *const *ppEnabledExtensionNames = {};
+  const PhysicalDeviceFeatures *pEnabledFeatures = {};
 };
 
 struct InstanceCreateInfo {
@@ -523,13 +523,13 @@ struct InstanceCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   InstanceCreateMask flags = {};
-  ApplicationInfo *pApplicationInfo = {};
+  const ApplicationInfo *pApplicationInfo = {};
   uint32_t enabledLayerCount = {};
-  char *const *ppEnabledLayerNames = {};
+  const char *const *ppEnabledLayerNames = {};
   uint32_t enabledExtensionCount = {};
-  char *const *ppEnabledExtensionNames = {};
+  const char *const *ppEnabledExtensionNames = {};
 };
 
 struct QueueFamilyProperties {
@@ -609,7 +609,7 @@ struct MemoryAllocateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceSize allocationSize = {};
   uint32_t memoryTypeIndex = {};
 };
@@ -677,7 +677,7 @@ struct MappedMemoryRange {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceMemory memory = {};
   VkDeviceSize offset = {};
   VkDeviceSize size = {};
@@ -762,15 +762,15 @@ struct WriteDescriptorSet {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDescriptorSet dstSet = {};
   uint32_t dstBinding = {};
   uint32_t dstArrayElement = {};
   uint32_t descriptorCount = {};
   DescriptorType descriptorType = {};
-  DescriptorImageInfo *pImageInfo = {};
-  DescriptorBufferInfo *pBufferInfo = {};
-  VkBufferView *pTexelBufferView = {};
+  const DescriptorImageInfo *pImageInfo = {};
+  const DescriptorBufferInfo *pBufferInfo = {};
+  const VkBufferView *pTexelBufferView = {};
 };
 
 struct CopyDescriptorSet {
@@ -786,7 +786,7 @@ struct CopyDescriptorSet {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDescriptorSet srcSet = {};
   uint32_t srcBinding = {};
   uint32_t srcArrayElement = {};
@@ -809,7 +809,7 @@ struct BufferUsageFlags2CreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   BufferUsageMask2 usage = {};
 };
 
@@ -826,13 +826,13 @@ struct BufferCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   BufferCreateMask flags = {};
   VkDeviceSize size = {};
   BufferUsageMask usage = {};
   SharingMode sharingMode = {};
   uint32_t queueFamilyIndexCount = {};
-  uint32_t *pQueueFamilyIndices = {};
+  const uint32_t *pQueueFamilyIndices = {};
 };
 
 struct BufferViewCreateInfo {
@@ -848,7 +848,7 @@ struct BufferViewCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   BufferViewCreateMask flags = {};
   VkBuffer buffer = {};
   Format format = {};
@@ -920,7 +920,7 @@ struct MemoryBarrier {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AccessMask srcAccessMask = {};
   AccessMask dstAccessMask = {};
 };
@@ -938,7 +938,7 @@ struct BufferMemoryBarrier {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AccessMask srcAccessMask = {};
   AccessMask dstAccessMask = {};
   uint32_t srcQueueFamilyIndex = {};
@@ -961,7 +961,7 @@ struct ImageMemoryBarrier {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AccessMask srcAccessMask = {};
   AccessMask dstAccessMask = {};
   ImageLayout oldLayout = {};
@@ -985,7 +985,7 @@ struct ImageCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageCreateMask flags = {};
   ImageType imageType = {};
   Format format = {};
@@ -997,7 +997,7 @@ struct ImageCreateInfo {
   ImageUsageMask usage = {};
   SharingMode sharingMode = {};
   uint32_t queueFamilyIndexCount = {};
-  uint32_t *pQueueFamilyIndices = {};
+  const uint32_t *pQueueFamilyIndices = {};
   ImageLayout initialLayout = {};
 };
 
@@ -1032,7 +1032,7 @@ struct ImageViewCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageViewCreateMask flags = {};
   VkImage image = {};
   ImageViewType viewType = {};
@@ -1107,7 +1107,7 @@ struct SparseBufferMemoryBindInfo {
 
   VkBuffer buffer = {};
   uint32_t bindCount = {};
-  SparseMemoryBind *pBinds = {};
+  const SparseMemoryBind *pBinds = {};
 };
 
 struct SparseImageOpaqueMemoryBindInfo {
@@ -1123,7 +1123,7 @@ struct SparseImageOpaqueMemoryBindInfo {
 
   VkImage image = {};
   uint32_t bindCount = {};
-  SparseMemoryBind *pBinds = {};
+  const SparseMemoryBind *pBinds = {};
 };
 
 struct SparseImageMemoryBindInfo {
@@ -1139,7 +1139,7 @@ struct SparseImageMemoryBindInfo {
 
   VkImage image = {};
   uint32_t bindCount = {};
-  SparseImageMemoryBind *pBinds = {};
+  const SparseImageMemoryBind *pBinds = {};
 };
 
 struct BindSparseInfo {
@@ -1155,17 +1155,17 @@ struct BindSparseInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t waitSemaphoreCount = {};
-  VkSemaphore *pWaitSemaphores = {};
+  const VkSemaphore *pWaitSemaphores = {};
   uint32_t bufferBindCount = {};
-  SparseBufferMemoryBindInfo *pBufferBinds = {};
+  const SparseBufferMemoryBindInfo *pBufferBinds = {};
   uint32_t imageOpaqueBindCount = {};
-  SparseImageOpaqueMemoryBindInfo *pImageOpaqueBinds = {};
+  const SparseImageOpaqueMemoryBindInfo *pImageOpaqueBinds = {};
   uint32_t imageBindCount = {};
-  SparseImageMemoryBindInfo *pImageBinds = {};
+  const SparseImageMemoryBindInfo *pImageBinds = {};
   uint32_t signalSemaphoreCount = {};
-  VkSemaphore *pSignalSemaphores = {};
+  const VkSemaphore *pSignalSemaphores = {};
 };
 
 struct ImageCopy {
@@ -1267,7 +1267,7 @@ struct CopyMemoryIndirectInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AddressCopyMaskKHR srcCopyFlags = {};
   AddressCopyMaskKHR dstCopyFlags = {};
   uint32_t copyCount = {};
@@ -1306,13 +1306,13 @@ struct CopyMemoryToImageIndirectInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AddressCopyMaskKHR srcCopyFlags = {};
   uint32_t copyCount = {};
   StridedDeviceAddressRangeKHR copyAddressRange = {};
   VkImage dstImage = {};
   ImageLayout dstImageLayout = {};
-  ImageSubresourceLayers *pImageSubresources = {};
+  const ImageSubresourceLayers *pImageSubresources = {};
 };
 
 struct ImageResolve {
@@ -1346,10 +1346,10 @@ struct ShaderModuleCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ShaderModuleCreateMask flags = {};
   size_t codeSize = {};
-  uint32_t *pCode = {};
+  const uint32_t *pCode = {};
 };
 
 struct DescriptorSetLayoutBinding {
@@ -1367,7 +1367,7 @@ struct DescriptorSetLayoutBinding {
   DescriptorType descriptorType = {};
   uint32_t descriptorCount = {};
   ShaderStageMask stageFlags = {};
-  VkSampler *pImmutableSamplers = {};
+  const VkSampler *pImmutableSamplers = {};
 };
 
 struct DescriptorSetLayoutCreateInfo {
@@ -1383,10 +1383,10 @@ struct DescriptorSetLayoutCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DescriptorSetLayoutCreateMask flags = {};
   uint32_t bindingCount = {};
-  DescriptorSetLayoutBinding *pBindings = {};
+  const DescriptorSetLayoutBinding *pBindings = {};
 };
 
 struct DescriptorPoolSize {
@@ -1417,11 +1417,11 @@ struct DescriptorPoolCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DescriptorPoolCreateMask flags = {};
   uint32_t maxSets = {};
   uint32_t poolSizeCount = {};
-  DescriptorPoolSize *pPoolSizes = {};
+  const DescriptorPoolSize *pPoolSizes = {};
 };
 
 struct DescriptorSetAllocateInfo {
@@ -1437,10 +1437,10 @@ struct DescriptorSetAllocateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDescriptorPool descriptorPool = {};
   uint32_t descriptorSetCount = {};
-  VkDescriptorSetLayout *pSetLayouts = {};
+  const VkDescriptorSetLayout *pSetLayouts = {};
 };
 
 struct SpecializationMapEntry {
@@ -1471,9 +1471,9 @@ struct SpecializationInfo {
   operator NativeType *() noexcept;
 
   uint32_t mapEntryCount = {};
-  SpecializationMapEntry *pMapEntries = {};
+  const SpecializationMapEntry *pMapEntries = {};
   size_t dataSize = {};
-  void *pData = {};
+  const void *pData = {};
 };
 
 struct PipelineShaderStageCreateInfo {
@@ -1489,12 +1489,12 @@ struct PipelineShaderStageCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineShaderStageCreateMask flags = {};
   ShaderStageMaskBits stage = {};
   VkShaderModule module = {};
-  char *pName = {};
-  SpecializationInfo *pSpecializationInfo = {};
+  const char *pName = {};
+  const SpecializationInfo *pSpecializationInfo = {};
 };
 
 struct ComputePipelineCreateInfo {
@@ -1510,7 +1510,7 @@ struct ComputePipelineCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCreateMask flags = {};
   PipelineShaderStageCreateInfo stage = {};
   VkPipelineLayout layout = {};
@@ -1531,7 +1531,7 @@ struct ComputePipelineIndirectBufferInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceAddress deviceAddress = {};
   VkDeviceSize size = {};
   VkDeviceAddress pipelineDeviceAddressCaptureReplay = {};
@@ -1550,7 +1550,7 @@ struct PipelineCreateFlags2CreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCreateMask2 flags = {};
 };
 
@@ -1600,12 +1600,12 @@ struct PipelineVertexInputStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineVertexInputStateCreateMask flags = {};
   uint32_t vertexBindingDescriptionCount = {};
-  VertexInputBindingDescription *pVertexBindingDescriptions = {};
+  const VertexInputBindingDescription *pVertexBindingDescriptions = {};
   uint32_t vertexAttributeDescriptionCount = {};
-  VertexInputAttributeDescription *pVertexAttributeDescriptions = {};
+  const VertexInputAttributeDescription *pVertexAttributeDescriptions = {};
 };
 
 struct PipelineInputAssemblyStateCreateInfo {
@@ -1621,7 +1621,7 @@ struct PipelineInputAssemblyStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineInputAssemblyStateCreateMask flags = {};
   PrimitiveTopology topology = {};
   VkBool32 primitiveRestartEnable = {};
@@ -1640,7 +1640,7 @@ struct PipelineTessellationStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineTessellationStateCreateMask flags = {};
   uint32_t patchControlPoints = {};
 };
@@ -1658,12 +1658,12 @@ struct PipelineViewportStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineViewportStateCreateMask flags = {};
   uint32_t viewportCount = {};
-  Viewport *pViewports = {};
+  const Viewport *pViewports = {};
   uint32_t scissorCount = {};
-  Rect2D *pScissors = {};
+  const Rect2D *pScissors = {};
 };
 
 struct PipelineRasterizationStateCreateInfo {
@@ -1679,7 +1679,7 @@ struct PipelineRasterizationStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineRasterizationStateCreateMask flags = {};
   VkBool32 depthClampEnable = {};
   VkBool32 rasterizerDiscardEnable = {};
@@ -1706,12 +1706,12 @@ struct PipelineMultisampleStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineMultisampleStateCreateMask flags = {};
   SampleCountMaskBits rasterizationSamples = {};
   VkBool32 sampleShadingEnable = {};
   float minSampleShading = {};
-  VkSampleMask *pSampleMask = {};
+  const VkSampleMask *pSampleMask = {};
   VkBool32 alphaToCoverageEnable = {};
   VkBool32 alphaToOneEnable = {};
 };
@@ -1750,12 +1750,12 @@ struct PipelineColorBlendStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineColorBlendStateCreateMask flags = {};
   VkBool32 logicOpEnable = {};
   LogicOp logicOp = {};
   uint32_t attachmentCount = {};
-  PipelineColorBlendAttachmentState *pAttachments = {};
+  const PipelineColorBlendAttachmentState *pAttachments = {};
   float blendConstants[4] = {};
 };
 
@@ -1772,10 +1772,10 @@ struct PipelineDynamicStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineDynamicStateCreateMask flags = {};
   uint32_t dynamicStateCount = {};
-  DynamicState *pDynamicStates = {};
+  const DynamicState *pDynamicStates = {};
 };
 
 struct StencilOpState {
@@ -1811,7 +1811,7 @@ struct PipelineDepthStencilStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineDepthStencilStateCreateMask flags = {};
   VkBool32 depthTestEnable = {};
   VkBool32 depthWriteEnable = {};
@@ -1837,19 +1837,19 @@ struct GraphicsPipelineCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCreateMask flags = {};
   uint32_t stageCount = {};
-  PipelineShaderStageCreateInfo *pStages = {};
-  PipelineVertexInputStateCreateInfo *pVertexInputState = {};
-  PipelineInputAssemblyStateCreateInfo *pInputAssemblyState = {};
-  PipelineTessellationStateCreateInfo *pTessellationState = {};
-  PipelineViewportStateCreateInfo *pViewportState = {};
-  PipelineRasterizationStateCreateInfo *pRasterizationState = {};
-  PipelineMultisampleStateCreateInfo *pMultisampleState = {};
-  PipelineDepthStencilStateCreateInfo *pDepthStencilState = {};
-  PipelineColorBlendStateCreateInfo *pColorBlendState = {};
-  PipelineDynamicStateCreateInfo *pDynamicState = {};
+  const PipelineShaderStageCreateInfo *pStages = {};
+  const PipelineVertexInputStateCreateInfo *pVertexInputState = {};
+  const PipelineInputAssemblyStateCreateInfo *pInputAssemblyState = {};
+  const PipelineTessellationStateCreateInfo *pTessellationState = {};
+  const PipelineViewportStateCreateInfo *pViewportState = {};
+  const PipelineRasterizationStateCreateInfo *pRasterizationState = {};
+  const PipelineMultisampleStateCreateInfo *pMultisampleState = {};
+  const PipelineDepthStencilStateCreateInfo *pDepthStencilState = {};
+  const PipelineColorBlendStateCreateInfo *pColorBlendState = {};
+  const PipelineDynamicStateCreateInfo *pDynamicState = {};
   VkPipelineLayout layout = {};
   VkRenderPass renderPass = {};
   uint32_t subpass = {};
@@ -1870,10 +1870,10 @@ struct PipelineCacheCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCacheCreateMask flags = {};
   size_t initialDataSize = {};
-  void *pInitialData = {};
+  const void *pInitialData = {};
 };
 
 struct PipelineCacheHeaderVersionOne {
@@ -1955,8 +1955,8 @@ struct PipelineBinaryKeysAndDataKHR {
   operator NativeType *() noexcept;
 
   uint32_t binaryCount = {};
-  PipelineBinaryKeyKHR *pPipelineBinaryKeys = {};
-  PipelineBinaryDataKHR *pPipelineBinaryData = {};
+  const PipelineBinaryKeyKHR *pPipelineBinaryKeys = {};
+  const PipelineBinaryDataKHR *pPipelineBinaryData = {};
 };
 
 struct PipelineCreateInfoKHR {
@@ -1988,10 +1988,10 @@ struct PipelineBinaryCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  PipelineBinaryKeysAndDataKHR *pKeysAndDataInfo = {};
+  const void *pNext = {};
+  const PipelineBinaryKeysAndDataKHR *pKeysAndDataInfo = {};
   VkPipeline pipeline = {};
-  PipelineCreateInfoKHR *pPipelineCreateInfo = {};
+  const PipelineCreateInfoKHR *pPipelineCreateInfo = {};
 };
 
 struct PipelineBinaryHandlesInfoKHR {
@@ -2007,7 +2007,7 @@ struct PipelineBinaryHandlesInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t pipelineBinaryCount = {};
   VkPipelineBinaryKHR *pPipelineBinaries = {};
 };
@@ -2025,9 +2025,9 @@ struct PipelineBinaryInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t binaryCount = {};
-  VkPipelineBinaryKHR *pPipelineBinaries = {};
+  const VkPipelineBinaryKHR *pPipelineBinaries = {};
 };
 
 struct ReleaseCapturedPipelineDataInfoKHR {
@@ -2077,12 +2077,12 @@ struct PipelineLayoutCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineLayoutCreateMask flags = {};
   uint32_t setLayoutCount = {};
-  VkDescriptorSetLayout *pSetLayouts = {};
+  const VkDescriptorSetLayout *pSetLayouts = {};
   uint32_t pushConstantRangeCount = {};
-  PushConstantRange *pPushConstantRanges = {};
+  const PushConstantRange *pPushConstantRanges = {};
 };
 
 struct SamplerCreateInfo {
@@ -2098,7 +2098,7 @@ struct SamplerCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SamplerCreateMask flags = {};
   Filter magFilter = {};
   Filter minFilter = {};
@@ -2130,7 +2130,7 @@ struct CommandPoolCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   CommandPoolCreateMask flags = {};
   uint32_t queueFamilyIndex = {};
 };
@@ -2148,7 +2148,7 @@ struct CommandBufferAllocateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkCommandPool commandPool = {};
   CommandBufferLevel level = {};
   uint32_t commandBufferCount = {};
@@ -2167,7 +2167,7 @@ struct CommandBufferInheritanceInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkRenderPass renderPass = {};
   uint32_t subpass = {};
   VkFramebuffer framebuffer = {};
@@ -2189,9 +2189,9 @@ struct CommandBufferBeginInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   CommandBufferUsageMask flags = {};
-  CommandBufferInheritanceInfo *pInheritanceInfo = {};
+  const CommandBufferInheritanceInfo *pInheritanceInfo = {};
 };
 
 struct RenderPassBeginInfo {
@@ -2207,12 +2207,12 @@ struct RenderPassBeginInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkRenderPass renderPass = {};
   VkFramebuffer framebuffer = {};
   Rect2D renderArea = {};
   uint32_t clearValueCount = {};
-  VkClearValue *pClearValues = {};
+  const VkClearValue *pClearValues = {};
 };
 
 struct ClearDepthStencilValue {
@@ -2297,13 +2297,13 @@ struct SubpassDescription {
   SubpassDescriptionMask flags = {};
   PipelineBindPoint pipelineBindPoint = {};
   uint32_t inputAttachmentCount = {};
-  AttachmentReference *pInputAttachments = {};
+  const AttachmentReference *pInputAttachments = {};
   uint32_t colorAttachmentCount = {};
-  AttachmentReference *pColorAttachments = {};
-  AttachmentReference *pResolveAttachments = {};
-  AttachmentReference *pDepthStencilAttachment = {};
+  const AttachmentReference *pColorAttachments = {};
+  const AttachmentReference *pResolveAttachments = {};
+  const AttachmentReference *pDepthStencilAttachment = {};
   uint32_t preserveAttachmentCount = {};
-  uint32_t *pPreserveAttachments = {};
+  const uint32_t *pPreserveAttachments = {};
 };
 
 struct SubpassDependency {
@@ -2339,14 +2339,14 @@ struct RenderPassCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RenderPassCreateMask flags = {};
   uint32_t attachmentCount = {};
-  AttachmentDescription *pAttachments = {};
+  const AttachmentDescription *pAttachments = {};
   uint32_t subpassCount = {};
-  SubpassDescription *pSubpasses = {};
+  const SubpassDescription *pSubpasses = {};
   uint32_t dependencyCount = {};
-  SubpassDependency *pDependencies = {};
+  const SubpassDependency *pDependencies = {};
 };
 
 struct EventCreateInfo {
@@ -2362,7 +2362,7 @@ struct EventCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   EventCreateMask flags = {};
 };
 
@@ -2379,7 +2379,7 @@ struct FenceCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   FenceCreateMask flags = {};
 };
 
@@ -2396,7 +2396,7 @@ struct SemaphoreCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SemaphoreCreateMask flags = {};
 };
 
@@ -2413,7 +2413,7 @@ struct QueryPoolCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   QueryPoolCreateMask flags = {};
   QueryType queryType = {};
   uint32_t queryCount = {};
@@ -2433,11 +2433,11 @@ struct FramebufferCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   FramebufferCreateMask flags = {};
   VkRenderPass renderPass = {};
   uint32_t attachmentCount = {};
-  VkImageView *pAttachments = {};
+  const VkImageView *pAttachments = {};
   uint32_t width = {};
   uint32_t height = {};
   uint32_t layers = {};
@@ -2538,14 +2538,14 @@ struct SubmitInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t waitSemaphoreCount = {};
-  VkSemaphore *pWaitSemaphores = {};
-  PipelineStageMask *pWaitDstStageMask = {};
+  const VkSemaphore *pWaitSemaphores = {};
+  const PipelineStageMask *pWaitDstStageMask = {};
   uint32_t commandBufferCount = {};
-  VkCommandBuffer *pCommandBuffers = {};
+  const VkCommandBuffer *pCommandBuffers = {};
   uint32_t signalSemaphoreCount = {};
-  VkSemaphore *pSignalSemaphores = {};
+  const VkSemaphore *pSignalSemaphores = {};
 };
 
 struct DisplayPropertiesKHR {
@@ -2560,7 +2560,7 @@ struct DisplayPropertiesKHR {
   operator NativeType *() noexcept;
 
   VkDisplayKHR display = {};
-  char *displayName = {};
+  const char *displayName = {};
   Extent2D physicalDimensions = {};
   Extent2D physicalResolution = {};
   SurfaceTransformMaskKHR supportedTransforms = {};
@@ -2626,7 +2626,7 @@ struct DisplayModeCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DisplayModeCreateMaskKHR flags = {};
   DisplayModeParametersKHR parameters = {};
 };
@@ -2666,7 +2666,7 @@ struct DisplaySurfaceCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DisplaySurfaceCreateMaskKHR flags = {};
   VkDisplayModeKHR displayMode = {};
   uint32_t planeIndex = {};
@@ -2690,7 +2690,7 @@ struct DisplaySurfaceStereoCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DisplaySurfaceStereoTypeNV stereoType = {};
 };
 
@@ -2707,7 +2707,7 @@ struct DisplayPresentInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Rect2D srcRect = {};
   Rect2D dstRect = {};
   VkBool32 persistent = {};
@@ -2764,7 +2764,7 @@ struct SwapchainCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SwapchainCreateMaskKHR flags = {};
   VkSurfaceKHR surface = {};
   uint32_t minImageCount = {};
@@ -2775,7 +2775,7 @@ struct SwapchainCreateInfoKHR {
   ImageUsageMask imageUsage = {};
   SharingMode imageSharingMode = {};
   uint32_t queueFamilyIndexCount = {};
-  uint32_t *pQueueFamilyIndices = {};
+  const uint32_t *pQueueFamilyIndices = {};
   SurfaceTransformMaskBitsKHR preTransform = {};
   CompositeAlphaMaskBitsKHR compositeAlpha = {};
   PresentModeKHR presentMode = {};
@@ -2796,12 +2796,12 @@ struct PresentInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t waitSemaphoreCount = {};
-  VkSemaphore *pWaitSemaphores = {};
+  const VkSemaphore *pWaitSemaphores = {};
   uint32_t swapchainCount = {};
-  VkSwapchainKHR *pSwapchains = {};
-  uint32_t *pImageIndices = {};
+  const VkSwapchainKHR *pSwapchains = {};
+  const uint32_t *pImageIndices = {};
   Result *pResults = {};
 };
 
@@ -2818,7 +2818,7 @@ struct DebugReportCallbackCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DebugReportMaskEXT flags = {};
   PFN_vkDebugReportCallbackEXT pfnCallback = {};
   void *pUserData = {};
@@ -2837,9 +2837,9 @@ struct ValidationFlagsEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t disabledValidationCheckCount = {};
-  ValidationCheckEXT *pDisabledValidationChecks = {};
+  const ValidationCheckEXT *pDisabledValidationChecks = {};
 };
 
 struct ValidationFeaturesEXT {
@@ -2855,11 +2855,11 @@ struct ValidationFeaturesEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t enabledValidationFeatureCount = {};
-  ValidationFeatureEnableEXT *pEnabledValidationFeatures = {};
+  const ValidationFeatureEnableEXT *pEnabledValidationFeatures = {};
   uint32_t disabledValidationFeatureCount = {};
-  ValidationFeatureDisableEXT *pDisabledValidationFeatures = {};
+  const ValidationFeatureDisableEXT *pDisabledValidationFeatures = {};
 };
 
 struct LayerSettingEXT {
@@ -2873,11 +2873,11 @@ struct LayerSettingEXT {
   operator const NativeType *() const noexcept;
   operator NativeType *() noexcept;
 
-  char *pLayerName = {};
-  char *pSettingName = {};
+  const char *pLayerName = {};
+  const char *pSettingName = {};
   LayerSettingTypeEXT type = {};
   uint32_t valueCount = {};
-  void *pValues = {};
+  const void *pValues = {};
 };
 
 struct LayerSettingsCreateInfoEXT {
@@ -2893,9 +2893,9 @@ struct LayerSettingsCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t settingCount = {};
-  LayerSettingEXT *pSettings = {};
+  const LayerSettingEXT *pSettings = {};
 };
 
 struct PipelineRasterizationStateRasterizationOrderAMD {
@@ -2911,7 +2911,7 @@ struct PipelineRasterizationStateRasterizationOrderAMD {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RasterizationOrderAMD rasterizationOrder = {};
 };
 
@@ -2928,10 +2928,10 @@ struct DebugMarkerObjectNameInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DebugReportObjectTypeEXT objectType = {};
   uint64_t object = {};
-  char *pObjectName = {};
+  const char *pObjectName = {};
 };
 
 struct DebugMarkerObjectTagInfoEXT {
@@ -2947,12 +2947,12 @@ struct DebugMarkerObjectTagInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DebugReportObjectTypeEXT objectType = {};
   uint64_t object = {};
   uint64_t tagName = {};
   size_t tagSize = {};
-  void *pTag = {};
+  const void *pTag = {};
 };
 
 struct DebugMarkerMarkerInfoEXT {
@@ -2968,8 +2968,8 @@ struct DebugMarkerMarkerInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  char *pMarkerName = {};
+  const void *pNext = {};
+  const char *pMarkerName = {};
   float color[4] = {};
 };
 
@@ -2986,7 +2986,7 @@ struct DedicatedAllocationImageCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 dedicatedAllocation = {};
 };
 
@@ -3003,7 +3003,7 @@ struct DedicatedAllocationBufferCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 dedicatedAllocation = {};
 };
 
@@ -3020,7 +3020,7 @@ struct DedicatedAllocationMemoryAllocateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage image = {};
   VkBuffer buffer = {};
 };
@@ -3055,7 +3055,7 @@ struct ExternalMemoryImageCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMaskNV handleTypes = {};
 };
 
@@ -3072,7 +3072,7 @@ struct ExportMemoryAllocateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMaskNV handleTypes = {};
 };
 
@@ -3125,7 +3125,7 @@ struct DevicePrivateDataCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t privateDataSlotRequestCount = {};
 };
 
@@ -3142,7 +3142,7 @@ struct PrivateDataSlotCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PrivateDataSlotCreateMask flags = {};
 };
 
@@ -3552,11 +3552,11 @@ struct GraphicsShaderGroupCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t stageCount = {};
-  PipelineShaderStageCreateInfo *pStages = {};
-  PipelineVertexInputStateCreateInfo *pVertexInputState = {};
-  PipelineTessellationStateCreateInfo *pTessellationState = {};
+  const PipelineShaderStageCreateInfo *pStages = {};
+  const PipelineVertexInputStateCreateInfo *pVertexInputState = {};
+  const PipelineTessellationStateCreateInfo *pTessellationState = {};
 };
 
 struct GraphicsPipelineShaderGroupsCreateInfoNV {
@@ -3572,11 +3572,11 @@ struct GraphicsPipelineShaderGroupsCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t groupCount = {};
-  GraphicsShaderGroupCreateInfoNV *pGroups = {};
+  const GraphicsShaderGroupCreateInfoNV *pGroups = {};
   uint32_t pipelineCount = {};
-  VkPipeline *pPipelines = {};
+  const VkPipeline *pPipelines = {};
 };
 
 struct BindShaderGroupIndirectCommandNV {
@@ -3667,7 +3667,7 @@ struct IndirectCommandsLayoutTokenNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   IndirectCommandsTokenTypeNV tokenType = {};
   uint32_t stream = {};
   uint32_t offset = {};
@@ -3679,8 +3679,8 @@ struct IndirectCommandsLayoutTokenNV {
   uint32_t pushconstantSize = {};
   IndirectStateMaskNV indirectStateFlags = {};
   uint32_t indexTypeCount = {};
-  IndexType *pIndexTypes = {};
-  uint32_t *pIndexTypeValues = {};
+  const IndexType *pIndexTypes = {};
+  const uint32_t *pIndexTypeValues = {};
 };
 
 struct IndirectCommandsLayoutCreateInfoNV {
@@ -3696,13 +3696,13 @@ struct IndirectCommandsLayoutCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   IndirectCommandsLayoutUsageMaskNV flags = {};
   PipelineBindPoint pipelineBindPoint = {};
   uint32_t tokenCount = {};
-  IndirectCommandsLayoutTokenNV *pTokens = {};
+  const IndirectCommandsLayoutTokenNV *pTokens = {};
   uint32_t streamCount = {};
-  uint32_t *pStreamStrides = {};
+  const uint32_t *pStreamStrides = {};
 };
 
 struct GeneratedCommandsInfoNV {
@@ -3718,12 +3718,12 @@ struct GeneratedCommandsInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineBindPoint pipelineBindPoint = {};
   VkPipeline pipeline = {};
   VkIndirectCommandsLayoutNV indirectCommandsLayout = {};
   uint32_t streamCount = {};
-  IndirectCommandsStreamNV *pStreams = {};
+  const IndirectCommandsStreamNV *pStreams = {};
   uint32_t sequencesCount = {};
   VkBuffer preprocessBuffer = {};
   VkDeviceSize preprocessOffset = {};
@@ -3747,7 +3747,7 @@ struct GeneratedCommandsMemoryRequirementsInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineBindPoint pipelineBindPoint = {};
   VkPipeline pipeline = {};
   VkIndirectCommandsLayoutNV indirectCommandsLayout = {};
@@ -3767,7 +3767,7 @@ struct PipelineIndirectDeviceAddressInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineBindPoint pipelineBindPoint = {};
   VkPipeline pipeline = {};
 };
@@ -3867,7 +3867,7 @@ struct PhysicalDeviceImageFormatInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Format format = {};
   ImageType type = {};
   ImageTiling tiling = {};
@@ -3939,7 +3939,7 @@ struct PhysicalDeviceSparseImageFormatInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Format format = {};
   ImageType type = {};
   SampleCountMaskBits samples = {};
@@ -4029,7 +4029,7 @@ struct PresentRegionKHR {
   operator NativeType *() noexcept;
 
   uint32_t rectangleCount = {};
-  RectLayerKHR *pRectangles = {};
+  const RectLayerKHR *pRectangles = {};
 };
 
 struct PresentRegionsKHR {
@@ -4045,9 +4045,9 @@ struct PresentRegionsKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t swapchainCount = {};
-  PresentRegionKHR *pRegions = {};
+  const PresentRegionKHR *pRegions = {};
 };
 
 struct PhysicalDeviceVariablePointersFeatures {
@@ -4097,7 +4097,7 @@ struct PhysicalDeviceExternalImageFormatInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMaskBits handleType = {};
 };
 
@@ -4131,7 +4131,7 @@ struct PhysicalDeviceExternalBufferInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   BufferCreateMask flags = {};
   BufferUsageMask usage = {};
   ExternalMemoryHandleTypeMaskBits handleType = {};
@@ -4188,7 +4188,7 @@ struct ExternalMemoryImageCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMask handleTypes = {};
 };
 
@@ -4205,7 +4205,7 @@ struct ExternalMemoryBufferCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMask handleTypes = {};
 };
 
@@ -4222,7 +4222,7 @@ struct ExportMemoryAllocateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMask handleTypes = {};
 };
 
@@ -4239,7 +4239,7 @@ struct ImportMemoryFdInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMaskBits handleType = {};
   int fd = {};
 };
@@ -4274,7 +4274,7 @@ struct MemoryGetFdInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceMemory memory = {};
   ExternalMemoryHandleTypeMaskBits handleType = {};
 };
@@ -4292,7 +4292,7 @@ struct PhysicalDeviceExternalSemaphoreInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalSemaphoreHandleTypeMaskBits handleType = {};
 };
 
@@ -4328,7 +4328,7 @@ struct ExportSemaphoreCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalSemaphoreHandleTypeMask handleTypes = {};
 };
 
@@ -4345,7 +4345,7 @@ struct ImportSemaphoreFdInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSemaphore semaphore = {};
   SemaphoreImportMask flags = {};
   ExternalSemaphoreHandleTypeMaskBits handleType = {};
@@ -4365,7 +4365,7 @@ struct SemaphoreGetFdInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSemaphore semaphore = {};
   ExternalSemaphoreHandleTypeMaskBits handleType = {};
 };
@@ -4383,7 +4383,7 @@ struct PhysicalDeviceExternalFenceInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalFenceHandleTypeMaskBits handleType = {};
 };
 
@@ -4419,7 +4419,7 @@ struct ExportFenceCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalFenceHandleTypeMask handleTypes = {};
 };
 
@@ -4436,7 +4436,7 @@ struct ImportFenceFdInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkFence fence = {};
   FenceImportMask flags = {};
   ExternalFenceHandleTypeMaskBits handleType = {};
@@ -4456,7 +4456,7 @@ struct FenceGetFdInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkFence fence = {};
   ExternalFenceHandleTypeMaskBits handleType = {};
 };
@@ -4511,13 +4511,13 @@ struct RenderPassMultiviewCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t subpassCount = {};
-  uint32_t *pViewMasks = {};
+  const uint32_t *pViewMasks = {};
   uint32_t dependencyCount = {};
-  int32_t *pViewOffsets = {};
+  const int32_t *pViewOffsets = {};
   uint32_t correlationMaskCount = {};
-  uint32_t *pCorrelationMasks = {};
+  const uint32_t *pCorrelationMasks = {};
 };
 
 struct SurfaceCapabilities2EXT {
@@ -4560,7 +4560,7 @@ struct DisplayPowerInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DisplayPowerStateEXT powerState = {};
 };
 
@@ -4577,7 +4577,7 @@ struct DeviceEventInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DeviceEventTypeEXT deviceEvent = {};
 };
 
@@ -4594,7 +4594,7 @@ struct DisplayEventInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DisplayEventTypeEXT displayEvent = {};
 };
 
@@ -4611,7 +4611,7 @@ struct SwapchainCounterCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SurfaceCounterMaskEXT surfaceCounters = {};
 };
 
@@ -4647,7 +4647,7 @@ struct MemoryAllocateFlagsInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   MemoryAllocateMask flags = {};
   uint32_t deviceMask = {};
 };
@@ -4665,7 +4665,7 @@ struct BindBufferMemoryInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer buffer = {};
   VkDeviceMemory memory = {};
   VkDeviceSize memoryOffset = {};
@@ -4684,9 +4684,9 @@ struct BindBufferMemoryDeviceGroupInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t deviceIndexCount = {};
-  uint32_t *pDeviceIndices = {};
+  const uint32_t *pDeviceIndices = {};
 };
 
 struct BindImageMemoryInfo {
@@ -4702,7 +4702,7 @@ struct BindImageMemoryInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage image = {};
   VkDeviceMemory memory = {};
   VkDeviceSize memoryOffset = {};
@@ -4721,11 +4721,11 @@ struct BindImageMemoryDeviceGroupInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t deviceIndexCount = {};
-  uint32_t *pDeviceIndices = {};
+  const uint32_t *pDeviceIndices = {};
   uint32_t splitInstanceBindRegionCount = {};
-  Rect2D *pSplitInstanceBindRegions = {};
+  const Rect2D *pSplitInstanceBindRegions = {};
 };
 
 struct DeviceGroupRenderPassBeginInfo {
@@ -4741,10 +4741,10 @@ struct DeviceGroupRenderPassBeginInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t deviceMask = {};
   uint32_t deviceRenderAreaCount = {};
-  Rect2D *pDeviceRenderAreas = {};
+  const Rect2D *pDeviceRenderAreas = {};
 };
 
 struct DeviceGroupCommandBufferBeginInfo {
@@ -4760,7 +4760,7 @@ struct DeviceGroupCommandBufferBeginInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t deviceMask = {};
 };
 
@@ -4777,13 +4777,13 @@ struct DeviceGroupSubmitInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t waitSemaphoreCount = {};
-  uint32_t *pWaitSemaphoreDeviceIndices = {};
+  const uint32_t *pWaitSemaphoreDeviceIndices = {};
   uint32_t commandBufferCount = {};
-  uint32_t *pCommandBufferDeviceMasks = {};
+  const uint32_t *pCommandBufferDeviceMasks = {};
   uint32_t signalSemaphoreCount = {};
-  uint32_t *pSignalSemaphoreDeviceIndices = {};
+  const uint32_t *pSignalSemaphoreDeviceIndices = {};
 };
 
 struct DeviceGroupBindSparseInfo {
@@ -4799,7 +4799,7 @@ struct DeviceGroupBindSparseInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t resourceDeviceIndex = {};
   uint32_t memoryDeviceIndex = {};
 };
@@ -4835,7 +4835,7 @@ struct ImageSwapchainCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSwapchainKHR swapchain = {};
 };
 
@@ -4852,7 +4852,7 @@ struct BindImageMemorySwapchainInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSwapchainKHR swapchain = {};
   uint32_t imageIndex = {};
 };
@@ -4870,7 +4870,7 @@ struct AcquireNextImageInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSwapchainKHR swapchain = {};
   uint64_t timeout = {};
   VkSemaphore semaphore = {};
@@ -4891,9 +4891,9 @@ struct DeviceGroupPresentInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t swapchainCount = {};
-  uint32_t *pDeviceMasks = {};
+  const uint32_t *pDeviceMasks = {};
   DeviceGroupPresentModeMaskBitsKHR mode = {};
 };
 
@@ -4910,9 +4910,9 @@ struct DeviceGroupDeviceCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t physicalDeviceCount = {};
-  VkPhysicalDevice *pPhysicalDevices = {};
+  const VkPhysicalDevice *pPhysicalDevices = {};
 };
 
 struct DeviceGroupSwapchainCreateInfoKHR {
@@ -4928,7 +4928,7 @@ struct DeviceGroupSwapchainCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DeviceGroupPresentModeMaskKHR modes = {};
 };
 
@@ -4964,10 +4964,10 @@ struct DescriptorUpdateTemplateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DescriptorUpdateTemplateCreateMask flags = {};
   uint32_t descriptorUpdateEntryCount = {};
-  DescriptorUpdateTemplateEntry *pDescriptorUpdateEntries = {};
+  const DescriptorUpdateTemplateEntry *pDescriptorUpdateEntries = {};
   DescriptorUpdateTemplateType templateType = {};
   VkDescriptorSetLayout descriptorSetLayout = {};
   PipelineBindPoint pipelineBindPoint = {};
@@ -5020,9 +5020,9 @@ struct PresentIdKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t swapchainCount = {};
-  uint64_t *pPresentIds = {};
+  const uint64_t *pPresentIds = {};
 };
 
 struct PhysicalDevicePresentId2FeaturesKHR {
@@ -5055,9 +5055,9 @@ struct PresentId2KHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t swapchainCount = {};
-  uint64_t *pPresentIds = {};
+  const uint64_t *pPresentIds = {};
 };
 
 struct PresentWait2InfoKHR {
@@ -5073,7 +5073,7 @@ struct PresentWait2InfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t presentId = {};
   uint64_t timeout = {};
 };
@@ -5125,7 +5125,7 @@ struct HdrMetadataEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   XYColorEXT displayPrimaryRed = {};
   XYColorEXT displayPrimaryGreen = {};
   XYColorEXT displayPrimaryBlue = {};
@@ -5149,9 +5149,9 @@ struct HdrVividDynamicMetadataHUAWEI {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   size_t dynamicMetadataSize = {};
-  void *pDynamicMetadata = {};
+  const void *pDynamicMetadata = {};
 };
 
 struct DisplayNativeHdrSurfaceCapabilitiesAMD {
@@ -5184,7 +5184,7 @@ struct SwapchainDisplayNativeHdrCreateInfoAMD {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 localDimmingEnable = {};
 };
 
@@ -5248,9 +5248,9 @@ struct PresentTimesInfoGOOGLE {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t swapchainCount = {};
-  PresentTimeGOOGLE *pTimes = {};
+  const PresentTimeGOOGLE *pTimes = {};
 };
 
 struct ViewportWScalingNV {
@@ -5281,10 +5281,10 @@ struct PipelineViewportWScalingStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 viewportWScalingEnable = {};
   uint32_t viewportCount = {};
-  ViewportWScalingNV *pViewportWScalings = {};
+  const ViewportWScalingNV *pViewportWScalings = {};
 };
 
 struct ViewportSwizzleNV {
@@ -5317,10 +5317,10 @@ struct PipelineViewportSwizzleStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineViewportSwizzleStateCreateMaskNV flags = {};
   uint32_t viewportCount = {};
-  ViewportSwizzleNV *pViewportSwizzles = {};
+  const ViewportSwizzleNV *pViewportSwizzles = {};
 };
 
 struct PhysicalDeviceDiscardRectanglePropertiesEXT {
@@ -5353,11 +5353,11 @@ struct PipelineDiscardRectangleStateCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineDiscardRectangleStateCreateMaskEXT flags = {};
   DiscardRectangleModeEXT discardRectangleMode = {};
   uint32_t discardRectangleCount = {};
-  Rect2D *pDiscardRectangles = {};
+  const Rect2D *pDiscardRectangles = {};
 };
 
 struct PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX {
@@ -5406,9 +5406,9 @@ struct RenderPassInputAttachmentAspectCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t aspectReferenceCount = {};
-  InputAttachmentAspectReference *pAspectReferences = {};
+  const InputAttachmentAspectReference *pAspectReferences = {};
 };
 
 struct PhysicalDeviceSurfaceInfo2KHR {
@@ -5424,7 +5424,7 @@ struct PhysicalDeviceSurfaceInfo2KHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSurfaceKHR surface = {};
 };
 
@@ -5526,7 +5526,7 @@ struct DisplayModeStereoPropertiesNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 hdmi3DSupported = {};
 };
 
@@ -5543,7 +5543,7 @@ struct DisplayPlaneInfo2KHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDisplayModeKHR mode = {};
   uint32_t planeIndex = {};
 };
@@ -5652,7 +5652,7 @@ struct BufferMemoryRequirementsInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer buffer = {};
 };
 
@@ -5669,8 +5669,8 @@ struct DeviceBufferMemoryRequirements {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  BufferCreateInfo *pCreateInfo = {};
+  const void *pNext = {};
+  const BufferCreateInfo *pCreateInfo = {};
 };
 
 struct ImageMemoryRequirementsInfo2 {
@@ -5686,7 +5686,7 @@ struct ImageMemoryRequirementsInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage image = {};
 };
 
@@ -5703,7 +5703,7 @@ struct ImageSparseMemoryRequirementsInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage image = {};
 };
 
@@ -5720,8 +5720,8 @@ struct DeviceImageMemoryRequirements {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  ImageCreateInfo *pCreateInfo = {};
+  const void *pNext = {};
+  const ImageCreateInfo *pCreateInfo = {};
   ImageAspectMaskBits planeAspect = {};
 };
 
@@ -5807,7 +5807,7 @@ struct MemoryDedicatedAllocateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage image = {};
   VkBuffer buffer = {};
 };
@@ -5825,7 +5825,7 @@ struct ImageViewUsageCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageUsageMask usage = {};
 };
 
@@ -5842,7 +5842,7 @@ struct ImageViewSlicedCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t sliceOffset = {};
   uint32_t sliceCount = {};
 };
@@ -5860,7 +5860,7 @@ struct PipelineTessellationDomainOriginStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   TessellationDomainOrigin domainOrigin = {};
 };
 
@@ -5877,7 +5877,7 @@ struct SamplerYcbcrConversionInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSamplerYcbcrConversion conversion = {};
 };
 
@@ -5894,7 +5894,7 @@ struct SamplerYcbcrConversionCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Format format = {};
   SamplerYcbcrModelConversion ycbcrModel = {};
   SamplerYcbcrRange ycbcrRange = {};
@@ -5918,7 +5918,7 @@ struct BindImagePlaneMemoryInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageAspectMaskBits planeAspect = {};
 };
 
@@ -5935,7 +5935,7 @@ struct ImagePlaneMemoryRequirementsInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageAspectMaskBits planeAspect = {};
 };
 
@@ -6003,7 +6003,7 @@ struct ConditionalRenderingBeginInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer buffer = {};
   VkDeviceSize offset = {};
   ConditionalRenderingMaskEXT flags = {};
@@ -6022,7 +6022,7 @@ struct ProtectedSubmitInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 protectedSubmit = {};
 };
 
@@ -6073,7 +6073,7 @@ struct DeviceQueueInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DeviceQueueCreateMask flags = {};
   uint32_t queueFamilyIndex = {};
   uint32_t queueIndex = {};
@@ -6092,7 +6092,7 @@ struct PipelineCoverageToColorStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCoverageToColorStateCreateMaskNV flags = {};
   VkBool32 coverageToColorEnable = {};
   uint32_t coverageToColorLocation = {};
@@ -6144,11 +6144,11 @@ struct SampleLocationsInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SampleCountMaskBits sampleLocationsPerPixel = {};
   Extent2D sampleLocationGridSize = {};
   uint32_t sampleLocationsCount = {};
-  SampleLocationEXT *pSampleLocations = {};
+  const SampleLocationEXT *pSampleLocations = {};
 };
 
 struct AttachmentSampleLocationsEXT {
@@ -6194,11 +6194,11 @@ struct RenderPassSampleLocationsBeginInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t attachmentInitialSampleLocationsCount = {};
-  AttachmentSampleLocationsEXT *pAttachmentInitialSampleLocations = {};
+  const AttachmentSampleLocationsEXT *pAttachmentInitialSampleLocations = {};
   uint32_t postSubpassSampleLocationsCount = {};
-  SubpassSampleLocationsEXT *pPostSubpassSampleLocations = {};
+  const SubpassSampleLocationsEXT *pPostSubpassSampleLocations = {};
 };
 
 struct PipelineSampleLocationsStateCreateInfoEXT {
@@ -6214,7 +6214,7 @@ struct PipelineSampleLocationsStateCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 sampleLocationsEnable = {};
   SampleLocationsInfoEXT sampleLocationsInfo = {};
 };
@@ -6270,7 +6270,7 @@ struct SamplerReductionModeCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SamplerReductionMode reductionMode = {};
 };
 
@@ -6343,7 +6343,7 @@ struct PipelineColorBlendAdvancedStateCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 srcPremultiplied = {};
   VkBool32 dstPremultiplied = {};
   BlendOverlapEXT blendOverlap = {};
@@ -6401,9 +6401,9 @@ struct WriteDescriptorSetInlineUniformBlock {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t dataSize = {};
-  void *pData = {};
+  const void *pData = {};
 };
 
 struct DescriptorPoolInlineUniformBlockCreateInfo {
@@ -6419,7 +6419,7 @@ struct DescriptorPoolInlineUniformBlockCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maxInlineUniformBlockBindings = {};
 };
 
@@ -6436,12 +6436,12 @@ struct PipelineCoverageModulationStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCoverageModulationStateCreateMaskNV flags = {};
   CoverageModulationModeNV coverageModulationMode = {};
   VkBool32 coverageModulationTableEnable = {};
   uint32_t coverageModulationTableCount = {};
-  float *pCoverageModulationTable = {};
+  const float *pCoverageModulationTable = {};
 };
 
 struct ImageFormatListCreateInfo {
@@ -6457,9 +6457,9 @@ struct ImageFormatListCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t viewFormatCount = {};
-  Format *pViewFormats = {};
+  const Format *pViewFormats = {};
 };
 
 struct ValidationCacheCreateInfoEXT {
@@ -6475,10 +6475,10 @@ struct ValidationCacheCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ValidationCacheCreateMaskEXT flags = {};
   size_t initialDataSize = {};
-  void *pInitialData = {};
+  const void *pInitialData = {};
 };
 
 struct ShaderModuleValidationCacheCreateInfoEXT {
@@ -6494,7 +6494,7 @@ struct ShaderModuleValidationCacheCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkValidationCacheEXT validationCache = {};
 };
 
@@ -6803,10 +6803,10 @@ struct RenderingAreaInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t viewMask = {};
   uint32_t colorAttachmentCount = {};
-  Format *pColorAttachmentFormats = {};
+  const Format *pColorAttachmentFormats = {};
   Format depthAttachmentFormat = {};
   Format stencilAttachmentFormat = {};
 };
@@ -6964,7 +6964,7 @@ struct DeviceQueueGlobalPriorityCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   QueueGlobalPriority globalPriority = {};
 };
 
@@ -7016,10 +7016,10 @@ struct DebugUtilsObjectNameInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ObjectType objectType = {};
   uint64_t objectHandle = {};
-  char *pObjectName = {};
+  const char *pObjectName = {};
 };
 
 struct DebugUtilsObjectTagInfoEXT {
@@ -7035,12 +7035,12 @@ struct DebugUtilsObjectTagInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ObjectType objectType = {};
   uint64_t objectHandle = {};
   uint64_t tagName = {};
   size_t tagSize = {};
-  void *pTag = {};
+  const void *pTag = {};
 };
 
 struct DebugUtilsLabelEXT {
@@ -7056,8 +7056,8 @@ struct DebugUtilsLabelEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  char *pLabelName = {};
+  const void *pNext = {};
+  const char *pLabelName = {};
   float color[4] = {};
 };
 
@@ -7074,7 +7074,7 @@ struct DebugUtilsMessengerCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DebugUtilsMessengerCreateMaskEXT flags = {};
   DebugUtilsMessageSeverityMaskEXT messageSeverity = {};
   DebugUtilsMessageTypeMaskEXT messageType = {};
@@ -7095,17 +7095,17 @@ struct DebugUtilsMessengerCallbackDataEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DebugUtilsMessengerCallbackDataMaskEXT flags = {};
-  char *pMessageIdName = {};
+  const char *pMessageIdName = {};
   int32_t messageIdNumber = {};
-  char *pMessage = {};
+  const char *pMessage = {};
   uint32_t queueLabelCount = {};
-  DebugUtilsLabelEXT *pQueueLabels = {};
+  const DebugUtilsLabelEXT *pQueueLabels = {};
   uint32_t cmdBufLabelCount = {};
-  DebugUtilsLabelEXT *pCmdBufLabels = {};
+  const DebugUtilsLabelEXT *pCmdBufLabels = {};
   uint32_t objectCount = {};
-  DebugUtilsObjectNameInfoEXT *pObjects = {};
+  const DebugUtilsObjectNameInfoEXT *pObjects = {};
 };
 
 struct PhysicalDeviceDeviceMemoryReportFeaturesEXT {
@@ -7138,7 +7138,7 @@ struct DeviceDeviceMemoryReportCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DeviceMemoryReportMaskEXT flags = {};
   PFN_vkDeviceMemoryReportCallbackEXT pfnUserCallback = {};
   void *pUserData = {};
@@ -7180,7 +7180,7 @@ struct ImportMemoryHostPointerInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMaskBits handleType = {};
   void *pHostPointer = {};
 };
@@ -7257,7 +7257,7 @@ struct CalibratedTimestampInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   TimeDomainKHR timeDomain = {};
 };
 
@@ -7322,7 +7322,7 @@ struct PipelineRasterizationConservativeStateCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineRasterizationConservativeStateCreateMaskEXT flags = {};
   ConservativeRasterizationModeEXT conservativeRasterizationMode = {};
   float extraPrimitiveOverestimationSize = {};
@@ -7416,9 +7416,9 @@ struct DescriptorSetLayoutBindingFlagsCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t bindingCount = {};
-  DescriptorBindingMask *pBindingFlags = {};
+  const DescriptorBindingMask *pBindingFlags = {};
 };
 
 struct DescriptorSetVariableDescriptorCountAllocateInfo {
@@ -7434,9 +7434,9 @@ struct DescriptorSetVariableDescriptorCountAllocateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t descriptorSetCount = {};
-  uint32_t *pDescriptorCounts = {};
+  const uint32_t *pDescriptorCounts = {};
 };
 
 struct DescriptorSetVariableDescriptorCountLayoutSupport {
@@ -7469,7 +7469,7 @@ struct AttachmentDescription2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AttachmentDescriptionMask flags = {};
   Format format = {};
   SampleCountMaskBits samples = {};
@@ -7494,7 +7494,7 @@ struct AttachmentReference2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t attachment = {};
   ImageLayout layout = {};
   ImageAspectMask aspectMask = {};
@@ -7513,18 +7513,18 @@ struct SubpassDescription2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SubpassDescriptionMask flags = {};
   PipelineBindPoint pipelineBindPoint = {};
   uint32_t viewMask = {};
   uint32_t inputAttachmentCount = {};
-  AttachmentReference2 *pInputAttachments = {};
+  const AttachmentReference2 *pInputAttachments = {};
   uint32_t colorAttachmentCount = {};
-  AttachmentReference2 *pColorAttachments = {};
-  AttachmentReference2 *pResolveAttachments = {};
-  AttachmentReference2 *pDepthStencilAttachment = {};
+  const AttachmentReference2 *pColorAttachments = {};
+  const AttachmentReference2 *pResolveAttachments = {};
+  const AttachmentReference2 *pDepthStencilAttachment = {};
   uint32_t preserveAttachmentCount = {};
-  uint32_t *pPreserveAttachments = {};
+  const uint32_t *pPreserveAttachments = {};
 };
 
 struct SubpassDependency2 {
@@ -7540,7 +7540,7 @@ struct SubpassDependency2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t srcSubpass = {};
   uint32_t dstSubpass = {};
   PipelineStageMask srcStageMask = {};
@@ -7564,16 +7564,16 @@ struct RenderPassCreateInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RenderPassCreateMask flags = {};
   uint32_t attachmentCount = {};
-  AttachmentDescription2 *pAttachments = {};
+  const AttachmentDescription2 *pAttachments = {};
   uint32_t subpassCount = {};
-  SubpassDescription2 *pSubpasses = {};
+  const SubpassDescription2 *pSubpasses = {};
   uint32_t dependencyCount = {};
-  SubpassDependency2 *pDependencies = {};
+  const SubpassDependency2 *pDependencies = {};
   uint32_t correlatedViewMaskCount = {};
-  uint32_t *pCorrelatedViewMasks = {};
+  const uint32_t *pCorrelatedViewMasks = {};
 };
 
 struct SubpassBeginInfo {
@@ -7589,7 +7589,7 @@ struct SubpassBeginInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SubpassContents contents = {};
 };
 
@@ -7606,7 +7606,7 @@ struct SubpassEndInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
 };
 
 struct PhysicalDeviceTimelineSemaphoreFeatures {
@@ -7656,7 +7656,7 @@ struct SemaphoreTypeCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SemaphoreType semaphoreType = {};
   uint64_t initialValue = {};
 };
@@ -7674,11 +7674,11 @@ struct TimelineSemaphoreSubmitInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t waitSemaphoreValueCount = {};
-  uint64_t *pWaitSemaphoreValues = {};
+  const uint64_t *pWaitSemaphoreValues = {};
   uint32_t signalSemaphoreValueCount = {};
-  uint64_t *pSignalSemaphoreValues = {};
+  const uint64_t *pSignalSemaphoreValues = {};
 };
 
 struct SemaphoreWaitInfo {
@@ -7694,11 +7694,11 @@ struct SemaphoreWaitInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SemaphoreWaitMask flags = {};
   uint32_t semaphoreCount = {};
-  VkSemaphore *pSemaphores = {};
-  uint64_t *pValues = {};
+  const VkSemaphore *pSemaphores = {};
+  const uint64_t *pValues = {};
 };
 
 struct SemaphoreSignalInfo {
@@ -7714,7 +7714,7 @@ struct SemaphoreSignalInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSemaphore semaphore = {};
   uint64_t value = {};
 };
@@ -7747,9 +7747,9 @@ struct PipelineVertexInputDivisorStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t vertexBindingDivisorCount = {};
-  VertexInputBindingDivisorDescription *pVertexBindingDivisors = {};
+  const VertexInputBindingDivisorDescription *pVertexBindingDivisors = {};
 };
 
 struct PhysicalDeviceVertexAttributeDivisorPropertiesEXT {
@@ -7820,7 +7820,7 @@ struct CommandBufferInheritanceConditionalRenderingInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 conditionalRenderingEnable = {};
 };
 
@@ -8040,10 +8040,10 @@ struct SubpassDescriptionDepthStencilResolve {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ResolveModeMaskBits depthResolveMode = {};
   ResolveModeMaskBits stencilResolveMode = {};
-  AttachmentReference2 *pDepthStencilResolveAttachment = {};
+  const AttachmentReference2 *pDepthStencilResolveAttachment = {};
 };
 
 struct ImageViewASTCDecodeModeEXT {
@@ -8059,7 +8059,7 @@ struct ImageViewASTCDecodeModeEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Format decodeMode = {};
 };
 
@@ -8137,7 +8137,7 @@ struct PipelineRasterizationStateStreamCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineRasterizationStateStreamCreateMaskEXT flags = {};
   uint32_t rasterizationStream = {};
 };
@@ -8172,7 +8172,7 @@ struct PipelineRepresentativeFragmentTestStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 representativeFragmentTestEnable = {};
 };
 
@@ -8206,9 +8206,9 @@ struct PipelineViewportExclusiveScissorStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t exclusiveScissorCount = {};
-  Rect2D *pExclusiveScissors = {};
+  const Rect2D *pExclusiveScissors = {};
 };
 
 struct PhysicalDeviceCornerSampledImageFeaturesNV {
@@ -8396,7 +8396,7 @@ struct ShadingRatePaletteNV {
   operator NativeType *() noexcept;
 
   uint32_t shadingRatePaletteEntryCount = {};
-  ShadingRatePaletteEntryNV *pShadingRatePaletteEntries = {};
+  const ShadingRatePaletteEntryNV *pShadingRatePaletteEntries = {};
 };
 
 struct PipelineViewportShadingRateImageStateCreateInfoNV {
@@ -8412,10 +8412,10 @@ struct PipelineViewportShadingRateImageStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 shadingRateImageEnable = {};
   uint32_t viewportCount = {};
-  ShadingRatePaletteNV *pShadingRatePalettes = {};
+  const ShadingRatePaletteNV *pShadingRatePalettes = {};
 };
 
 struct PhysicalDeviceShadingRateImageFeaturesNV {
@@ -8502,7 +8502,7 @@ struct CoarseSampleOrderCustomNV {
   ShadingRatePaletteEntryNV shadingRate = {};
   uint32_t sampleCount = {};
   uint32_t sampleLocationCount = {};
-  CoarseSampleLocationNV *pSampleLocations = {};
+  const CoarseSampleLocationNV *pSampleLocations = {};
 };
 
 struct PipelineViewportCoarseSampleOrderStateCreateInfoNV {
@@ -8518,10 +8518,10 @@ struct PipelineViewportCoarseSampleOrderStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   CoarseSampleOrderTypeNV sampleOrderType = {};
   uint32_t customSampleOrderCount = {};
-  CoarseSampleOrderCustomNV *pCustomSampleOrders = {};
+  const CoarseSampleOrderCustomNV *pCustomSampleOrders = {};
 };
 
 struct PhysicalDeviceMeshShaderFeaturesNV {
@@ -8680,7 +8680,7 @@ struct RayTracingShaderGroupCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RayTracingShaderGroupTypeKHR type = {};
   uint32_t generalShader = {};
   uint32_t closestHitShader = {};
@@ -8701,13 +8701,13 @@ struct RayTracingShaderGroupCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RayTracingShaderGroupTypeKHR type = {};
   uint32_t generalShader = {};
   uint32_t closestHitShader = {};
   uint32_t anyHitShader = {};
   uint32_t intersectionShader = {};
-  void *pShaderGroupCaptureReplayHandle = {};
+  const void *pShaderGroupCaptureReplayHandle = {};
 };
 
 struct RayTracingPipelineCreateInfoNV {
@@ -8723,12 +8723,12 @@ struct RayTracingPipelineCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCreateMask flags = {};
   uint32_t stageCount = {};
-  PipelineShaderStageCreateInfo *pStages = {};
+  const PipelineShaderStageCreateInfo *pStages = {};
   uint32_t groupCount = {};
-  RayTracingShaderGroupCreateInfoNV *pGroups = {};
+  const RayTracingShaderGroupCreateInfoNV *pGroups = {};
   uint32_t maxRecursionDepth = {};
   VkPipelineLayout layout = {};
   VkPipeline basePipelineHandle = {};
@@ -8748,9 +8748,9 @@ struct PipelineLibraryCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t libraryCount = {};
-  VkPipeline *pLibraries = {};
+  const VkPipeline *pLibraries = {};
 };
 
 struct RayTracingPipelineInterfaceCreateInfoKHR {
@@ -8766,7 +8766,7 @@ struct RayTracingPipelineInterfaceCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maxPipelineRayPayloadSize = {};
   uint32_t maxPipelineRayHitAttributeSize = {};
 };
@@ -8784,16 +8784,16 @@ struct RayTracingPipelineCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCreateMask flags = {};
   uint32_t stageCount = {};
-  PipelineShaderStageCreateInfo *pStages = {};
+  const PipelineShaderStageCreateInfo *pStages = {};
   uint32_t groupCount = {};
-  RayTracingShaderGroupCreateInfoKHR *pGroups = {};
+  const RayTracingShaderGroupCreateInfoKHR *pGroups = {};
   uint32_t maxPipelineRayRecursionDepth = {};
-  PipelineLibraryCreateInfoKHR *pLibraryInfo = {};
-  RayTracingPipelineInterfaceCreateInfoKHR *pLibraryInterface = {};
-  PipelineDynamicStateCreateInfo *pDynamicState = {};
+  const PipelineLibraryCreateInfoKHR *pLibraryInfo = {};
+  const RayTracingPipelineInterfaceCreateInfoKHR *pLibraryInterface = {};
+  const PipelineDynamicStateCreateInfo *pDynamicState = {};
   VkPipelineLayout layout = {};
   VkPipeline basePipelineHandle = {};
   int32_t basePipelineIndex = {};
@@ -8812,7 +8812,7 @@ struct GeometryTrianglesNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer vertexData = {};
   VkDeviceSize vertexOffset = {};
   uint32_t vertexCount = {};
@@ -8839,7 +8839,7 @@ struct GeometryAABBNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer aabbData = {};
   uint32_t numAABBs = {};
   uint32_t stride = {};
@@ -8874,7 +8874,7 @@ struct GeometryNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   GeometryTypeKHR geometryType = {};
   GeometryDataNV geometry = {};
   GeometryMaskKHR flags = {};
@@ -8893,12 +8893,12 @@ struct AccelerationStructureInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkAccelerationStructureTypeNV type = {};
   VkBuildAccelerationStructureFlagsNV flags = {};
   uint32_t instanceCount = {};
   uint32_t geometryCount = {};
-  GeometryNV *pGeometries = {};
+  const GeometryNV *pGeometries = {};
 };
 
 struct AccelerationStructureCreateInfoNV {
@@ -8914,7 +8914,7 @@ struct AccelerationStructureCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceSize compactedSize = {};
   AccelerationStructureInfoNV info = {};
 };
@@ -8932,12 +8932,12 @@ struct BindAccelerationStructureMemoryInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkAccelerationStructureNV accelerationStructure = {};
   VkDeviceMemory memory = {};
   VkDeviceSize memoryOffset = {};
   uint32_t deviceIndexCount = {};
-  uint32_t *pDeviceIndices = {};
+  const uint32_t *pDeviceIndices = {};
 };
 
 struct WriteDescriptorSetAccelerationStructureKHR {
@@ -8953,9 +8953,9 @@ struct WriteDescriptorSetAccelerationStructureKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t accelerationStructureCount = {};
-  VkAccelerationStructureKHR *pAccelerationStructures = {};
+  const VkAccelerationStructureKHR *pAccelerationStructures = {};
 };
 
 struct WriteDescriptorSetAccelerationStructureNV {
@@ -8971,9 +8971,9 @@ struct WriteDescriptorSetAccelerationStructureNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t accelerationStructureCount = {};
-  VkAccelerationStructureNV *pAccelerationStructures = {};
+  const VkAccelerationStructureNV *pAccelerationStructures = {};
 };
 
 struct AccelerationStructureMemoryRequirementsInfoNV {
@@ -8989,7 +8989,7 @@ struct AccelerationStructureMemoryRequirementsInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AccelerationStructureMemoryRequirementsTypeNV type = {};
   VkAccelerationStructureNV accelerationStructure = {};
 };
@@ -9233,11 +9233,11 @@ struct PhysicalDeviceImageDrmFormatModifierInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t drmFormatModifier = {};
   SharingMode sharingMode = {};
   uint32_t queueFamilyIndexCount = {};
-  uint32_t *pQueueFamilyIndices = {};
+  const uint32_t *pQueueFamilyIndices = {};
 };
 
 struct ImageDrmFormatModifierListCreateInfoEXT {
@@ -9253,9 +9253,9 @@ struct ImageDrmFormatModifierListCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t drmFormatModifierCount = {};
-  uint64_t *pDrmFormatModifiers = {};
+  const uint64_t *pDrmFormatModifiers = {};
 };
 
 struct ImageDrmFormatModifierExplicitCreateInfoEXT {
@@ -9271,10 +9271,10 @@ struct ImageDrmFormatModifierExplicitCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t drmFormatModifier = {};
   uint32_t drmFormatModifierPlaneCount = {};
-  SubresourceLayout *pPlaneLayouts = {};
+  const SubresourceLayout *pPlaneLayouts = {};
 };
 
 struct ImageDrmFormatModifierPropertiesEXT {
@@ -9307,7 +9307,7 @@ struct ImageStencilUsageCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageUsageMask stencilUsage = {};
 };
 
@@ -9324,7 +9324,7 @@ struct DeviceMemoryOverallocationCreateInfoAMD {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   MemoryOverallocationBehaviorAMD overallocationBehavior = {};
 };
 
@@ -9450,7 +9450,7 @@ struct RenderPassFragmentDensityMapCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AttachmentReference fragmentDensityMapAttachment = {};
 };
 
@@ -9467,9 +9467,9 @@ struct RenderPassFragmentDensityMapOffsetEndInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t fragmentDensityOffsetCount = {};
-  Offset2D *pFragmentDensityOffsets = {};
+  const Offset2D *pFragmentDensityOffsets = {};
 };
 
 struct PhysicalDeviceScalarBlockLayoutFeatures {
@@ -9502,7 +9502,7 @@ struct SurfaceProtectedCapabilitiesKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 supportsProtected = {};
 };
 
@@ -9553,7 +9553,7 @@ struct PipelineRasterizationDepthClipStateCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineRasterizationDepthClipStateCreateMaskEXT flags = {};
   VkBool32 depthClipEnable = {};
 };
@@ -9606,7 +9606,7 @@ struct MemoryPriorityAllocateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   float priority = {};
 };
 
@@ -9678,7 +9678,7 @@ struct BufferDeviceAddressInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer buffer = {};
 };
 
@@ -9695,7 +9695,7 @@ struct BufferOpaqueCaptureAddressCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t opaqueCaptureAddress = {};
 };
 
@@ -9712,7 +9712,7 @@ struct BufferDeviceAddressCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceAddress deviceAddress = {};
 };
 
@@ -9781,14 +9781,14 @@ struct FramebufferAttachmentImageInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageCreateMask flags = {};
   ImageUsageMask usage = {};
   uint32_t width = {};
   uint32_t height = {};
   uint32_t layerCount = {};
   uint32_t viewFormatCount = {};
-  Format *pViewFormats = {};
+  const Format *pViewFormats = {};
 };
 
 struct FramebufferAttachmentsCreateInfo {
@@ -9804,9 +9804,9 @@ struct FramebufferAttachmentsCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t attachmentImageInfoCount = {};
-  FramebufferAttachmentImageInfo *pAttachmentImageInfos = {};
+  const FramebufferAttachmentImageInfo *pAttachmentImageInfos = {};
 };
 
 struct RenderPassAttachmentBeginInfo {
@@ -9822,9 +9822,9 @@ struct RenderPassAttachmentBeginInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t attachmentCount = {};
-  VkImageView *pAttachments = {};
+  const VkImageView *pAttachments = {};
 };
 
 struct PhysicalDeviceTextureCompressionASTCHDRFeatures {
@@ -9933,7 +9933,7 @@ struct ImageViewHandleInfoNVX {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImageView imageView = {};
   DescriptorType descriptorType = {};
   VkSampler sampler = {};
@@ -9985,7 +9985,7 @@ struct PipelineCreationFeedbackCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCreationFeedback *pPipelineCreationFeedback = {};
   uint32_t pipelineStageCreationFeedbackCount = {};
   PipelineCreationFeedback *pPipelineStageCreationFeedbacks = {};
@@ -10130,10 +10130,10 @@ struct QueryPoolPerformanceCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t queueFamilyIndex = {};
   uint32_t counterIndexCount = {};
-  uint32_t *pCounterIndices = {};
+  const uint32_t *pCounterIndices = {};
 };
 
 struct AcquireProfilingLockInfoKHR {
@@ -10149,7 +10149,7 @@ struct AcquireProfilingLockInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AcquireProfilingLockMaskKHR flags = {};
   uint64_t timeout = {};
 };
@@ -10167,7 +10167,7 @@ struct PerformanceQuerySubmitInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t counterPassIndex = {};
 };
 
@@ -10184,7 +10184,7 @@ struct HeadlessSurfaceCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   HeadlessSurfaceCreateMaskEXT flags = {};
 };
 
@@ -10218,7 +10218,7 @@ struct PipelineCoverageReductionStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCoverageReductionStateCreateMaskNV flags = {};
   CoverageReductionModeNV coverageReductionMode = {};
 };
@@ -10288,7 +10288,7 @@ struct InitializePerformanceApiInfoINTEL {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   void *pUserData = {};
 };
 
@@ -10305,7 +10305,7 @@ struct QueryPoolPerformanceQueryCreateInfoINTEL {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   QueryPoolSamplingModeINTEL performanceCountersSampling = {};
 };
 
@@ -10322,7 +10322,7 @@ struct PerformanceMarkerInfoINTEL {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t marker = {};
 };
 
@@ -10339,7 +10339,7 @@ struct PerformanceStreamMarkerInfoINTEL {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t marker = {};
 };
 
@@ -10356,7 +10356,7 @@ struct PerformanceOverrideInfoINTEL {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PerformanceOverrideTypeINTEL type = {};
   VkBool32 enable = {};
   uint64_t parameter = {};
@@ -10375,7 +10375,7 @@ struct PerformanceConfigurationAcquireInfoINTEL {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PerformanceConfigurationTypeINTEL type = {};
 };
 
@@ -10568,7 +10568,7 @@ struct PipelineInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkPipeline pipeline = {};
 };
 
@@ -10605,7 +10605,7 @@ struct PipelineExecutableInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkPipeline pipeline = {};
   uint32_t executableIndex = {};
 };
@@ -10756,7 +10756,7 @@ struct PipelineShaderStageRequiredSubgroupSizeCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t requiredSubgroupSize = {};
 };
 
@@ -10828,7 +10828,7 @@ struct MemoryOpaqueCaptureAddressAllocateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t opaqueCaptureAddress = {};
 };
 
@@ -10845,7 +10845,7 @@ struct DeviceMemoryOpaqueCaptureAddressInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceMemory memory = {};
 };
 
@@ -10901,7 +10901,7 @@ struct PipelineRasterizationLineStateCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   LineRasterizationMode lineRasterizationMode = {};
   VkBool32 stippledLineEnable = {};
   uint32_t lineStippleFactor = {};
@@ -11298,7 +11298,7 @@ struct PipelineCompilerControlCreateInfoAMD {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineCompilerControlMaskAMD compilerControlFlags = {};
 };
 
@@ -11353,7 +11353,7 @@ struct SamplerCustomBorderColorCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkClearColorValue customBorderColor = {};
   Format format = {};
 };
@@ -11406,7 +11406,7 @@ struct SamplerBorderColorComponentMappingCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ComponentMapping components = {};
   VkBool32 srgb = {};
 };
@@ -11442,7 +11442,7 @@ struct AccelerationStructureGeometryTrianglesDataKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Format vertexFormat = {};
   VkDeviceOrHostAddressConstKHR vertexData = {};
   VkDeviceSize vertexStride = {};
@@ -11465,7 +11465,7 @@ struct AccelerationStructureGeometryAabbsDataKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceOrHostAddressConstKHR data = {};
   VkDeviceSize stride = {};
 };
@@ -11483,7 +11483,7 @@ struct AccelerationStructureGeometryInstancesDataKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 arrayOfPointers = {};
   VkDeviceOrHostAddressConstKHR data = {};
 };
@@ -11501,7 +11501,7 @@ struct AccelerationStructureGeometryLinearSweptSpheresDataNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Format vertexFormat = {};
   VkDeviceOrHostAddressConstKHR vertexData = {};
   VkDeviceSize vertexStride = {};
@@ -11528,7 +11528,7 @@ struct AccelerationStructureGeometrySpheresDataNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Format vertexFormat = {};
   VkDeviceOrHostAddressConstKHR vertexData = {};
   VkDeviceSize vertexStride = {};
@@ -11553,7 +11553,7 @@ struct AccelerationStructureGeometryKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   GeometryTypeKHR geometryType = {};
   VkAccelerationStructureGeometryDataKHR geometry = {};
   GeometryMaskKHR flags = {};
@@ -11572,15 +11572,15 @@ struct AccelerationStructureBuildGeometryInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AccelerationStructureTypeKHR type = {};
   BuildAccelerationStructureMaskKHR flags = {};
   BuildAccelerationStructureModeKHR mode = {};
   VkAccelerationStructureKHR srcAccelerationStructure = {};
   VkAccelerationStructureKHR dstAccelerationStructure = {};
   uint32_t geometryCount = {};
-  AccelerationStructureGeometryKHR *pGeometries = {};
-  AccelerationStructureGeometryKHR *const *ppGeometries = {};
+  const AccelerationStructureGeometryKHR *pGeometries = {};
+  const AccelerationStructureGeometryKHR *const *ppGeometries = {};
   VkDeviceOrHostAddressKHR scratchData = {};
 };
 
@@ -11614,7 +11614,7 @@ struct AccelerationStructureCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AccelerationStructureCreateMaskKHR createFlags = {};
   VkBuffer buffer = {};
   VkDeviceSize offset = {};
@@ -11688,7 +11688,7 @@ struct AccelerationStructureDeviceAddressInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkAccelerationStructureKHR accelerationStructure = {};
 };
 
@@ -11705,8 +11705,8 @@ struct AccelerationStructureVersionInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  uint8_t *pVersionData = {};
+  const void *pNext = {};
+  const uint8_t *pVersionData = {};
 };
 
 struct CopyAccelerationStructureInfoKHR {
@@ -11722,7 +11722,7 @@ struct CopyAccelerationStructureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkAccelerationStructureKHR src = {};
   VkAccelerationStructureKHR dst = {};
   CopyAccelerationStructureModeKHR mode = {};
@@ -11741,7 +11741,7 @@ struct CopyAccelerationStructureToMemoryInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkAccelerationStructureKHR src = {};
   VkDeviceOrHostAddressKHR dst = {};
   CopyAccelerationStructureModeKHR mode = {};
@@ -11760,7 +11760,7 @@ struct CopyMemoryToAccelerationStructureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceOrHostAddressConstKHR src = {};
   VkAccelerationStructureKHR dst = {};
   CopyAccelerationStructureModeKHR mode = {};
@@ -11916,7 +11916,7 @@ struct RenderPassTransformBeginInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SurfaceTransformMaskBitsKHR transform = {};
 };
 
@@ -11933,7 +11933,7 @@ struct CopyCommandTransformInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SurfaceTransformMaskBitsKHR transform = {};
 };
 
@@ -11950,7 +11950,7 @@ struct CommandBufferInheritanceRenderPassTransformInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SurfaceTransformMaskBitsKHR transform = {};
   Rect2D renderArea = {};
 };
@@ -12090,7 +12090,7 @@ struct WriteDescriptorSetPartitionedAccelerationStructureNV {
   StructureType sType = structure_type;
   void *pNext = {};
   uint32_t accelerationStructureCount = {};
-  VkDeviceAddress *pAccelerationStructures = {};
+  const VkDeviceAddress *pAccelerationStructures = {};
 };
 
 struct PartitionedAccelerationStructureInstancesInputNV {
@@ -12166,7 +12166,7 @@ struct DeviceDiagnosticsConfigCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DeviceDiagnosticsConfigMaskNV flags = {};
 };
 
@@ -12361,7 +12361,7 @@ struct BufferCopy2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceSize srcOffset = {};
   VkDeviceSize dstOffset = {};
   VkDeviceSize size = {};
@@ -12380,7 +12380,7 @@ struct ImageCopy2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageSubresourceLayers srcSubresource = {};
   Offset3D srcOffset = {};
   ImageSubresourceLayers dstSubresource = {};
@@ -12401,7 +12401,7 @@ struct ImageBlit2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageSubresourceLayers srcSubresource = {};
   Offset3D srcOffsets[2] = {};
   ImageSubresourceLayers dstSubresource = {};
@@ -12421,7 +12421,7 @@ struct BufferImageCopy2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceSize bufferOffset = {};
   uint32_t bufferRowLength = {};
   uint32_t bufferImageHeight = {};
@@ -12443,7 +12443,7 @@ struct ImageResolve2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageSubresourceLayers srcSubresource = {};
   Offset3D srcOffset = {};
   ImageSubresourceLayers dstSubresource = {};
@@ -12464,11 +12464,11 @@ struct CopyBufferInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer srcBuffer = {};
   VkBuffer dstBuffer = {};
   uint32_t regionCount = {};
-  BufferCopy2 *pRegions = {};
+  const BufferCopy2 *pRegions = {};
 };
 
 struct CopyImageInfo2 {
@@ -12484,13 +12484,13 @@ struct CopyImageInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage srcImage = {};
   ImageLayout srcImageLayout = {};
   VkImage dstImage = {};
   ImageLayout dstImageLayout = {};
   uint32_t regionCount = {};
-  ImageCopy2 *pRegions = {};
+  const ImageCopy2 *pRegions = {};
 };
 
 struct BlitImageInfo2 {
@@ -12506,13 +12506,13 @@ struct BlitImageInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage srcImage = {};
   ImageLayout srcImageLayout = {};
   VkImage dstImage = {};
   ImageLayout dstImageLayout = {};
   uint32_t regionCount = {};
-  ImageBlit2 *pRegions = {};
+  const ImageBlit2 *pRegions = {};
   Filter filter = {};
 };
 
@@ -12529,12 +12529,12 @@ struct CopyBufferToImageInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer srcBuffer = {};
   VkImage dstImage = {};
   ImageLayout dstImageLayout = {};
   uint32_t regionCount = {};
-  BufferImageCopy2 *pRegions = {};
+  const BufferImageCopy2 *pRegions = {};
 };
 
 struct CopyImageToBufferInfo2 {
@@ -12550,12 +12550,12 @@ struct CopyImageToBufferInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage srcImage = {};
   ImageLayout srcImageLayout = {};
   VkBuffer dstBuffer = {};
   uint32_t regionCount = {};
-  BufferImageCopy2 *pRegions = {};
+  const BufferImageCopy2 *pRegions = {};
 };
 
 struct ResolveImageInfo2 {
@@ -12571,13 +12571,13 @@ struct ResolveImageInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage srcImage = {};
   ImageLayout srcImageLayout = {};
   VkImage dstImage = {};
   ImageLayout dstImageLayout = {};
   uint32_t regionCount = {};
-  ImageResolve2 *pRegions = {};
+  const ImageResolve2 *pRegions = {};
 };
 
 struct PhysicalDeviceShaderImageAtomicInt64FeaturesEXT {
@@ -12611,8 +12611,8 @@ struct FragmentShadingRateAttachmentInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  AttachmentReference2 *pFragmentShadingRateAttachment = {};
+  const void *pNext = {};
+  const AttachmentReference2 *pFragmentShadingRateAttachment = {};
   Extent2D shadingRateAttachmentTexelSize = {};
 };
 
@@ -12629,7 +12629,7 @@ struct PipelineFragmentShadingRateStateCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Extent2D fragmentSize = {};
   FragmentShadingRateCombinerOpKHR combinerOps[2] = {};
 };
@@ -12770,7 +12770,7 @@ struct PipelineFragmentShadingRateEnumStateCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   FragmentShadingRateTypeNV shadingRateType = {};
   FragmentShadingRateNV shadingRate = {};
   FragmentShadingRateCombinerOpKHR combinerOps[2] = {};
@@ -12789,7 +12789,7 @@ struct AccelerationStructureBuildSizesInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceSize accelerationStructureSize = {};
   VkDeviceSize updateScratchSize = {};
   VkDeviceSize buildScratchSize = {};
@@ -12910,7 +12910,7 @@ struct MutableDescriptorTypeListEXT {
   operator NativeType *() noexcept;
 
   uint32_t descriptorTypeCount = {};
-  DescriptorType *pDescriptorTypes = {};
+  const DescriptorType *pDescriptorTypes = {};
 };
 
 struct MutableDescriptorTypeCreateInfoEXT {
@@ -12926,9 +12926,9 @@ struct MutableDescriptorTypeCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t mutableDescriptorTypeListCount = {};
-  MutableDescriptorTypeListEXT *pMutableDescriptorTypeLists = {};
+  const MutableDescriptorTypeListEXT *pMutableDescriptorTypeLists = {};
 };
 
 struct PhysicalDeviceDepthClipControlFeaturesEXT {
@@ -13043,7 +13043,7 @@ struct GeneratedCommandsShaderInfoEXT {
   StructureType sType = structure_type;
   void *pNext = {};
   uint32_t shaderCount = {};
-  VkShaderEXT *pShaders = {};
+  const VkShaderEXT *pShaders = {};
 };
 
 struct GeneratedCommandsMemoryRequirementsInfoEXT {
@@ -13059,7 +13059,7 @@ struct GeneratedCommandsMemoryRequirementsInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkIndirectExecutionSetEXT indirectExecutionSet = {};
   VkIndirectCommandsLayoutEXT indirectCommandsLayout = {};
   uint32_t maxSequenceCount = {};
@@ -13079,7 +13079,7 @@ struct IndirectExecutionSetPipelineInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkPipeline initialPipeline = {};
   uint32_t maxPipelineCount = {};
 };
@@ -13097,9 +13097,9 @@ struct IndirectExecutionSetShaderLayoutInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t setLayoutCount = {};
-  VkDescriptorSetLayout *pSetLayouts = {};
+  const VkDescriptorSetLayout *pSetLayouts = {};
 };
 
 struct IndirectExecutionSetShaderInfoEXT {
@@ -13115,13 +13115,13 @@ struct IndirectExecutionSetShaderInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t shaderCount = {};
-  VkShaderEXT *pInitialShaders = {};
-  IndirectExecutionSetShaderLayoutInfoEXT *pSetLayoutInfos = {};
+  const VkShaderEXT *pInitialShaders = {};
+  const IndirectExecutionSetShaderLayoutInfoEXT *pSetLayoutInfos = {};
   uint32_t maxShaderCount = {};
   uint32_t pushConstantRangeCount = {};
-  PushConstantRange *pPushConstantRanges = {};
+  const PushConstantRange *pPushConstantRanges = {};
 };
 
 struct IndirectExecutionSetCreateInfoEXT {
@@ -13137,7 +13137,7 @@ struct IndirectExecutionSetCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   IndirectExecutionSetInfoTypeEXT type = {};
   VkIndirectExecutionSetInfoEXT info = {};
 };
@@ -13155,7 +13155,7 @@ struct GeneratedCommandsInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ShaderStageMask shaderStages = {};
   VkIndirectExecutionSetEXT indirectExecutionSet = {};
   VkIndirectCommandsLayoutEXT indirectCommandsLayout = {};
@@ -13181,7 +13181,7 @@ struct WriteIndirectExecutionSetPipelineEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t index = {};
   VkPipeline pipeline = {};
 };
@@ -13199,7 +13199,7 @@ struct WriteIndirectExecutionSetShaderEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t index = {};
   VkShaderEXT shader = {};
 };
@@ -13217,7 +13217,7 @@ struct IndirectCommandsLayoutTokenEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   IndirectCommandsTokenTypeEXT type = {};
   VkIndirectCommandsTokenDataEXT data = {};
   uint32_t offset = {};
@@ -13236,13 +13236,13 @@ struct IndirectCommandsLayoutCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   IndirectCommandsLayoutUsageMaskEXT flags = {};
   ShaderStageMask shaderStages = {};
   uint32_t indirectStride = {};
   VkPipelineLayout pipelineLayout = {};
   uint32_t tokenCount = {};
-  IndirectCommandsLayoutTokenEXT *pTokens = {};
+  const IndirectCommandsLayoutTokenEXT *pTokens = {};
 };
 
 struct DrawIndirectCountIndirectCommandEXT {
@@ -13363,7 +13363,7 @@ struct PipelineViewportDepthClipControlCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 negativeOneToOne = {};
 };
 
@@ -13412,9 +13412,9 @@ struct PipelineViewportDepthClampControlCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DepthClampModeEXT depthClampMode = {};
-  DepthClampRangeEXT *pDepthClampRange = {};
+  const DepthClampRangeEXT *pDepthClampRange = {};
 };
 
 struct PhysicalDeviceVertexInputDynamicStateFeaturesEXT {
@@ -13538,9 +13538,9 @@ struct PipelineColorWriteCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t attachmentCount = {};
-  VkBool32 *pColorWriteEnables = {};
+  const VkBool32 *pColorWriteEnables = {};
 };
 
 struct MemoryBarrier2 {
@@ -13556,7 +13556,7 @@ struct MemoryBarrier2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineStageMask2 srcStageMask = {};
   AccessMask2 srcAccessMask = {};
   PipelineStageMask2 dstStageMask = {};
@@ -13576,7 +13576,7 @@ struct ImageMemoryBarrier2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineStageMask2 srcStageMask = {};
   AccessMask2 srcAccessMask = {};
   PipelineStageMask2 dstStageMask = {};
@@ -13602,7 +13602,7 @@ struct BufferMemoryBarrier2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineStageMask2 srcStageMask = {};
   AccessMask2 srcAccessMask = {};
   PipelineStageMask2 dstStageMask = {};
@@ -13627,7 +13627,7 @@ struct MemoryBarrierAccessFlags3KHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AccessMask3KHR srcAccessMask3 = {};
   AccessMask3KHR dstAccessMask3 = {};
 };
@@ -13645,14 +13645,14 @@ struct DependencyInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DependencyMask dependencyFlags = {};
   uint32_t memoryBarrierCount = {};
-  MemoryBarrier2 *pMemoryBarriers = {};
+  const MemoryBarrier2 *pMemoryBarriers = {};
   uint32_t bufferMemoryBarrierCount = {};
-  BufferMemoryBarrier2 *pBufferMemoryBarriers = {};
+  const BufferMemoryBarrier2 *pBufferMemoryBarriers = {};
   uint32_t imageMemoryBarrierCount = {};
-  ImageMemoryBarrier2 *pImageMemoryBarriers = {};
+  const ImageMemoryBarrier2 *pImageMemoryBarriers = {};
 };
 
 struct SemaphoreSubmitInfo {
@@ -13668,7 +13668,7 @@ struct SemaphoreSubmitInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSemaphore semaphore = {};
   uint64_t value = {};
   PipelineStageMask2 stageMask = {};
@@ -13688,7 +13688,7 @@ struct CommandBufferSubmitInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkCommandBuffer commandBuffer = {};
   uint32_t deviceMask = {};
 };
@@ -13706,14 +13706,14 @@ struct SubmitInfo2 {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   SubmitMask flags = {};
   uint32_t waitSemaphoreInfoCount = {};
-  SemaphoreSubmitInfo *pWaitSemaphoreInfos = {};
+  const SemaphoreSubmitInfo *pWaitSemaphoreInfos = {};
   uint32_t commandBufferInfoCount = {};
-  CommandBufferSubmitInfo *pCommandBufferInfos = {};
+  const CommandBufferSubmitInfo *pCommandBufferInfos = {};
   uint32_t signalSemaphoreInfoCount = {};
-  SemaphoreSubmitInfo *pSignalSemaphoreInfos = {};
+  const SemaphoreSubmitInfo *pSignalSemaphoreInfos = {};
 };
 
 struct QueueFamilyCheckpointProperties2NV {
@@ -13838,8 +13838,8 @@ struct MemoryToImageCopy {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  void *pHostPointer = {};
+  const void *pNext = {};
+  const void *pHostPointer = {};
   uint32_t memoryRowLength = {};
   uint32_t memoryImageHeight = {};
   ImageSubresourceLayers imageSubresource = {};
@@ -13860,7 +13860,7 @@ struct ImageToMemoryCopy {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   void *pHostPointer = {};
   uint32_t memoryRowLength = {};
   uint32_t memoryImageHeight = {};
@@ -13882,12 +13882,12 @@ struct CopyMemoryToImageInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   HostImageCopyMask flags = {};
   VkImage dstImage = {};
   ImageLayout dstImageLayout = {};
   uint32_t regionCount = {};
-  MemoryToImageCopy *pRegions = {};
+  const MemoryToImageCopy *pRegions = {};
 };
 
 struct CopyImageToMemoryInfo {
@@ -13903,12 +13903,12 @@ struct CopyImageToMemoryInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   HostImageCopyMask flags = {};
   VkImage srcImage = {};
   ImageLayout srcImageLayout = {};
   uint32_t regionCount = {};
-  ImageToMemoryCopy *pRegions = {};
+  const ImageToMemoryCopy *pRegions = {};
 };
 
 struct CopyImageToImageInfo {
@@ -13924,14 +13924,14 @@ struct CopyImageToImageInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   HostImageCopyMask flags = {};
   VkImage srcImage = {};
   ImageLayout srcImageLayout = {};
   VkImage dstImage = {};
   ImageLayout dstImageLayout = {};
   uint32_t regionCount = {};
-  ImageCopy2 *pRegions = {};
+  const ImageCopy2 *pRegions = {};
 };
 
 struct HostImageLayoutTransitionInfo {
@@ -13947,7 +13947,7 @@ struct HostImageLayoutTransitionInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage image = {};
   ImageLayout oldLayout = {};
   ImageLayout newLayout = {};
@@ -14106,7 +14106,7 @@ struct MultisampledRenderToSingleSampledInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 multisampledRenderToSingleSampledEnable = {};
   SampleCountMaskBits rasterizationSamples = {};
 };
@@ -14175,7 +14175,7 @@ struct VideoProfileInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoCodecOperationMaskBitsKHR videoCodecOperation = {};
   VideoChromaSubsamplingMaskKHR chromaSubsampling = {};
   VideoComponentBitDepthMaskKHR lumaBitDepth = {};
@@ -14195,9 +14195,9 @@ struct VideoProfileListInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t profileCount = {};
-  VideoProfileInfoKHR *pProfiles = {};
+  const VideoProfileInfoKHR *pProfiles = {};
 };
 
 struct PhysicalDeviceVideoFormatInfoKHR {
@@ -14213,7 +14213,7 @@ struct PhysicalDeviceVideoFormatInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageUsageMask imageUsage = {};
 };
 
@@ -14417,7 +14417,7 @@ struct BindVideoSessionMemoryInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t memoryBindIndex = {};
   VkDeviceMemory memory = {};
   VkDeviceSize memoryOffset = {};
@@ -14437,7 +14437,7 @@ struct VideoPictureResourceInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Offset2D codedOffset = {};
   Extent2D codedExtent = {};
   uint32_t baseArrayLayer = {};
@@ -14457,9 +14457,9 @@ struct VideoReferenceSlotInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   int32_t slotIndex = {};
-  VideoPictureResourceInfoKHR *pPictureResource = {};
+  const VideoPictureResourceInfoKHR *pPictureResource = {};
 };
 
 struct VideoDecodeCapabilitiesKHR {
@@ -14492,7 +14492,7 @@ struct VideoDecodeUsageInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoDecodeUsageMaskKHR videoUsageHints = {};
 };
 
@@ -14509,15 +14509,15 @@ struct VideoDecodeInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoDecodeMaskKHR flags = {};
   VkBuffer srcBuffer = {};
   VkDeviceSize srcBufferOffset = {};
   VkDeviceSize srcBufferRange = {};
   VideoPictureResourceInfoKHR dstPictureResource = {};
-  VideoReferenceSlotInfoKHR *pSetupReferenceSlot = {};
+  const VideoReferenceSlotInfoKHR *pSetupReferenceSlot = {};
   uint32_t referenceSlotCount = {};
-  VideoReferenceSlotInfoKHR *pReferenceSlots = {};
+  const VideoReferenceSlotInfoKHR *pReferenceSlots = {};
 };
 
 struct PhysicalDeviceVideoMaintenance1FeaturesKHR {
@@ -14567,7 +14567,7 @@ struct VideoInlineQueryInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkQueryPool queryPool = {};
   uint32_t firstQuery = {};
   uint32_t queryCount = {};
@@ -14586,7 +14586,7 @@ struct VideoDecodeH264ProfileInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   StdVideoH264ProfileIdc stdProfileIdc = {};
   VideoDecodeH264PictureLayoutMaskBitsKHR pictureLayout = {};
 };
@@ -14622,11 +14622,11 @@ struct VideoDecodeH264SessionParametersAddInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t stdSPSCount = {};
-  StdVideoH264SequenceParameterSet *pStdSPSs = {};
+  const StdVideoH264SequenceParameterSet *pStdSPSs = {};
   uint32_t stdPPSCount = {};
-  StdVideoH264PictureParameterSet *pStdPPSs = {};
+  const StdVideoH264PictureParameterSet *pStdPPSs = {};
 };
 
 struct VideoDecodeH264SessionParametersCreateInfoKHR {
@@ -14642,10 +14642,10 @@ struct VideoDecodeH264SessionParametersCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maxStdSPSCount = {};
   uint32_t maxStdPPSCount = {};
-  VideoDecodeH264SessionParametersAddInfoKHR *pParametersAddInfo = {};
+  const VideoDecodeH264SessionParametersAddInfoKHR *pParametersAddInfo = {};
 };
 
 struct VideoDecodeH264InlineSessionParametersInfoKHR {
@@ -14661,9 +14661,9 @@ struct VideoDecodeH264InlineSessionParametersInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoH264SequenceParameterSet *pStdSPS = {};
-  StdVideoH264PictureParameterSet *pStdPPS = {};
+  const void *pNext = {};
+  const StdVideoH264SequenceParameterSet *pStdSPS = {};
+  const StdVideoH264PictureParameterSet *pStdPPS = {};
 };
 
 struct VideoDecodeH264PictureInfoKHR {
@@ -14679,10 +14679,10 @@ struct VideoDecodeH264PictureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoDecodeH264PictureInfo *pStdPictureInfo = {};
+  const void *pNext = {};
+  const StdVideoDecodeH264PictureInfo *pStdPictureInfo = {};
   uint32_t sliceCount = {};
-  uint32_t *pSliceOffsets = {};
+  const uint32_t *pSliceOffsets = {};
 };
 
 struct VideoDecodeH264DpbSlotInfoKHR {
@@ -14698,8 +14698,8 @@ struct VideoDecodeH264DpbSlotInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoDecodeH264ReferenceInfo *pStdReferenceInfo = {};
+  const void *pNext = {};
+  const StdVideoDecodeH264ReferenceInfo *pStdReferenceInfo = {};
 };
 
 struct VideoDecodeH265ProfileInfoKHR {
@@ -14715,7 +14715,7 @@ struct VideoDecodeH265ProfileInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   StdVideoH265ProfileIdc stdProfileIdc = {};
 };
 
@@ -14749,13 +14749,13 @@ struct VideoDecodeH265SessionParametersAddInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t stdVPSCount = {};
-  StdVideoH265VideoParameterSet *pStdVPSs = {};
+  const StdVideoH265VideoParameterSet *pStdVPSs = {};
   uint32_t stdSPSCount = {};
-  StdVideoH265SequenceParameterSet *pStdSPSs = {};
+  const StdVideoH265SequenceParameterSet *pStdSPSs = {};
   uint32_t stdPPSCount = {};
-  StdVideoH265PictureParameterSet *pStdPPSs = {};
+  const StdVideoH265PictureParameterSet *pStdPPSs = {};
 };
 
 struct VideoDecodeH265SessionParametersCreateInfoKHR {
@@ -14771,11 +14771,11 @@ struct VideoDecodeH265SessionParametersCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maxStdVPSCount = {};
   uint32_t maxStdSPSCount = {};
   uint32_t maxStdPPSCount = {};
-  VideoDecodeH265SessionParametersAddInfoKHR *pParametersAddInfo = {};
+  const VideoDecodeH265SessionParametersAddInfoKHR *pParametersAddInfo = {};
 };
 
 struct VideoDecodeH265InlineSessionParametersInfoKHR {
@@ -14791,10 +14791,10 @@ struct VideoDecodeH265InlineSessionParametersInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoH265VideoParameterSet *pStdVPS = {};
-  StdVideoH265SequenceParameterSet *pStdSPS = {};
-  StdVideoH265PictureParameterSet *pStdPPS = {};
+  const void *pNext = {};
+  const StdVideoH265VideoParameterSet *pStdVPS = {};
+  const StdVideoH265SequenceParameterSet *pStdSPS = {};
+  const StdVideoH265PictureParameterSet *pStdPPS = {};
 };
 
 struct VideoDecodeH265PictureInfoKHR {
@@ -14810,10 +14810,10 @@ struct VideoDecodeH265PictureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoDecodeH265PictureInfo *pStdPictureInfo = {};
+  const void *pNext = {};
+  const StdVideoDecodeH265PictureInfo *pStdPictureInfo = {};
   uint32_t sliceSegmentCount = {};
-  uint32_t *pSliceSegmentOffsets = {};
+  const uint32_t *pSliceSegmentOffsets = {};
 };
 
 struct VideoDecodeH265DpbSlotInfoKHR {
@@ -14829,8 +14829,8 @@ struct VideoDecodeH265DpbSlotInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoDecodeH265ReferenceInfo *pStdReferenceInfo = {};
+  const void *pNext = {};
+  const StdVideoDecodeH265ReferenceInfo *pStdReferenceInfo = {};
 };
 
 struct PhysicalDeviceVideoDecodeVP9FeaturesKHR {
@@ -14863,7 +14863,7 @@ struct VideoDecodeVP9ProfileInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   StdVideoVP9Profile stdProfile = {};
 };
 
@@ -14897,8 +14897,8 @@ struct VideoDecodeVP9PictureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoDecodeVP9PictureInfo *pStdPictureInfo = {};
+  const void *pNext = {};
+  const StdVideoDecodeVP9PictureInfo *pStdPictureInfo = {};
   int32_t referenceNameSlotIndices[VK_MAX_VIDEO_VP9_REFERENCES_PER_FRAME_KHR] = {};
   uint32_t uncompressedHeaderOffset = {};
   uint32_t compressedHeaderOffset = {};
@@ -14918,7 +14918,7 @@ struct VideoDecodeAV1ProfileInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   StdVideoAV1Profile stdProfile = {};
   VkBool32 filmGrainSupport = {};
 };
@@ -14953,8 +14953,8 @@ struct VideoDecodeAV1SessionParametersCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoAV1SequenceHeader *pStdSequenceHeader = {};
+  const void *pNext = {};
+  const StdVideoAV1SequenceHeader *pStdSequenceHeader = {};
 };
 
 struct VideoDecodeAV1InlineSessionParametersInfoKHR {
@@ -14970,8 +14970,8 @@ struct VideoDecodeAV1InlineSessionParametersInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoAV1SequenceHeader *pStdSequenceHeader = {};
+  const void *pNext = {};
+  const StdVideoAV1SequenceHeader *pStdSequenceHeader = {};
 };
 
 struct VideoDecodeAV1PictureInfoKHR {
@@ -14987,13 +14987,13 @@ struct VideoDecodeAV1PictureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoDecodeAV1PictureInfo *pStdPictureInfo = {};
+  const void *pNext = {};
+  const StdVideoDecodeAV1PictureInfo *pStdPictureInfo = {};
   int32_t referenceNameSlotIndices[VK_MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR] = {};
   uint32_t frameHeaderOffset = {};
   uint32_t tileCount = {};
-  uint32_t *pTileOffsets = {};
-  uint32_t *pTileSizes = {};
+  const uint32_t *pTileOffsets = {};
+  const uint32_t *pTileSizes = {};
 };
 
 struct VideoDecodeAV1DpbSlotInfoKHR {
@@ -15009,8 +15009,8 @@ struct VideoDecodeAV1DpbSlotInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoDecodeAV1ReferenceInfo *pStdReferenceInfo = {};
+  const void *pNext = {};
+  const StdVideoDecodeAV1ReferenceInfo *pStdReferenceInfo = {};
 };
 
 struct VideoSessionCreateInfoKHR {
@@ -15026,16 +15026,16 @@ struct VideoSessionCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t queueFamilyIndex = {};
   VideoSessionCreateMaskKHR flags = {};
-  VideoProfileInfoKHR *pVideoProfile = {};
+  const VideoProfileInfoKHR *pVideoProfile = {};
   Format pictureFormat = {};
   Extent2D maxCodedExtent = {};
   Format referencePictureFormat = {};
   uint32_t maxDpbSlots = {};
   uint32_t maxActiveReferencePictures = {};
-  ExtensionProperties *pStdHeaderVersion = {};
+  const ExtensionProperties *pStdHeaderVersion = {};
 };
 
 struct VideoSessionParametersCreateInfoKHR {
@@ -15051,7 +15051,7 @@ struct VideoSessionParametersCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoSessionParametersCreateMaskKHR flags = {};
   VkVideoSessionParametersKHR videoSessionParametersTemplate = {};
   VkVideoSessionKHR videoSession = {};
@@ -15070,7 +15070,7 @@ struct VideoSessionParametersUpdateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t updateSequenceCount = {};
 };
 
@@ -15087,7 +15087,7 @@ struct VideoEncodeSessionParametersGetInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkVideoSessionParametersKHR videoSessionParameters = {};
 };
 
@@ -15121,12 +15121,12 @@ struct VideoBeginCodingInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoBeginCodingMaskKHR flags = {};
   VkVideoSessionKHR videoSession = {};
   VkVideoSessionParametersKHR videoSessionParameters = {};
   uint32_t referenceSlotCount = {};
-  VideoReferenceSlotInfoKHR *pReferenceSlots = {};
+  const VideoReferenceSlotInfoKHR *pReferenceSlots = {};
 };
 
 struct VideoEndCodingInfoKHR {
@@ -15142,7 +15142,7 @@ struct VideoEndCodingInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEndCodingMaskKHR flags = {};
 };
 
@@ -15159,7 +15159,7 @@ struct VideoCodingControlInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoCodingControlMaskKHR flags = {};
 };
 
@@ -15176,7 +15176,7 @@ struct VideoEncodeUsageInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeUsageMaskKHR videoUsageHints = {};
   VideoEncodeContentMaskKHR videoContentHints = {};
   VideoEncodeTuningModeKHR tuningMode = {};
@@ -15195,15 +15195,15 @@ struct VideoEncodeInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeMaskKHR flags = {};
   VkBuffer dstBuffer = {};
   VkDeviceSize dstBufferOffset = {};
   VkDeviceSize dstBufferRange = {};
   VideoPictureResourceInfoKHR srcPictureResource = {};
-  VideoReferenceSlotInfoKHR *pSetupReferenceSlot = {};
+  const VideoReferenceSlotInfoKHR *pSetupReferenceSlot = {};
   uint32_t referenceSlotCount = {};
-  VideoReferenceSlotInfoKHR *pReferenceSlots = {};
+  const VideoReferenceSlotInfoKHR *pReferenceSlots = {};
   uint32_t precedingExternallyEncodedBytes = {};
 };
 
@@ -15220,7 +15220,7 @@ struct VideoEncodeQuantizationMapInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImageView quantizationMap = {};
   Extent2D quantizationMapExtent = {};
 };
@@ -15238,7 +15238,7 @@ struct VideoEncodeQuantizationMapSessionParametersCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Extent2D quantizationMapTexelSize = {};
 };
 
@@ -15272,7 +15272,7 @@ struct QueryPoolVideoEncodeFeedbackCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeFeedbackMaskKHR encodeFeedbackFlags = {};
 };
 
@@ -15289,7 +15289,7 @@ struct VideoEncodeQualityLevelInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t qualityLevel = {};
 };
 
@@ -15306,8 +15306,8 @@ struct PhysicalDeviceVideoEncodeQualityLevelInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  VideoProfileInfoKHR *pVideoProfile = {};
+  const void *pNext = {};
+  const VideoProfileInfoKHR *pVideoProfile = {};
   uint32_t qualityLevel = {};
 };
 
@@ -15342,7 +15342,7 @@ struct VideoEncodeRateControlLayerInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t averageBitrate = {};
   uint64_t maxBitrate = {};
   uint32_t frameRateNumerator = {};
@@ -15362,11 +15362,11 @@ struct VideoEncodeRateControlInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeRateControlMaskKHR flags = {};
   VideoEncodeRateControlModeMaskBitsKHR rateControlMode = {};
   uint32_t layerCount = {};
-  VideoEncodeRateControlLayerInfoKHR *pLayers = {};
+  const VideoEncodeRateControlLayerInfoKHR *pLayers = {};
   uint32_t virtualBufferSizeInMs = {};
   uint32_t initialVirtualBufferSizeInMs = {};
 };
@@ -15477,7 +15477,7 @@ struct VideoEncodeH264SessionCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useMaxLevelIdc = {};
   StdVideoH264LevelIdc maxLevelIdc = {};
 };
@@ -15495,11 +15495,11 @@ struct VideoEncodeH264SessionParametersAddInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t stdSPSCount = {};
-  StdVideoH264SequenceParameterSet *pStdSPSs = {};
+  const StdVideoH264SequenceParameterSet *pStdSPSs = {};
   uint32_t stdPPSCount = {};
-  StdVideoH264PictureParameterSet *pStdPPSs = {};
+  const StdVideoH264PictureParameterSet *pStdPPSs = {};
 };
 
 struct VideoEncodeH264SessionParametersCreateInfoKHR {
@@ -15515,10 +15515,10 @@ struct VideoEncodeH264SessionParametersCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maxStdSPSCount = {};
   uint32_t maxStdPPSCount = {};
-  VideoEncodeH264SessionParametersAddInfoKHR *pParametersAddInfo = {};
+  const VideoEncodeH264SessionParametersAddInfoKHR *pParametersAddInfo = {};
 };
 
 struct VideoEncodeH264SessionParametersGetInfoKHR {
@@ -15534,7 +15534,7 @@ struct VideoEncodeH264SessionParametersGetInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 writeStdSPS = {};
   VkBool32 writeStdPPS = {};
   uint32_t stdSPSId = {};
@@ -15572,8 +15572,8 @@ struct VideoEncodeH264DpbSlotInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoEncodeH264ReferenceInfo *pStdReferenceInfo = {};
+  const void *pNext = {};
+  const StdVideoEncodeH264ReferenceInfo *pStdReferenceInfo = {};
 };
 
 struct VideoEncodeH264NaluSliceInfoKHR {
@@ -15589,9 +15589,9 @@ struct VideoEncodeH264NaluSliceInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   int32_t constantQp = {};
-  StdVideoEncodeH264SliceHeader *pStdSliceHeader = {};
+  const StdVideoEncodeH264SliceHeader *pStdSliceHeader = {};
 };
 
 struct VideoEncodeH264PictureInfoKHR {
@@ -15607,10 +15607,10 @@ struct VideoEncodeH264PictureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t naluSliceEntryCount = {};
-  VideoEncodeH264NaluSliceInfoKHR *pNaluSliceEntries = {};
-  StdVideoEncodeH264PictureInfo *pStdPictureInfo = {};
+  const VideoEncodeH264NaluSliceInfoKHR *pNaluSliceEntries = {};
+  const StdVideoEncodeH264PictureInfo *pStdPictureInfo = {};
   VkBool32 generatePrefixNalu = {};
 };
 
@@ -15627,7 +15627,7 @@ struct VideoEncodeH264ProfileInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   StdVideoH264ProfileIdc stdProfileIdc = {};
 };
 
@@ -15644,7 +15644,7 @@ struct VideoEncodeH264RateControlInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeH264RateControlMaskKHR flags = {};
   uint32_t gopFrameCount = {};
   uint32_t idrPeriod = {};
@@ -15681,7 +15681,7 @@ struct VideoEncodeH264GopRemainingFrameInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useGopRemainingFrames = {};
   uint32_t gopRemainingI = {};
   uint32_t gopRemainingP = {};
@@ -15701,7 +15701,7 @@ struct VideoEncodeH264RateControlLayerInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useMinQp = {};
   VideoEncodeH264QpKHR minQp = {};
   VkBool32 useMaxQp = {};
@@ -15795,7 +15795,7 @@ struct VideoEncodeH265SessionCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useMaxLevelIdc = {};
   StdVideoH265LevelIdc maxLevelIdc = {};
 };
@@ -15813,13 +15813,13 @@ struct VideoEncodeH265SessionParametersAddInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t stdVPSCount = {};
-  StdVideoH265VideoParameterSet *pStdVPSs = {};
+  const StdVideoH265VideoParameterSet *pStdVPSs = {};
   uint32_t stdSPSCount = {};
-  StdVideoH265SequenceParameterSet *pStdSPSs = {};
+  const StdVideoH265SequenceParameterSet *pStdSPSs = {};
   uint32_t stdPPSCount = {};
-  StdVideoH265PictureParameterSet *pStdPPSs = {};
+  const StdVideoH265PictureParameterSet *pStdPPSs = {};
 };
 
 struct VideoEncodeH265SessionParametersCreateInfoKHR {
@@ -15835,11 +15835,11 @@ struct VideoEncodeH265SessionParametersCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maxStdVPSCount = {};
   uint32_t maxStdSPSCount = {};
   uint32_t maxStdPPSCount = {};
-  VideoEncodeH265SessionParametersAddInfoKHR *pParametersAddInfo = {};
+  const VideoEncodeH265SessionParametersAddInfoKHR *pParametersAddInfo = {};
 };
 
 struct VideoEncodeH265SessionParametersGetInfoKHR {
@@ -15855,7 +15855,7 @@ struct VideoEncodeH265SessionParametersGetInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 writeStdVPS = {};
   VkBool32 writeStdSPS = {};
   VkBool32 writeStdPPS = {};
@@ -15896,9 +15896,9 @@ struct VideoEncodeH265NaluSliceSegmentInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   int32_t constantQp = {};
-  StdVideoEncodeH265SliceSegmentHeader *pStdSliceSegmentHeader = {};
+  const StdVideoEncodeH265SliceSegmentHeader *pStdSliceSegmentHeader = {};
 };
 
 struct VideoEncodeH265PictureInfoKHR {
@@ -15914,10 +15914,10 @@ struct VideoEncodeH265PictureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t naluSliceSegmentEntryCount = {};
-  VideoEncodeH265NaluSliceSegmentInfoKHR *pNaluSliceSegmentEntries = {};
-  StdVideoEncodeH265PictureInfo *pStdPictureInfo = {};
+  const VideoEncodeH265NaluSliceSegmentInfoKHR *pNaluSliceSegmentEntries = {};
+  const StdVideoEncodeH265PictureInfo *pStdPictureInfo = {};
 };
 
 struct VideoEncodeH265RateControlInfoKHR {
@@ -15933,7 +15933,7 @@ struct VideoEncodeH265RateControlInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeH265RateControlMaskKHR flags = {};
   uint32_t gopFrameCount = {};
   uint32_t idrPeriod = {};
@@ -15970,7 +15970,7 @@ struct VideoEncodeH265GopRemainingFrameInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useGopRemainingFrames = {};
   uint32_t gopRemainingI = {};
   uint32_t gopRemainingP = {};
@@ -15990,7 +15990,7 @@ struct VideoEncodeH265RateControlLayerInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useMinQp = {};
   VideoEncodeH265QpKHR minQp = {};
   VkBool32 useMaxQp = {};
@@ -16012,7 +16012,7 @@ struct VideoEncodeH265ProfileInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   StdVideoH265ProfileIdc stdProfileIdc = {};
 };
 
@@ -16029,8 +16029,8 @@ struct VideoEncodeH265DpbSlotInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoEncodeH265ReferenceInfo *pStdReferenceInfo = {};
+  const void *pNext = {};
+  const StdVideoEncodeH265ReferenceInfo *pStdReferenceInfo = {};
 };
 
 struct VideoEncodeAV1CapabilitiesKHR {
@@ -16150,7 +16150,7 @@ struct VideoEncodeAV1SessionCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useMaxLevel = {};
   StdVideoAV1Level maxLevel = {};
 };
@@ -16168,11 +16168,11 @@ struct VideoEncodeAV1SessionParametersCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoAV1SequenceHeader *pStdSequenceHeader = {};
-  StdVideoEncodeAV1DecoderModelInfo *pStdDecoderModelInfo = {};
+  const void *pNext = {};
+  const StdVideoAV1SequenceHeader *pStdSequenceHeader = {};
+  const StdVideoEncodeAV1DecoderModelInfo *pStdDecoderModelInfo = {};
   uint32_t stdOperatingPointCount = {};
-  StdVideoEncodeAV1OperatingPointInfo *pStdOperatingPoints = {};
+  const StdVideoEncodeAV1OperatingPointInfo *pStdOperatingPoints = {};
 };
 
 struct VideoEncodeAV1DpbSlotInfoKHR {
@@ -16188,8 +16188,8 @@ struct VideoEncodeAV1DpbSlotInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  StdVideoEncodeAV1ReferenceInfo *pStdReferenceInfo = {};
+  const void *pNext = {};
+  const StdVideoEncodeAV1ReferenceInfo *pStdReferenceInfo = {};
 };
 
 struct VideoEncodeAV1PictureInfoKHR {
@@ -16205,11 +16205,11 @@ struct VideoEncodeAV1PictureInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeAV1PredictionModeKHR predictionMode = {};
   VideoEncodeAV1RateControlGroupKHR rateControlGroup = {};
   uint32_t constantQIndex = {};
-  StdVideoEncodeAV1PictureInfo *pStdPictureInfo = {};
+  const StdVideoEncodeAV1PictureInfo *pStdPictureInfo = {};
   int32_t referenceNameSlotIndices[VK_MAX_VIDEO_AV1_REFERENCES_PER_FRAME_KHR] = {};
   VkBool32 primaryReferenceCdfOnly = {};
   VkBool32 generateObuExtensionHeader = {};
@@ -16228,7 +16228,7 @@ struct VideoEncodeAV1ProfileInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   StdVideoAV1Profile stdProfile = {};
 };
 
@@ -16245,7 +16245,7 @@ struct VideoEncodeAV1RateControlInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeAV1RateControlMaskKHR flags = {};
   uint32_t gopFrameCount = {};
   uint32_t keyFramePeriod = {};
@@ -16282,7 +16282,7 @@ struct VideoEncodeAV1GopRemainingFrameInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useGopRemainingFrames = {};
   uint32_t gopRemainingIntra = {};
   uint32_t gopRemainingPredictive = {};
@@ -16302,7 +16302,7 @@ struct VideoEncodeAV1RateControlLayerInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 useMinQIndex = {};
   VideoEncodeAV1QIndexKHR minQIndex = {};
   VkBool32 useMaxQIndex = {};
@@ -16341,10 +16341,10 @@ struct CommandBufferInheritanceViewportScissorInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 viewportScissor2D = {};
   uint32_t viewportDepthCount = {};
-  Viewport *pViewportDepths = {};
+  const Viewport *pViewportDepths = {};
 };
 
 struct PhysicalDeviceYcbcr2Plane444FormatsFeaturesEXT {
@@ -16413,7 +16413,7 @@ struct PipelineRasterizationProvokingVertexStateCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ProvokingVertexModeEXT provokingVertexMode = {};
 };
 
@@ -16451,7 +16451,7 @@ struct VideoEncodeSessionIntraRefreshCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeIntraRefreshModeMaskBitsKHR intraRefreshMode = {};
 };
 
@@ -16468,7 +16468,7 @@ struct VideoEncodeIntraRefreshInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t intraRefreshCycleDuration = {};
   uint32_t intraRefreshIndex = {};
 };
@@ -16486,7 +16486,7 @@ struct VideoReferenceIntraRefreshInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t dirtyIntraRefreshRegions = {};
 };
 
@@ -16520,9 +16520,9 @@ struct CuModuleCreateInfoNVX {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   size_t dataSize = {};
-  void *pData = {};
+  const void *pData = {};
 };
 
 struct CuModuleTexturingModeCreateInfoNVX {
@@ -16538,7 +16538,7 @@ struct CuModuleTexturingModeCreateInfoNVX {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 use64bitTexturing = {};
 };
 
@@ -16555,9 +16555,9 @@ struct CuFunctionCreateInfoNVX {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkCuModuleNVX module = {};
-  char *pName = {};
+  const char *pName = {};
 };
 
 struct CuLaunchInfoNVX {
@@ -16573,7 +16573,7 @@ struct CuLaunchInfoNVX {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkCuFunctionNVX function = {};
   uint32_t gridDimX = {};
   uint32_t gridDimY = {};
@@ -16583,9 +16583,9 @@ struct CuLaunchInfoNVX {
   uint32_t blockDimZ = {};
   uint32_t sharedMemBytes = {};
   size_t paramCount = {};
-  void *const *pParams = {};
+  const void *const *pParams = {};
   size_t extraCount = {};
-  void *const *pExtras = {};
+  const void *const *pExtras = {};
 };
 
 struct PhysicalDeviceDescriptorBufferFeaturesEXT {
@@ -16706,7 +16706,7 @@ struct DescriptorBufferBindingInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceAddress address = {};
   BufferUsageMask usage = {};
 };
@@ -16724,7 +16724,7 @@ struct DescriptorBufferBindingPushDescriptorBufferHandleEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer buffer = {};
 };
 
@@ -16741,7 +16741,7 @@ struct DescriptorGetInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DescriptorType type = {};
   VkDescriptorDataEXT data = {};
 };
@@ -16759,7 +16759,7 @@ struct BufferCaptureDescriptorDataInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBuffer buffer = {};
 };
 
@@ -16776,7 +16776,7 @@ struct ImageCaptureDescriptorDataInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImage image = {};
 };
 
@@ -16793,7 +16793,7 @@ struct ImageViewCaptureDescriptorDataInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImageView imageView = {};
 };
 
@@ -16810,7 +16810,7 @@ struct SamplerCaptureDescriptorDataInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSampler sampler = {};
 };
 
@@ -16827,7 +16827,7 @@ struct AccelerationStructureCaptureDescriptorDataInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkAccelerationStructureKHR accelerationStructure = {};
   VkAccelerationStructureNV accelerationStructureNV = {};
 };
@@ -16845,8 +16845,8 @@ struct OpaqueCaptureDescriptorDataCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  void *opaqueCaptureDescriptorData = {};
+  const void *pNext = {};
+  const void *opaqueCaptureDescriptorData = {};
 };
 
 struct PhysicalDeviceShaderIntegerDotProductFeatures {
@@ -17034,7 +17034,7 @@ struct AccelerationStructureGeometryMotionTrianglesDataNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceOrHostAddressConstKHR vertexData = {};
 };
 
@@ -17051,7 +17051,7 @@ struct AccelerationStructureMotionInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maxInstances = {};
   AccelerationStructureMotionInfoMaskNV flags = {};
 };
@@ -17154,7 +17154,7 @@ struct MemoryGetRemoteAddressInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceMemory memory = {};
   ExternalMemoryHandleTypeMaskBits handleType = {};
 };
@@ -17242,10 +17242,10 @@ struct PipelineRenderingCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t viewMask = {};
   uint32_t colorAttachmentCount = {};
-  Format *pColorAttachmentFormats = {};
+  const Format *pColorAttachmentFormats = {};
   Format depthAttachmentFormat = {};
   Format stencilAttachmentFormat = {};
 };
@@ -17263,7 +17263,7 @@ struct RenderingAttachmentInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImageView imageView = {};
   ImageLayout imageLayout = {};
   ResolveModeMaskBits resolveMode = {};
@@ -17287,15 +17287,15 @@ struct RenderingInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RenderingMask flags = {};
   Rect2D renderArea = {};
   uint32_t layerCount = {};
   uint32_t viewMask = {};
   uint32_t colorAttachmentCount = {};
-  RenderingAttachmentInfo *pColorAttachments = {};
-  RenderingAttachmentInfo *pDepthAttachment = {};
-  RenderingAttachmentInfo *pStencilAttachment = {};
+  const RenderingAttachmentInfo *pColorAttachments = {};
+  const RenderingAttachmentInfo *pDepthAttachment = {};
+  const RenderingAttachmentInfo *pStencilAttachment = {};
 };
 
 struct RenderingEndInfoEXT {
@@ -17311,7 +17311,7 @@ struct RenderingEndInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
 };
 
 struct RenderingFragmentShadingRateAttachmentInfoKHR {
@@ -17327,7 +17327,7 @@ struct RenderingFragmentShadingRateAttachmentInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImageView imageView = {};
   ImageLayout imageLayout = {};
   Extent2D shadingRateAttachmentTexelSize = {};
@@ -17346,7 +17346,7 @@ struct RenderingFragmentDensityMapAttachmentInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkImageView imageView = {};
   ImageLayout imageLayout = {};
 };
@@ -17381,11 +17381,11 @@ struct CommandBufferInheritanceRenderingInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RenderingMask flags = {};
   uint32_t viewMask = {};
   uint32_t colorAttachmentCount = {};
-  Format *pColorAttachmentFormats = {};
+  const Format *pColorAttachmentFormats = {};
   Format depthAttachmentFormat = {};
   Format stencilAttachmentFormat = {};
   SampleCountMaskBits rasterizationSamples = {};
@@ -17404,9 +17404,9 @@ struct AttachmentSampleCountInfoAMD {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t colorAttachmentCount = {};
-  SampleCountMaskBits *pColorAttachmentSamples = {};
+  const SampleCountMaskBits *pColorAttachmentSamples = {};
   SampleCountMaskBits depthStencilAttachmentSamples = {};
 };
 
@@ -17423,7 +17423,7 @@ struct MultiviewPerViewAttributesInfoNVX {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 perViewAttributes = {};
   VkBool32 perViewAttributesPositionXOnly = {};
 };
@@ -17458,7 +17458,7 @@ struct ImageViewMinLodCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   float minLod = {};
 };
 
@@ -17545,7 +17545,7 @@ struct DevicePipelineBinaryInternalCacheControlKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 disableInternalCache = {};
 };
 
@@ -17601,7 +17601,7 @@ struct GraphicsPipelineLibraryCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   GraphicsPipelineLibraryMaskEXT flags = {};
 };
 
@@ -17635,7 +17635,7 @@ struct DescriptorSetBindingReferenceVALVE {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDescriptorSetLayout descriptorSetLayout = {};
   uint32_t binding = {};
 };
@@ -17741,9 +17741,9 @@ struct PipelineShaderStageModuleIdentifierCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t identifierSize = {};
-  uint8_t *pIdentifier = {};
+  const uint8_t *pIdentifier = {};
 };
 
 struct ShaderModuleIdentifierEXT {
@@ -17777,7 +17777,7 @@ struct ImageCompressionControlEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ImageCompressionMaskEXT flags = {};
   uint32_t compressionControlPlaneCount = {};
   ImageCompressionFixedRateMaskEXT *pFixedRateFlags = {};
@@ -17882,7 +17882,7 @@ struct RenderPassCreationControlEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 disallowMerging = {};
 };
 
@@ -17913,7 +17913,7 @@ struct RenderPassCreationFeedbackCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RenderPassCreationFeedbackInfoEXT *pRenderPassFeedback = {};
 };
 
@@ -17946,7 +17946,7 @@ struct RenderPassSubpassFeedbackCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   RenderPassSubpassFeedbackInfoEXT *pSubpassFeedback = {};
 };
 
@@ -17996,14 +17996,14 @@ struct MicromapBuildInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   MicromapTypeEXT type = {};
   BuildMicromapMaskEXT flags = {};
   BuildMicromapModeEXT mode = {};
   VkMicromapEXT dstMicromap = {};
   uint32_t usageCountsCount = {};
-  MicromapUsageEXT *pUsageCounts = {};
-  MicromapUsageEXT *const *ppUsageCounts = {};
+  const MicromapUsageEXT *pUsageCounts = {};
+  const MicromapUsageEXT *const *ppUsageCounts = {};
   VkDeviceOrHostAddressConstKHR data = {};
   VkDeviceOrHostAddressKHR scratchData = {};
   VkDeviceOrHostAddressConstKHR triangleArray = {};
@@ -18023,7 +18023,7 @@ struct MicromapCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   MicromapCreateMaskEXT createFlags = {};
   VkBuffer buffer = {};
   VkDeviceSize offset = {};
@@ -18045,8 +18045,8 @@ struct MicromapVersionInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  uint8_t *pVersionData = {};
+  const void *pNext = {};
+  const uint8_t *pVersionData = {};
 };
 
 struct CopyMicromapInfoEXT {
@@ -18062,7 +18062,7 @@ struct CopyMicromapInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkMicromapEXT src = {};
   VkMicromapEXT dst = {};
   CopyMicromapModeEXT mode = {};
@@ -18081,7 +18081,7 @@ struct CopyMicromapToMemoryInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkMicromapEXT src = {};
   VkDeviceOrHostAddressKHR dst = {};
   CopyMicromapModeEXT mode = {};
@@ -18100,7 +18100,7 @@ struct CopyMemoryToMicromapInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceOrHostAddressConstKHR src = {};
   VkMicromapEXT dst = {};
   CopyMicromapModeEXT mode = {};
@@ -18119,7 +18119,7 @@ struct MicromapBuildSizesInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceSize micromapSize = {};
   VkDeviceSize buildScratchSize = {};
   VkBool32 discardable = {};
@@ -18197,8 +18197,8 @@ struct AccelerationStructureTrianglesOpacityMicromapEXT {
   VkDeviceSize indexStride = {};
   uint32_t baseTriangle = {};
   uint32_t usageCountsCount = {};
-  MicromapUsageEXT *pUsageCounts = {};
-  MicromapUsageEXT *const *ppUsageCounts = {};
+  const MicromapUsageEXT *pUsageCounts = {};
+  const MicromapUsageEXT *const *ppUsageCounts = {};
   VkMicromapEXT micromap = {};
 };
 
@@ -18266,7 +18266,7 @@ struct ExternalMemoryAcquireUnmodifiedEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 acquireUnmodifiedMemory = {};
 };
 
@@ -18317,7 +18317,7 @@ struct PipelineRobustnessCreateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineRobustnessBufferBehavior storageBuffers = {};
   PipelineRobustnessBufferBehavior uniformBuffers = {};
   PipelineRobustnessBufferBehavior vertexInputs = {};
@@ -18357,7 +18357,7 @@ struct ImageViewSampleWeightCreateInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Offset2D filterCenter = {};
   Extent2D filterSize = {};
   uint32_t numPhases = {};
@@ -18451,7 +18451,7 @@ struct TileMemoryBindInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceMemory memory = {};
 };
 
@@ -18485,7 +18485,7 @@ struct AmigoProfilingSubmitInfoSEC {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t firstDrawTimestamp = {};
   uint64_t swapBufferTimestamp = {};
 };
@@ -18520,7 +18520,7 @@ struct AttachmentFeedbackLoopInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 feedbackLoopEnable = {};
 };
 
@@ -18618,7 +18618,7 @@ struct OpticalFlowImageFormatInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   OpticalFlowUsageMaskNV usage = {};
 };
 
@@ -18635,7 +18635,7 @@ struct OpticalFlowImageFormatPropertiesNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Format format = {};
 };
 
@@ -18680,7 +18680,7 @@ struct OpticalFlowSessionCreatePrivateDataInfoNV {
   void *pNext = {};
   uint32_t id = {};
   uint32_t size = {};
-  void *pPrivateData = {};
+  const void *pPrivateData = {};
 };
 
 struct OpticalFlowExecuteInfoNV {
@@ -18699,7 +18699,7 @@ struct OpticalFlowExecuteInfoNV {
   void *pNext = {};
   OpticalFlowExecuteMaskNV flags = {};
   uint32_t regionCount = {};
-  Rect2D *pRegions = {};
+  const Rect2D *pRegions = {};
 };
 
 struct PhysicalDeviceFaultFeaturesEXT {
@@ -18845,7 +18845,7 @@ struct DepthBiasInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   float depthBiasConstantFactor = {};
   float depthBiasClamp = {};
   float depthBiasSlopeFactor = {};
@@ -18864,7 +18864,7 @@ struct DepthBiasRepresentationInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DepthBiasRepresentationEXT depthBiasRepresentation = {};
   VkBool32 depthBiasExact = {};
 };
@@ -18936,16 +18936,16 @@ struct FrameBoundaryEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   FrameBoundaryMaskEXT flags = {};
   uint64_t frameID = {};
   uint32_t imageCount = {};
-  VkImage *pImages = {};
+  const VkImage *pImages = {};
   uint32_t bufferCount = {};
-  VkBuffer *pBuffers = {};
+  const VkBuffer *pBuffers = {};
   uint64_t tagName = {};
   size_t tagSize = {};
-  void *pTag = {};
+  const void *pTag = {};
 };
 
 struct PhysicalDeviceFrameBoundaryFeaturesEXT {
@@ -19068,9 +19068,9 @@ struct SwapchainPresentFenceInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t swapchainCount = {};
-  VkFence *pFences = {};
+  const VkFence *pFences = {};
 };
 
 struct SwapchainPresentModesCreateInfoKHR {
@@ -19086,9 +19086,9 @@ struct SwapchainPresentModesCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t presentModeCount = {};
-  PresentModeKHR *pPresentModes = {};
+  const PresentModeKHR *pPresentModes = {};
 };
 
 struct SwapchainPresentModeInfoKHR {
@@ -19104,9 +19104,9 @@ struct SwapchainPresentModeInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t swapchainCount = {};
-  PresentModeKHR *pPresentModes = {};
+  const PresentModeKHR *pPresentModes = {};
 };
 
 struct SwapchainPresentScalingCreateInfoKHR {
@@ -19122,7 +19122,7 @@ struct SwapchainPresentScalingCreateInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PresentScalingMaskKHR scalingBehavior = {};
   PresentGravityMaskKHR presentGravityX = {};
   PresentGravityMaskKHR presentGravityY = {};
@@ -19141,10 +19141,10 @@ struct ReleaseSwapchainImagesInfoKHR {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSwapchainKHR swapchain = {};
   uint32_t imageIndexCount = {};
-  uint32_t *pImageIndices = {};
+  const uint32_t *pImageIndices = {};
 };
 
 struct PhysicalDeviceDepthBiasControlFeaturesEXT {
@@ -19268,10 +19268,10 @@ struct DirectDriverLoadingListLUNARG {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DirectDriverLoadingModeLUNARG mode = {};
   uint32_t driverCount = {};
-  DirectDriverLoadingInfoLUNARG *pDrivers = {};
+  const DirectDriverLoadingInfoLUNARG *pDrivers = {};
 };
 
 struct PhysicalDeviceMultiviewPerViewViewportsFeaturesQCOM {
@@ -19321,9 +19321,9 @@ struct DeviceImageSubresourceInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  ImageCreateInfo *pCreateInfo = {};
-  ImageSubresource2 *pSubresource = {};
+  const void *pNext = {};
+  const ImageCreateInfo *pCreateInfo = {};
+  const ImageSubresource2 *pSubresource = {};
 };
 
 struct PhysicalDeviceShaderCorePropertiesARM {
@@ -19375,9 +19375,9 @@ struct MultiviewPerViewRenderAreasRenderPassBeginInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t perViewRenderAreaCount = {};
-  Rect2D *pPerViewRenderAreas = {};
+  const Rect2D *pPerViewRenderAreas = {};
 };
 
 struct QueryLowLatencySupportNV {
@@ -19393,7 +19393,7 @@ struct QueryLowLatencySupportNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   void *pQueriedLowLatencyData = {};
 };
 
@@ -19410,7 +19410,7 @@ struct MemoryMapInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   MemoryMapMask flags = {};
   VkDeviceMemory memory = {};
   VkDeviceSize offset = {};
@@ -19430,7 +19430,7 @@ struct MemoryUnmapInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   MemoryUnmapMask flags = {};
   VkDeviceMemory memory = {};
 };
@@ -19483,19 +19483,19 @@ struct ShaderCreateInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ShaderCreateMaskEXT flags = {};
   ShaderStageMaskBits stage = {};
   ShaderStageMask nextStage = {};
   ShaderCodeTypeEXT codeType = {};
   size_t codeSize = {};
-  void *pCode = {};
-  char *pName = {};
+  const void *pCode = {};
+  const char *pName = {};
   uint32_t setLayoutCount = {};
-  VkDescriptorSetLayout *pSetLayouts = {};
+  const VkDescriptorSetLayout *pSetLayouts = {};
   uint32_t pushConstantRangeCount = {};
-  PushConstantRange *pPushConstantRanges = {};
-  SpecializationInfo *pSpecializationInfo = {};
+  const PushConstantRange *pPushConstantRanges = {};
+  const SpecializationInfo *pSpecializationInfo = {};
 };
 
 struct PhysicalDeviceShaderTileImageFeaturesEXT {
@@ -19644,10 +19644,10 @@ struct AntiLagDataAMD {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   AntiLagModeAMD mode = {};
   uint32_t maxFPS = {};
-  AntiLagPresentationInfoAMD *pPresentationInfo = {};
+  const AntiLagPresentationInfoAMD *pPresentationInfo = {};
 };
 
 struct BindMemoryStatus {
@@ -19663,7 +19663,7 @@ struct BindMemoryStatus {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Result *pResult = {};
 };
 
@@ -19715,7 +19715,7 @@ struct TileMemorySizeInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDeviceSize size = {};
 };
 
@@ -19750,14 +19750,14 @@ struct BindDescriptorSetsInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ShaderStageMask stageFlags = {};
   VkPipelineLayout layout = {};
   uint32_t firstSet = {};
   uint32_t descriptorSetCount = {};
-  VkDescriptorSet *pDescriptorSets = {};
+  const VkDescriptorSet *pDescriptorSets = {};
   uint32_t dynamicOffsetCount = {};
-  uint32_t *pDynamicOffsets = {};
+  const uint32_t *pDynamicOffsets = {};
 };
 
 struct PushConstantsInfo {
@@ -19773,12 +19773,12 @@ struct PushConstantsInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkPipelineLayout layout = {};
   ShaderStageMask stageFlags = {};
   uint32_t offset = {};
   uint32_t size = {};
-  void *pValues = {};
+  const void *pValues = {};
 };
 
 struct PushDescriptorSetInfo {
@@ -19794,12 +19794,12 @@ struct PushDescriptorSetInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ShaderStageMask stageFlags = {};
   VkPipelineLayout layout = {};
   uint32_t set = {};
   uint32_t descriptorWriteCount = {};
-  WriteDescriptorSet *pDescriptorWrites = {};
+  const WriteDescriptorSet *pDescriptorWrites = {};
 };
 
 struct PushDescriptorSetWithTemplateInfo {
@@ -19815,11 +19815,11 @@ struct PushDescriptorSetWithTemplateInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDescriptorUpdateTemplate descriptorUpdateTemplate = {};
   VkPipelineLayout layout = {};
   uint32_t set = {};
-  void *pData = {};
+  const void *pData = {};
 };
 
 struct SetDescriptorBufferOffsetsInfoEXT {
@@ -19835,13 +19835,13 @@ struct SetDescriptorBufferOffsetsInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ShaderStageMask stageFlags = {};
   VkPipelineLayout layout = {};
   uint32_t firstSet = {};
   uint32_t setCount = {};
-  uint32_t *pBufferIndices = {};
-  VkDeviceSize *pOffsets = {};
+  const uint32_t *pBufferIndices = {};
+  const VkDeviceSize *pOffsets = {};
 };
 
 struct BindDescriptorBufferEmbeddedSamplersInfoEXT {
@@ -19857,7 +19857,7 @@ struct BindDescriptorBufferEmbeddedSamplersInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ShaderStageMask stageFlags = {};
   VkPipelineLayout layout = {};
   uint32_t set = {};
@@ -19945,7 +19945,7 @@ struct SamplerCubicWeightsCreateInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   CubicFilterWeightsQCOM cubicWeights = {};
 };
 
@@ -19962,7 +19962,7 @@ struct BlitImageCubicWeightsInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   CubicFilterWeightsQCOM cubicWeights = {};
 };
 
@@ -20013,7 +20013,7 @@ struct SamplerBlockMatchWindowCreateInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Extent2D windowExtent = {};
   BlockMatchWindowCompareModeQCOM windowCompareMode = {};
 };
@@ -20083,7 +20083,7 @@ struct LatencySleepModeInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 lowLatencyMode = {};
   VkBool32 lowLatencyBoost = {};
   uint32_t minimumIntervalUs = {};
@@ -20102,7 +20102,7 @@ struct LatencySleepInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkSemaphore signalSemaphore = {};
   uint64_t value = {};
 };
@@ -20120,7 +20120,7 @@ struct SetLatencyMarkerInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t presentID = {};
   LatencyMarkerNV marker = {};
 };
@@ -20138,7 +20138,7 @@ struct LatencyTimingsFrameReportNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t presentID = {};
   uint64_t inputSampleTimeUs = {};
   uint64_t simStartTimeUs = {};
@@ -20168,7 +20168,7 @@ struct GetLatencyMarkerInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t timingCount = {};
   LatencyTimingsFrameReportNV *pTimings = {};
 };
@@ -20186,7 +20186,7 @@ struct OutOfBandQueueTypeInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   OutOfBandQueueTypeNV queueType = {};
 };
 
@@ -20203,7 +20203,7 @@ struct LatencySubmissionPresentIdNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint64_t presentID = {};
 };
 
@@ -20220,7 +20220,7 @@ struct SwapchainLatencyCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 latencyModeEnable = {};
 };
 
@@ -20237,7 +20237,7 @@ struct LatencySurfaceCapabilitiesNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t presentModeCount = {};
   PresentModeKHR *pPresentModes = {};
 };
@@ -20358,7 +20358,7 @@ struct RenderPassStripeInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   Rect2D stripeArea = {};
 };
 
@@ -20375,9 +20375,9 @@ struct RenderPassStripeBeginInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t stripeInfoCount = {};
-  RenderPassStripeInfoARM *pStripeInfos = {};
+  const RenderPassStripeInfoARM *pStripeInfos = {};
 };
 
 struct RenderPassStripeSubmitInfoARM {
@@ -20393,9 +20393,9 @@ struct RenderPassStripeSubmitInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t stripeSemaphoreInfoCount = {};
-  SemaphoreSubmitInfo *pStripeSemaphoreInfos = {};
+  const SemaphoreSubmitInfo *pStripeSemaphoreInfos = {};
 };
 
 struct PhysicalDevicePipelineOpacityMicromapFeaturesARM {
@@ -20514,9 +20514,9 @@ struct RenderingAttachmentLocationInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t colorAttachmentCount = {};
-  uint32_t *pColorAttachmentLocations = {};
+  const uint32_t *pColorAttachmentLocations = {};
 };
 
 struct RenderingInputAttachmentIndexInfo {
@@ -20532,11 +20532,11 @@ struct RenderingInputAttachmentIndexInfo {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t colorAttachmentCount = {};
-  uint32_t *pColorAttachmentInputIndices = {};
-  uint32_t *pDepthInputAttachmentIndex = {};
-  uint32_t *pStencilInputAttachmentIndex = {};
+  const uint32_t *pColorAttachmentInputIndices = {};
+  const uint32_t *pDepthInputAttachmentIndex = {};
+  const uint32_t *pStencilInputAttachmentIndex = {};
 };
 
 struct PhysicalDeviceShaderQuadControlFeaturesKHR {
@@ -20622,7 +20622,7 @@ struct MemoryMapPlacedInfoEXT {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   void *pPlacedAddress = {};
 };
 
@@ -20726,7 +20726,7 @@ struct ImageAlignmentControlCreateInfoMESA {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maximumRequestedAlignment = {};
 };
 
@@ -20956,7 +20956,7 @@ struct ConvertCooperativeVectorMatrixInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   size_t srcSize = {};
   VkDeviceOrHostAddressConstKHR srcData = {};
   size_t *pDstSize = {};
@@ -21034,7 +21034,7 @@ struct RenderPassTileShadingCreateInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   TileShadingRenderPassMaskQCOM flags = {};
   Extent2D tileApronSize = {};
 };
@@ -21052,7 +21052,7 @@ struct PerTileBeginInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
 };
 
 struct PerTileEndInfoQCOM {
@@ -21068,7 +21068,7 @@ struct PerTileEndInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
 };
 
 struct DispatchTileInfoQCOM {
@@ -21084,7 +21084,7 @@ struct DispatchTileInfoQCOM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
 };
 
 struct PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE {
@@ -21134,7 +21134,7 @@ struct PipelineFragmentDensityMapLayeredCreateInfoVALVE {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t maxFragmentDensityMapLayers = {};
 };
 
@@ -21151,7 +21151,7 @@ struct ExternalComputeQueueDeviceCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t reservedExternalQueues = {};
 };
 
@@ -21168,7 +21168,7 @@ struct ExternalComputeQueueCreateInfoNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkQueue preferredQueue = {};
 };
 
@@ -21185,7 +21185,7 @@ struct ExternalComputeQueueDataParamsNV {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t deviceIndex = {};
 };
 
@@ -21237,12 +21237,12 @@ struct TensorDescriptionARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   TensorTilingARM tiling = {};
   Format format = {};
   uint32_t dimensionCount = {};
-  int64_t *pDimensions = {};
-  int64_t *pStrides = {};
+  const int64_t *pDimensions = {};
+  const int64_t *pStrides = {};
   TensorUsageMaskARM usage = {};
 };
 
@@ -21259,12 +21259,12 @@ struct TensorCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   TensorCreateMaskARM flags = {};
-  TensorDescriptionARM *pDescription = {};
+  const TensorDescriptionARM *pDescription = {};
   SharingMode sharingMode = {};
   uint32_t queueFamilyIndexCount = {};
-  uint32_t *pQueueFamilyIndices = {};
+  const uint32_t *pQueueFamilyIndices = {};
 };
 
 struct TensorViewCreateInfoARM {
@@ -21280,7 +21280,7 @@ struct TensorViewCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   TensorViewCreateMaskARM flags = {};
   VkTensorARM tensor = {};
   Format format = {};
@@ -21299,7 +21299,7 @@ struct TensorMemoryRequirementsInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkTensorARM tensor = {};
 };
 
@@ -21316,7 +21316,7 @@ struct BindTensorMemoryInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkTensorARM tensor = {};
   VkDeviceMemory memory = {};
   VkDeviceSize memoryOffset = {};
@@ -21335,9 +21335,9 @@ struct WriteDescriptorSetTensorARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t tensorViewCount = {};
-  VkTensorViewARM *pTensorViews = {};
+  const VkTensorViewARM *pTensorViews = {};
 };
 
 struct TensorFormatPropertiesARM {
@@ -21353,7 +21353,7 @@ struct TensorFormatPropertiesARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   FormatFeatureMask2 optimalTilingTensorFeatures = {};
   FormatFeatureMask2 linearTilingTensorFeatures = {};
 };
@@ -21400,7 +21400,7 @@ struct TensorMemoryBarrierARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PipelineStageMask2 srcStageMask = {};
   AccessMask2 srcAccessMask = {};
   PipelineStageMask2 dstStageMask = {};
@@ -21423,9 +21423,9 @@ struct TensorDependencyInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t tensorMemoryBarrierCount = {};
-  TensorMemoryBarrierARM *pTensorMemoryBarriers = {};
+  const TensorMemoryBarrierARM *pTensorMemoryBarriers = {};
 };
 
 struct PhysicalDeviceTensorFeaturesARM {
@@ -21463,8 +21463,8 @@ struct DeviceTensorMemoryRequirementsARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  TensorCreateInfoARM *pCreateInfo = {};
+  const void *pNext = {};
+  const TensorCreateInfoARM *pCreateInfo = {};
 };
 
 struct TensorCopyARM {
@@ -21480,11 +21480,11 @@ struct TensorCopyARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t dimensionCount = {};
-  uint64_t *pSrcOffset = {};
-  uint64_t *pDstOffset = {};
-  uint64_t *pExtent = {};
+  const uint64_t *pSrcOffset = {};
+  const uint64_t *pDstOffset = {};
+  const uint64_t *pExtent = {};
 };
 
 struct CopyTensorInfoARM {
@@ -21500,11 +21500,11 @@ struct CopyTensorInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkTensorARM srcTensor = {};
   VkTensorARM dstTensor = {};
   uint32_t regionCount = {};
-  TensorCopyARM *pRegions = {};
+  const TensorCopyARM *pRegions = {};
 };
 
 struct MemoryDedicatedAllocateInfoTensorARM {
@@ -21520,7 +21520,7 @@ struct MemoryDedicatedAllocateInfoTensorARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkTensorARM tensor = {};
 };
 
@@ -21573,7 +21573,7 @@ struct TensorCaptureDescriptorDataInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkTensorARM tensor = {};
 };
 
@@ -21590,7 +21590,7 @@ struct TensorViewCaptureDescriptorDataInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkTensorViewARM tensorView = {};
 };
 
@@ -21607,7 +21607,7 @@ struct DescriptorGetTensorInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkTensorViewARM tensorView = {};
 };
 
@@ -21624,9 +21624,9 @@ struct FrameBoundaryTensorsARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t tensorCount = {};
-  VkTensorARM *pTensors = {};
+  const VkTensorARM *pTensors = {};
 };
 
 struct PhysicalDeviceExternalTensorInfoARM {
@@ -21642,9 +21642,9 @@ struct PhysicalDeviceExternalTensorInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   TensorCreateMaskARM flags = {};
-  TensorDescriptionARM *pDescription = {};
+  const TensorDescriptionARM *pDescription = {};
   ExternalMemoryHandleTypeMaskBits handleType = {};
 };
 
@@ -21661,7 +21661,7 @@ struct ExternalTensorPropertiesARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryProperties externalMemoryProperties = {};
 };
 
@@ -21678,7 +21678,7 @@ struct ExternalMemoryTensorCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalMemoryHandleTypeMask handleTypes = {};
 };
 
@@ -21734,7 +21734,7 @@ struct DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t dimension = {};
   uint32_t zeroCount = {};
   uint32_t groupSize = {};
@@ -21753,9 +21753,9 @@ struct DataGraphPipelineConstantARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t id = {};
-  void *pConstantData = {};
+  const void *pConstantData = {};
 };
 
 struct DataGraphPipelineResourceInfoARM {
@@ -21771,7 +21771,7 @@ struct DataGraphPipelineResourceInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t descriptorSet = {};
   uint32_t binding = {};
   uint32_t arrayElement = {};
@@ -21790,8 +21790,8 @@ struct DataGraphPipelineCompilerControlCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
-  char *pVendorOptions = {};
+  const void *pNext = {};
+  const char *pVendorOptions = {};
 };
 
 struct DataGraphPipelineCreateInfoARM {
@@ -21807,11 +21807,11 @@ struct DataGraphPipelineCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkPipelineCreateFlags2KHR flags = {};
   VkPipelineLayout layout = {};
   uint32_t resourceInfoCount = {};
-  DataGraphPipelineResourceInfoARM *pResourceInfos = {};
+  const DataGraphPipelineResourceInfoARM *pResourceInfos = {};
 };
 
 struct DataGraphPipelineShaderModuleCreateInfoARM {
@@ -21827,12 +21827,12 @@ struct DataGraphPipelineShaderModuleCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkShaderModule module = {};
-  char *pName = {};
-  SpecializationInfo *pSpecializationInfo = {};
+  const char *pName = {};
+  const SpecializationInfo *pSpecializationInfo = {};
   uint32_t constantCount = {};
-  DataGraphPipelineConstantARM *pConstants = {};
+  const DataGraphPipelineConstantARM *pConstants = {};
 };
 
 struct DataGraphPipelineSessionCreateInfoARM {
@@ -21848,7 +21848,7 @@ struct DataGraphPipelineSessionCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DataGraphPipelineSessionCreateMaskARM flags = {};
   VkPipeline dataGraphPipeline = {};
 };
@@ -21866,7 +21866,7 @@ struct DataGraphPipelineSessionBindPointRequirementsInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDataGraphPipelineSessionARM session = {};
 };
 
@@ -21883,7 +21883,7 @@ struct DataGraphPipelineSessionBindPointRequirementARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DataGraphPipelineSessionBindPointARM bindPoint = {};
   DataGraphPipelineSessionBindPointTypeARM bindPointType = {};
   uint32_t numObjects = {};
@@ -21902,7 +21902,7 @@ struct DataGraphPipelineSessionMemoryRequirementsInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDataGraphPipelineSessionARM session = {};
   DataGraphPipelineSessionBindPointARM bindPoint = {};
   uint32_t objectIndex = {};
@@ -21921,7 +21921,7 @@ struct BindDataGraphPipelineSessionMemoryInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkDataGraphPipelineSessionARM session = {};
   DataGraphPipelineSessionBindPointARM bindPoint = {};
   uint32_t objectIndex = {};
@@ -21942,7 +21942,7 @@ struct DataGraphPipelineInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkPipeline dataGraphPipeline = {};
 };
 
@@ -21959,7 +21959,7 @@ struct DataGraphPipelinePropertyQueryResultARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   DataGraphPipelinePropertyARM property = {};
   VkBool32 isText = {};
   size_t dataSize = {};
@@ -21979,9 +21979,9 @@ struct DataGraphPipelineIdentifierCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t identifierSize = {};
-  uint8_t *pIdentifier = {};
+  const uint8_t *pIdentifier = {};
 };
 
 struct DataGraphPipelineDispatchInfoARM {
@@ -22045,7 +22045,7 @@ struct QueueFamilyDataGraphPropertiesARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   PhysicalDeviceDataGraphProcessingEngineARM engine = {};
   PhysicalDeviceDataGraphOperationSupportARM operation = {};
 };
@@ -22063,7 +22063,7 @@ struct PhysicalDeviceQueueFamilyDataGraphProcessingEngineInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t queueFamilyIndex = {};
   PhysicalDeviceDataGraphProcessingEngineTypeARM engineType = {};
 };
@@ -22081,7 +22081,7 @@ struct QueueFamilyDataGraphProcessingEnginePropertiesARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   ExternalSemaphoreHandleTypeMask foreignSemaphoreHandleTypes = {};
   ExternalMemoryHandleTypeMask foreignMemoryHandleTypes = {};
 };
@@ -22099,7 +22099,7 @@ struct DataGraphProcessingEngineCreateInfoARM {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   uint32_t processingEngineCount = {};
   PhysicalDeviceDataGraphProcessingEngineARM *pProcessingEngines = {};
 };
@@ -22188,7 +22188,7 @@ struct VideoEncodeProfileRgbConversionInfoVALVE {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VkBool32 performEncodeRgbConversion = {};
 };
 
@@ -22205,7 +22205,7 @@ struct VideoEncodeSessionRgbConversionCreateInfoVALVE {
   operator NativeType *() noexcept;
 
   StructureType sType = structure_type;
-  void *pNext = {};
+  const void *pNext = {};
   VideoEncodeRgbModelConversionMaskBitsVALVE rgbModel = {};
   VideoEncodeRgbRangeCompressionMaskBitsVALVE rgbRange = {};
   VideoEncodeRgbChromaOffsetMaskBitsVALVE xChromaOffset = {};

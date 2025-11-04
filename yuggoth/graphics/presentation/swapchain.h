@@ -24,13 +24,17 @@ public:
 
   uint32_t GetImageIndex() const;
   std::size_t GetNumberOfImages() const;
-  const VkExtent2D &GetExtent() const;
+  const Extent2D &GetExtent() const;
+  Format GetFormat() const;
 
   std::span<const VkImageView> GetImageViews() const;
 
   VkResult AcquireNextImage(const VkSemaphore semaphore);
 
   static std::vector<const char *> GetSwapchainExtensions();
+
+  void Cleanup();
+  void Recreate();
 
 protected:
   void CreateSurface(GLFWwindow *native_window);
@@ -40,8 +44,8 @@ private:
   VkSurfaceKHR surface_{VK_NULL_HANDLE};
   VkSwapchainKHR swapchain_current_{VK_NULL_HANDLE};
   VkSwapchainKHR swapchain_previous_{VK_NULL_HANDLE};
-  VkSurfaceFormatKHR surface_format_;
-  VkExtent2D surface_extent_;
+  SurfaceFormatKHR surface_format_;
+  Extent2D surface_extent_;
   std::vector<VkImage> images_;
   std::vector<VkImageView> image_views_;
   uint32_t image_index_{0};

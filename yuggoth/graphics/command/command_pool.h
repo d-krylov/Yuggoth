@@ -11,10 +11,16 @@ public:
 
   ~CommandPool();
 
+  CommandPool(const CommandPool &) = delete;
+  CommandPool &operator=(const CommandPool &) = delete;
+
+  CommandPool(CommandPool &&other) noexcept;
+  CommandPool &operator=(CommandPool &&other) noexcept;
+
   VkCommandPool GetHandle() const;
 
 private:
-  VkCommandPool command_pool{VK_NULL_HANDLE};
+  VkCommandPool command_pool_{VK_NULL_HANDLE};
 };
 
 } // namespace Yuggoth

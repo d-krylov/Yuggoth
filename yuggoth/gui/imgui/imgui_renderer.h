@@ -3,12 +3,22 @@
 
 #include "yuggoth/graphics/pipeline/graphics_pipeline.h"
 #include "yuggoth/graphics/buffer/buffer.h"
+#include "yuggoth/graphics/image/image.h"
+#include <memory>
 
 namespace Yuggoth {
 
+class CommandBuffer;
+class Swapchain;
+
 class ImGuiRenderer {
 public:
-  ImGuiRenderer();
+  ImGuiRenderer(Format color_format);
+
+  void RenderDrawData(CommandBuffer &command_buffer);
+
+  void Begin(CommandBuffer &command_buffer, const Swapchain &swapchain);
+  void End(CommandBuffer &command_buffer);
 
 protected:
   struct ImGuiPushConstants {
@@ -18,11 +28,17 @@ protected:
     float translate_y;
   };
 
+protected:
+  void SetBuffers();
+  void SetupRenderState(CommandBuffer &command_buffer, int32_t fb_width, int32_t fb_height);
+  void CreateTexture();
+
 private:
   GraphicsPipeline graphics_pipeline_;
   Buffer vertex_buffer_;
   Buffer index_buffer_;
   ImGuiPushConstants imgui_push_constants_;
+  std::unique_ptr<Image> image_;
 };
 
 } // namespace Yuggoth

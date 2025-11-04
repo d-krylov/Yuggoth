@@ -16,6 +16,7 @@ Semaphore::Semaphore(Semaphore &&other) noexcept {
 }
 
 Semaphore &Semaphore::operator=(Semaphore &&other) noexcept {
+  std::swap(semaphore_, other.semaphore_);
   return *this;
 }
 
@@ -41,6 +42,7 @@ Fence::Fence(Fence &&other) noexcept {
 }
 
 Fence &Fence::operator=(Fence &&other) noexcept {
+  std::swap(fence_, other.fence_);
   return *this;
 }
 

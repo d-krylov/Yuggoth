@@ -6,6 +6,8 @@
 
 namespace Yuggoth {
 
+using AllocationInformation = std::pair<VmaAllocation, std::byte *>;
+
 class GraphicsAllocator {
 public:
   GraphicsAllocator();
@@ -14,8 +16,14 @@ public:
 
   static GraphicsAllocator *Get();
 
-  VmaAllocation AllocateImage(const VkImageCreateInfo &image_ci, VkImage &image);
-  VmaAllocation AllocateBuffer(const VkBufferCreateInfo &buffer_ci, VkBuffer &buffer);
+  VmaAllocation AllocateImage(const ImageCreateInfo &image_ci, VkImage &image);
+  AllocationInformation AllocateBuffer(const BufferCreateInfo &buffer_ci, VkBuffer &buffer, VmaAllocationCreateFlags flags);
+
+  void DestroyImage(VkImage image, VmaAllocation vma_allocation);
+  void DestroyBuffer(VkBuffer buffer, VmaAllocation vma_allocation);
+
+  void MapMemory(VmaAllocation allocation, std::byte **memory);
+  void UnmapMemory(VmaAllocation allocation);
 
 protected:
   void CreateAllocator();

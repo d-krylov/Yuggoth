@@ -13,6 +13,8 @@ GraphicsAllocator *GraphicsAllocator::Get() {
 }
 
 GraphicsAllocator::GraphicsAllocator() {
+  CreateAllocator();
+  graphics_allocator_instance_ = this;
 }
 
 GraphicsAllocator::~GraphicsAllocator() {
@@ -38,7 +40,7 @@ void GraphicsAllocator::CreateAllocator() {
   VK_CHECK(vmaCreateAllocator(&allocator_ci, &vma_allocator_));
 }
 
-VmaAllocation GraphicsAllocator::AllocateImage(const VkImageCreateInfo &image_ci, VkImage &image) {
+VmaAllocation GraphicsAllocator::AllocateImage(const ImageCreateInfo &image_ci, VkImage &image) {
   VmaAllocationCreateInfo vma_allocation_ci{};
   {
     vma_allocation_ci.flags = 0;
@@ -53,15 +55,15 @@ VmaAllocation GraphicsAllocator::AllocateImage(const VkImageCreateInfo &image_ci
   VmaAllocation allocation{VK_NULL_HANDLE};
   VmaAllocationInfo allocation_info{};
 
-  VK_CHECK(vmaCreateImage(vma_allocator_, &image_ci, &vma_allocation_ci, &image, &allocation, &allocation_info));
+  VK_CHECK(vmaCreateImage(vma_allocator_, image_ci, &vma_allocation_ci, &image, &allocation, &allocation_info));
 
   return allocation;
 }
 
-VmaAllocation GraphicsAllocator::AllocateBuffer(const VkBufferCreateInfo &buffer_ci, VkBuffer &buffer) {
+AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &buffer_ci, VkBuffer &buffer, VmaAllocationCreateFlags flags) {
   VmaAllocationCreateInfo vma_allocation_ci{};
   {
-    vma_allocation_ci.flags = VMA_ALLOCATION_CREATE_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
+    vma_allocation_ci.flags = flags;
     vma_allocation_ci.usage = VMA_MEMORY_USAGE_AUTO;
     vma_allocation_ci.requiredFlags = 0;
     vma_allocation_ci.preferredFlags = 0;
@@ -70,12 +72,30 @@ VmaAllocation GraphicsAllocator::AllocateBuffer(const VkBufferCreateInfo &buffer
     vma_allocation_ci.pUserData = nullptr;
   }
 
-  VmaAllocation allocation{VK_NULL_HANDLE};
   VmaAllocationInfo allocation_info{};
+  VmaAllocation allocation{VK_NULL_HANDLE};
 
-  VK_CHECK(vmaCreateBuffer(vma_allocator_, &buffer_ci, &vma_allocation_ci, &buffer, &allocation, &allocation_info));
+  VK_CHECK(vmaCreateBuffer(vma_allocator_, buffer_ci, &vma_allocation_ci, &buffer, &allocation, &allocation_info));
 
-  return allocation;
+  auto mapped_memory = reinterpret_cast<std::byte *>(allocation_info.pMappedData);
+
+  return std::make_pair(allocation, mapped_memory);
+}
+
+void GraphicsAllocator::MapMemory(VmaAllocation allocation, std::byte **memory) {
+  VK_CHECK(vmaMapMemory(vma_allocator_, allocation, (void **)memory));
+}
+
+void GraphicsAllocator::UnmapMemory(VmaAllocation allocation) {
+  vmaUnmapMemory(vma_allocator_, allocation);
+}
+
+void GraphicsAllocator::DestroyImage(VkImage image, VmaAllocation vma_allocation) {
+  vmaDestroyImage(vma_allocator_, image, vma_allocation);
+}
+
+void GraphicsAllocator::DestroyBuffer(VkBuffer buffer, VmaAllocation vma_allocation) {
+  vmaDestroyBuffer(vma_allocator_, buffer, vma_allocation);
 }
 
 } // namespace Yuggoth

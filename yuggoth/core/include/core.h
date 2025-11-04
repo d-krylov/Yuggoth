@@ -17,6 +17,8 @@ constexpr inline std::size_t operator""_MiB(unsigned long long int x) {
   return 1024_KiB * x;
 }
 
+std::filesystem::path GetShadersRoot();
+
 } // namespace Yuggoth
 
 #endif // YUGGOTH_CORE_H

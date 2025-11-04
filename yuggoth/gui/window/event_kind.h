@@ -2,6 +2,7 @@
 #define YUGGOTH_EVENT_KIND_H
 
 #include <cstdint>
+#include "imgui.h"
 
 namespace Yuggoth {
 
@@ -162,6 +163,8 @@ enum class Key : int {
   K_RIGHT_SUPER = 347,
   K_MENU = 348
 };
+
+ImGuiKey ToImGuiKey(Key key);
 
 } // namespace Yuggoth
 

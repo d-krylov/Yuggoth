@@ -1,4 +1,5 @@
 #include "yuggoth/core/include/core.h"
+#include "config/yuggoth_config.h"
 #include <print>
 
 namespace Yuggoth {
@@ -8,6 +9,10 @@ void CORE_ASSERT(bool status, std::string_view message, std::source_location loc
     std::println("ERROR: {0} in {1}:{2}", message, location.file_name(), location.line());
     std::abort();
   }
+}
+
+std::filesystem::path GetShadersRoot() {
+  return YUGGOTH_PROJECT_BINARY_DIR / "spirv";
 }
 
 } // namespace Yuggoth

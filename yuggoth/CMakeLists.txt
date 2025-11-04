@@ -1,11 +1,12 @@
 set(YUGGOTH_SOURCE_DIR ${PROJECT_SOURCE_DIR}/yuggoth)
 
 set(YUGGOTH_EDITOR_SOURCES
-
+  ${YUGGOTH_SOURCE_DIR}/editor/core/editor.cpp
 )
 
 set(YUGGOTH_GUI_SOURCES
   ${YUGGOTH_SOURCE_DIR}/gui/window/window.cpp
+  ${YUGGOTH_SOURCE_DIR}/gui/window/event_kind.cpp
   ${YUGGOTH_SOURCE_DIR}/gui/imgui/imgui_renderer.cpp
   ${YUGGOTH_SOURCE_DIR}/gui/imgui/imgui_layer.cpp
 )
@@ -53,6 +54,13 @@ set(IMGUI_SOURCES
   ${imgui_SOURCE_DIR}/imgui.cpp
 )
 
+# CONFIG
+
+configure_file(
+  ${YUGGOTH_SOURCE_DIR}/core/include/config.h.in
+  ${CMAKE_BINARY_DIR}/config/yuggoth_config.h
+)
+
 add_library(imgui STATIC ${IMGUI_SOURCES})
 
 target_include_directories(imgui PUBLIC 
@@ -67,6 +75,7 @@ message("${Vulkan_INCLUDE_DIR}")
 
 target_include_directories(${PROJECT_NAME} 
   PUBLIC ${PROJECT_SOURCE_DIR}
+  PUBLIC ${PROJECT_BINARY_DIR}
   PUBLIC ${Vulkan_INCLUDE_DIR}
 )
 
@@ -78,4 +87,5 @@ target_link_libraries(${PROJECT_NAME}
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC 
   VK_NO_PROTOTYPES
+  GLM_ENABLE_EXPERIMENTAL
 )

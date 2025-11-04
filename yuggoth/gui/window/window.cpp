@@ -93,6 +93,8 @@ Window::Window(int32_t width, int32_t height, std::string_view name) {
   }
 
   glfwSetWindowUserPointer(native_window_, this);
+
+  SetCallbacks(GetNativeWindow());
 }
 
 ViewportSize Window::GetWindowSize() const {

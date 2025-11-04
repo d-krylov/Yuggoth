@@ -9,5 +9,5 @@ FetchContent_Declare(
 FetchContent_Declare(
 	imgui
 	GIT_REPOSITORY https://github.com/ocornut/imgui.git
-	GIT_TAG v1.91.7
+	GIT_TAG v1.92.4
 )

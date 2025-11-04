@@ -18,10 +18,10 @@ std::vector<uint32_t> ReadBinaryFile(const std::filesystem::path &path) {
   return buffer;
 }
 
-std::vector<VkVertexInputAttributeDescription> GetShaderInputs(const SpvReflectShaderModule &module) {
+std::vector<VertexInputAttributeDescription> ReflecttShaderInputs(const SpvReflectShaderModule &module) {
   auto offset = 0;
   auto inputs = Enumerate<SpvReflectInterfaceVariable *>(spvReflectEnumerateInputVariables, &module);
-  auto result = std::vector<VkVertexInputAttributeDescription>();
+  auto result = std::vector<VertexInputAttributeDescription>();
   std::ranges::sort(inputs, std::less(), &SpvReflectInterfaceVariable::location);
   for (const auto &input : inputs) {
     if ((input->decoration_flags & SPV_REFLECT_DECORATION_BUILT_IN) == 0) {
@@ -29,16 +29,16 @@ std::vector<VkVertexInputAttributeDescription> GetShaderInputs(const SpvReflectS
       {
         vertex_input_description.location = input->location;
         vertex_input_description.binding = 0;
-        vertex_input_description.format = (VkFormat)input->format;
+        vertex_input_description.format = Format(input->format);
         vertex_input_description.offset = offset;
       }
-      offset += vkuFormatTexelBlockSize(vertex_input_description.format);
+      offset += vkuFormatTexelBlockSize(VkFormat(input->format));
     }
   }
   return result;
 }
 
-auto GetDescriptorSetBindings(const SpvReflectShaderModule &module, VkShaderStageFlags stage) {
+auto ReflectDescriptorSetBindings(const SpvReflectShaderModule &module, VkShaderStageFlags stage) {
   auto spv_descriptor_sets = Enumerate<SpvReflectDescriptorSet *>(spvReflectEnumerateDescriptorSets, &module);
   std::map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>> out_sets_bindings;
   for (const auto &spv_descriptor_set : spv_descriptor_sets) {
@@ -60,9 +60,9 @@ auto GetDescriptorSetBindings(const SpvReflectShaderModule &module, VkShaderStag
   return out_sets_bindings;
 }
 
-std::vector<VkPushConstantRange> GetPushConstants(const SpvReflectShaderModule &module, VkShaderStageFlagBits stage) {
+std::vector<PushConstantRange> ReflectPushConstants(const SpvReflectShaderModule &module, ShaderStageMaskBits stage) {
   auto spv_push_constants = Enumerate<SpvReflectBlockVariable *>(spvReflectEnumeratePushConstantBlocks, &module);
-  auto push_constants = std::vector<VkPushConstantRange>();
+  auto push_constants = std::vector<PushConstantRange>();
   for (const auto &spv_block : spv_push_constants) {
     auto &push_constant_range = push_constants.emplace_back();
     {
@@ -75,6 +75,13 @@ std::vector<VkPushConstantRange> GetPushConstants(const SpvReflectShaderModule &
 }
 
 ShaderModule::ShaderModule(const std::filesystem::path &shader_path) {
+  SpvReflectShaderModule spv_module;
+  spirv_ = ReadBinaryFile(shader_path);
+  auto status = spvReflectCreateShaderModule(GetSize(), spirv_.data(), &spv_module);
+  shader_stage_ = static_cast<ShaderStageMaskBits>(spv_module.shader_stage);
+  descriptor_sets_ = ReflectDescriptorSetBindings(spv_module, spv_module.shader_stage);
+  push_constants_ = ReflectPushConstants(spv_module, shader_stage_);
+  vertex_input_descriptions_ = ReflecttShaderInputs(spv_module);
 }
 
 ShaderStageMaskBits ShaderModule::GetStage() const {
@@ -89,8 +96,16 @@ std::size_t ShaderModule::GetSize() const {
   return GetBinaryData().size_bytes();
 }
 
-std::span<const VkVertexInputAttributeDescription> ShaderModule::GetInputDescriptions() const {
+std::span<const VertexInputAttributeDescription> ShaderModule::GetInputDescriptions() const {
   return vertex_input_descriptions_;
+}
+
+const DescriptorSetMap &ShaderModule::GetDescriptorSets() const {
+  return descriptor_sets_;
+}
+
+std::span<const PushConstantRange> ShaderModule::GetPushConstants() const {
+  return push_constants_;
 }
 
 } // namespace Yuggoth

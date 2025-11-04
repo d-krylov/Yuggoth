@@ -17,13 +17,17 @@ public:
   std::span<const uint32_t> GetBinaryData() const;
   std::size_t GetSize() const;
 
-  std::span<const VkVertexInputAttributeDescription> GetInputDescriptions() const;
+  std::span<const VertexInputAttributeDescription> GetInputDescriptions() const;
+  std::span<const PushConstantRange> GetPushConstants() const;
+
+  const DescriptorSetMap &GetDescriptorSets() const;
 
 private:
   std::vector<uint32_t> spirv_;
   ShaderStageMaskBits shader_stage_;
   DescriptorSetMap descriptor_sets_;
-  std::vector<VkVertexInputAttributeDescription> vertex_input_descriptions_;
+  std::vector<PushConstantRange> push_constants_;
+  std::vector<VertexInputAttributeDescription> vertex_input_descriptions_;
 };
 
 } // namespace Yuggoth

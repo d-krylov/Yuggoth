@@ -60,9 +60,8 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityF
 void GraphicsContext::CreateInstance() {
   VK_CHECK(volkInitialize());
 
-  VkApplicationInfo application_info{};
+  ApplicationInfo application_info;
   {
-    application_info.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
     application_info.pApplicationName = "Yuggoth";
     application_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
     application_info.pEngineName = "Yuggoth Engine";
@@ -76,20 +75,17 @@ void GraphicsContext::CreateInstance() {
   auto swapchain_extensions = Swapchain::GetSwapchainExtensions();
   required_extensions.insert(required_extensions.end(), swapchain_extensions.begin(), swapchain_extensions.end());
 
-  auto severity = DebugUtilsMessageSeverityMaskBitsEXT::E_INFO_BIT_EXT | DebugUtilsMessageSeverityMaskBitsEXT::E_VERBOSE_BIT_EXT |
-                  DebugUtilsMessageSeverityMaskBitsEXT::E_WARNING_BIT_EXT | DebugUtilsMessageSeverityMaskBitsEXT::E_ERROR_BIT_EXT;
+  auto severity = DebugUtilsMessageSeverityMaskBitsEXT::E_ERROR_BIT_EXT | DebugUtilsMessageSeverityMaskBitsEXT::E_WARNING_BIT_EXT;
 
-  VkDebugUtilsMessengerCreateInfoEXT debug_ci{};
+  DebugUtilsMessengerCreateInfoEXT debug_ci{};
   {
-    debug_ci.sType = VK_STRUCTURE_TYPE_DEBUG_UTILS_MESSENGER_CREATE_INFO_EXT;
-    debug_ci.messageType = VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT | VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT;
-    debug_ci.messageSeverity = (uint32_t)severity;
+    debug_ci.messageType = DebugUtilsMessageTypeMaskBitsEXT::E_VALIDATION_BIT_EXT;
+    debug_ci.messageSeverity = severity;
     debug_ci.pfnUserCallback = DebugCallback;
   }
 
-  VkInstanceCreateInfo instance_ci{};
+  InstanceCreateInfo instance_ci{};
   {
-    instance_ci.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
     instance_ci.pApplicationInfo = &application_info;
     instance_ci.enabledLayerCount = required_layers.size();
     instance_ci.ppEnabledLayerNames = required_layers.data();
@@ -99,11 +95,11 @@ void GraphicsContext::CreateInstance() {
 
   instance_ci.pNext = &debug_ci;
 
-  VK_CHECK(vkCreateInstance(&instance_ci, nullptr, &instance_));
+  VK_CHECK(vkCreateInstance(instance_ci, nullptr, &instance_));
 
   volkLoadInstanceOnly(instance_);
 
-  VK_CHECK(vkCreateDebugUtilsMessengerEXT(instance_, &debug_ci, nullptr, &debug_messenger_));
+  VK_CHECK(vkCreateDebugUtilsMessengerEXT(instance_, debug_ci, nullptr, &debug_messenger_));
 }
 
 void GraphicsContext::PickPhysicalDevice() {
@@ -203,6 +199,29 @@ GraphicsContext::GraphicsContext() {
 }
 
 GraphicsContext::~GraphicsContext() {
+}
+
+VkCommandBuffer GraphicsContext::CreateCommandBuffer(VkCommandPool command_pool, CommandBufferLevel level) {
+  VkCommandBuffer command_buffer = VK_NULL_HANDLE;
+  CommandBufferAllocateInfo command_buffer_ai;
+  {
+    command_buffer_ai.commandPool = command_pool;
+    command_buffer_ai.level = level;
+    command_buffer_ai.commandBufferCount = 1;
+  }
+  VK_CHECK(vkAllocateCommandBuffers(GetDevice(), command_buffer_ai, &command_buffer));
+  return command_buffer;
+}
+
+VkCommandPool GraphicsContext::CreateCommandPool(uint32_t queue_family_index) {
+  VkCommandPool command_pool = VK_NULL_HANDLE;
+  CommandPoolCreateInfo command_pool_ci;
+  {
+    command_pool_ci.flags = CommandPoolCreateMaskBits::E_RESET_COMMAND_BUFFER_BIT;
+    command_pool_ci.queueFamilyIndex = queue_family_index;
+  }
+  VK_CHECK(vkCreateCommandPool(GetDevice(), command_pool_ci, 0, &command_pool));
+  return command_pool;
 }
 
 } // namespace Yuggoth

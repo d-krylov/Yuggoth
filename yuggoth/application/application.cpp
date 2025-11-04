@@ -27,10 +27,13 @@ void Application::CreateSynchronizationObjects() {
 }
 
 Application::Application()
-  : main_window_(800, 600, "Yuggoth Engine"),   //
-    graphics_context_(),                        //
-    swapchain_(main_window_.GetNativeWindow()), //
-    command_pool_(GraphicsContext::Get()->GetGraphicsQueueIndex()) {
+  : main_window_(800, 600, "Yuggoth Engine"),                 //
+    graphics_context_(),                                      //
+    graphics_allocator_(),                                    //
+    swapchain_(main_window_.GetNativeWindow()),               //
+    command_pool_(graphics_context_.GetGraphicsQueueIndex()), //
+    imgui_layer_(&main_window_),                              //
+    imgui_renderer_(swapchain_.GetFormat()) {
   CreateSynchronizationObjects();
 }
 
@@ -51,6 +54,7 @@ void Application::Run() {
 
     if ((status == VK_ERROR_OUT_OF_DATE_KHR) || (status == VK_SUBOPTIMAL_KHR)) {
       if (status == VK_ERROR_OUT_OF_DATE_KHR) {
+        swapchain_.Recreate();
       }
       continue;
     } else {
@@ -61,26 +65,17 @@ void Application::Run() {
     command_buffer.Reset();
     command_buffer.Begin();
 
-    std::array<VkRenderingAttachmentInfo, 1> rendering_ai = {};
-    {
-      rendering_ai[0].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-      rendering_ai[0].imageView = swapchain_.GetCurrentImageView();
-      rendering_ai[0].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-      rendering_ai[0].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-      rendering_ai[0].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-      rendering_ai[0].clearValue.color = {0.0f, 0.0f, 0.0f, 1.0f};
-    }
+    imgui_layer_.NewFrame();
+    imgui_renderer_.Begin(command_buffer, swapchain_);
 
-    command_buffer.CommandBeginRendering(swapchain_.GetExtent(), rendering_ai);
+    ImGui::Begin("Hello");
+    ImGui::End();
 
-    command_buffer.CommandSetViewport(0.0f, 0.0f, swapchain_.GetExtent().width, swapchain_.GetExtent().height);
-    command_buffer.CommandSetScissor(0, 0, swapchain_.GetExtent().width, swapchain_.GetExtent().height);
+    imgui_renderer_.End(command_buffer);
 
-    command_buffer.CommandEndRendering();
-
-    auto present_barrier = GetImageMemoryBarrier(swapchain_.GetCurrentImage(), VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-                                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT, VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT, 0, 0,
-                                                 GetImageSubresourceRange(ImageAspectMaskBits::E_COLOR_BIT));
+    auto present_barrier = GetImageMemoryBarrier(
+      swapchain_.GetCurrentImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_PRESENT_SRC_KHR, PipelineStageMaskBits2::E_TOP_OF_PIPE_BIT,
+      PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, {}, {}, GetImageSubresourceRange(ImageAspectMaskBits::E_COLOR_BIT));
 
     command_buffer.CommandPipelineBarrier(DependencyMaskBits::E_BY_REGION_BIT, {}, std::array{present_barrier});
 

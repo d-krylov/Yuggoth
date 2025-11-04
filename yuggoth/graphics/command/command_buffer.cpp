@@ -1,30 +1,43 @@
 #include "command_buffer.h"
+#include "yuggoth/graphics/core/synchronization.h"
 
 namespace Yuggoth {
 
-CommandBuffer::CommandBuffer(const VkCommandPool command_pool) {
-  VkCommandBufferAllocateInfo command_buffer_ai{};
-  {
-    command_buffer_ai.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    command_buffer_ai.commandPool = command_pool;
-    command_buffer_ai.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    command_buffer_ai.commandBufferCount = 1;
-  }
-  VK_CHECK(vkAllocateCommandBuffers(GraphicsContext::Get()->GetDevice(), &command_buffer_ai, &command_buffer_));
+CommandBuffer::CommandBuffer(const VkCommandPool command_pool) : command_pool_(command_pool), own_command_pool_(false) {
+  command_buffer_ = GraphicsContext::Get()->CreateCommandBuffer(command_pool_, CommandBufferLevel::E_PRIMARY);
+}
+
+CommandBuffer::CommandBuffer(uint32_t queue_family_index) : own_command_pool_(true) {
+  command_pool_ = GraphicsContext::Get()->CreateCommandPool(queue_family_index);
+  command_buffer_ = GraphicsContext::Get()->CreateCommandBuffer(command_pool_, CommandBufferLevel::E_PRIMARY);
 }
 
 CommandBuffer::~CommandBuffer() {
+  vkFreeCommandBuffers(GraphicsContext::Get()->GetDevice(), command_pool_, 1, &command_buffer_);
+  if (own_command_pool_) {
+    vkDestroyCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_, nullptr);
+  }
 }
 
 CommandBuffer::CommandBuffer(CommandBuffer &&other) noexcept {
   command_buffer_ = std::exchange(other.command_buffer_, VK_NULL_HANDLE);
+  command_pool_ = std::exchange(other.command_pool_, VK_NULL_HANDLE);
 }
 
 CommandBuffer &CommandBuffer::operator=(CommandBuffer &&other) noexcept {
-  if (this != &other) {
-    command_buffer_ = std::exchange(other.command_buffer_, VK_NULL_HANDLE);
-  }
+  std::swap(command_buffer_, other.command_buffer_);
+  std::swap(command_pool_, other.command_pool_);
   return *this;
+}
+
+void CommandBuffer::Submit() {
+  SubmitInfo submit_info;
+  submit_info.commandBufferCount = 1;
+  submit_info.pCommandBuffers = GetPointer();
+
+  Fence fence;
+  VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
+  fence.Wait();
 }
 
 const VkCommandBuffer *CommandBuffer::GetPointer() const {
@@ -32,22 +45,18 @@ const VkCommandBuffer *CommandBuffer::GetPointer() const {
 }
 
 void CommandBuffer::Begin() {
-  VkCommandBufferBeginInfo command_buffer_bi{};
-  {
-    command_buffer_bi.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-    command_buffer_bi.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-  }
-  vkBeginCommandBuffer(command_buffer_, &command_buffer_bi);
+  CommandBufferBeginInfo command_buffer_bi;
+  command_buffer_bi.flags = CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT;
+  vkBeginCommandBuffer(command_buffer_, command_buffer_bi);
 }
 
 void CommandBuffer::Reset() {
   vkResetCommandBuffer(command_buffer_, 0);
 }
 
-void CommandBuffer::CommandBeginRendering(const VkExtent2D &extent, std::span<const VkRenderingAttachmentInfo> colors) {
-  VkRenderingInfo rendering_info{};
+void CommandBuffer::CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors) {
+  RenderingInfo rendering_info{};
   {
-    rendering_info.sType = VK_STRUCTURE_TYPE_RENDERING_INFO;
     rendering_info.renderArea.offset = {0, 0};
     rendering_info.renderArea.extent = extent;
     rendering_info.layerCount = 1;
@@ -57,7 +66,7 @@ void CommandBuffer::CommandBeginRendering(const VkExtent2D &extent, std::span<co
     rendering_info.pStencilAttachment = nullptr;
   }
 
-  vkCmdBeginRendering(command_buffer_, &rendering_info);
+  vkCmdBeginRendering(command_buffer_, rendering_info);
 }
 
 void CommandBuffer::End() {
@@ -68,62 +77,68 @@ void CommandBuffer::CommandEndRendering() {
   vkCmdEndRendering(command_buffer_);
 }
 
-void CommandBuffer::CommandPipelineBarrier(DependencyMask dependency_mask, std::span<const VkBufferMemoryBarrier2> buffer_barriers,
-                                           std::span<const VkImageMemoryBarrier2> image_barriers) {
-  VkDependencyInfo dependency_info{};
+void CommandBuffer::CommandPipelineBarrier(DependencyMask dependency_mask, std::span<const BufferMemoryBarrier2> buffer_barriers,
+                                           std::span<const ImageMemoryBarrier2> image_barriers) {
+  DependencyInfo dependency_info;
   {
-    dependency_info.sType = VK_STRUCTURE_TYPE_DEPENDENCY_INFO;
-    dependency_info.dependencyFlags = (uint32_t)dependency_mask;
+    dependency_info.dependencyFlags = dependency_mask;
     dependency_info.bufferMemoryBarrierCount = buffer_barriers.size();
     dependency_info.pBufferMemoryBarriers = buffer_barriers.data();
     dependency_info.imageMemoryBarrierCount = image_barriers.size();
     dependency_info.pImageMemoryBarriers = image_barriers.data();
   }
-  vkCmdPipelineBarrier2(command_buffer_, &dependency_info);
+  vkCmdPipelineBarrier2(command_buffer_, dependency_info);
 }
 
+// PUSH
+
 void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set_number, uint32_t binding, VkBuffer buffer) {
-  VkDescriptorBufferInfo descriptor_bi{};
+  DescriptorBufferInfo descriptor_bi;
   {
     descriptor_bi.buffer = buffer;
     descriptor_bi.offset = 0;
     descriptor_bi.range = VK_WHOLE_SIZE;
   }
 
-  VkWriteDescriptorSet write_descriptor_set{};
+  WriteDescriptorSet write_descriptor_set;
   {
-    write_descriptor_set.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
     write_descriptor_set.dstBinding = binding;
     write_descriptor_set.dstArrayElement = 0;
-    write_descriptor_set.descriptorType = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+    write_descriptor_set.descriptorType = DescriptorType::E_STORAGE_BUFFER;
     write_descriptor_set.descriptorCount = 1;
     write_descriptor_set.pBufferInfo = &descriptor_bi;
   }
-  vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set_number, 1, &write_descriptor_set);
+  vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set_number, 1, write_descriptor_set);
+}
+
+void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkImageView image_view,
+                                             VkSampler sampler) {
+  DescriptorImageInfo descriptor_ii;
+  {
+    descriptor_ii.sampler = sampler;
+    descriptor_ii.imageView = image_view;
+    descriptor_ii.imageLayout = ImageLayout::E_SHADER_READ_ONLY_OPTIMAL;
+  }
+
+  WriteDescriptorSet write_descriptor_set;
+  {
+    write_descriptor_set.dstBinding = binding;
+    write_descriptor_set.dstArrayElement = 0;
+    write_descriptor_set.descriptorType = DescriptorType::E_COMBINED_IMAGE_SAMPLER;
+    write_descriptor_set.descriptorCount = 1;
+    write_descriptor_set.pImageInfo = &descriptor_ii;
+  }
+  vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set, 1, write_descriptor_set);
 }
 
 void CommandBuffer::CommandSetViewport(float x, float y, float width, float height) {
-  VkViewport viewport{};
-  {
-    viewport.x = x;
-    viewport.y = y;
-    viewport.width = width;
-    viewport.height = height;
-    viewport.minDepth = 0.0f;
-    viewport.maxDepth = 1.0f;
-  }
-  vkCmdSetViewport(command_buffer_, 0, 1, &viewport);
+  Viewport viewport{x, y, width, height, 0.0f, 1.0f};
+  vkCmdSetViewport(command_buffer_, 0, 1, viewport);
 }
 
 void CommandBuffer::CommandSetScissor(int32_t x, int32_t y, uint32_t width, uint32_t height) {
-  VkRect2D scissor;
-  {
-    scissor.offset.x = x;
-    scissor.offset.y = y;
-    scissor.extent.width = width;
-    scissor.extent.height = height;
-  }
-  vkCmdSetScissor(command_buffer_, 0, 1, &scissor);
+  Rect2D scissor{x, y, width, height};
+  vkCmdSetScissor(command_buffer_, 0, 1, scissor);
 }
 
 void CommandBuffer::CommandSetCullMode(CullModeMask mode) {
@@ -140,6 +155,46 @@ void CommandBuffer::CommandEnableDepthTest(bool enabled) {
 
 void CommandBuffer::CommandEnableDepthWrite(bool enabled) {
   vkCmdSetDepthWriteEnable(command_buffer_, enabled);
+}
+
+void CommandBuffer::CommandDrawIndexed(uint32_t indices, uint32_t instances, uint32_t index0, int32_t vertex_offset, uint32_t instance0) {
+  vkCmdDrawIndexed(command_buffer_, indices, instances, index0, vertex_offset, instance0);
+}
+
+// BIND
+
+void CommandBuffer::CommandBindPipeline(const VkPipeline pipeline, PipelineBindPoint bind_point) {
+  vkCmdBindPipeline(command_buffer_, static_cast<VkPipelineBindPoint>(bind_point), pipeline);
+}
+
+void CommandBuffer::CommandBindVertexBuffer(const VkBuffer buffer, std::size_t offset) {
+  vkCmdBindVertexBuffers(command_buffer_, 0, 1, &buffer, &offset);
+}
+
+void CommandBuffer::CommandBindIndexBuffer(const VkBuffer buffer, std::size_t offset, IndexType index_type) {
+  vkCmdBindIndexBuffer(command_buffer_, buffer, offset, static_cast<VkIndexType>(index_type));
+}
+
+void CommandBuffer::CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent) {
+  ImageSubresourceLayers subresource_layers;
+  {
+    subresource_layers.aspectMask = ImageAspectMaskBits::E_COLOR_BIT;
+    subresource_layers.mipLevel = 0;
+    subresource_layers.baseArrayLayer = 0;
+    subresource_layers.layerCount = 1;
+  }
+
+  BufferImageCopy buffer_image_copy;
+  {
+    buffer_image_copy.bufferOffset = 0;
+    buffer_image_copy.bufferRowLength = 0;
+    buffer_image_copy.bufferImageHeight = 0;
+    buffer_image_copy.imageSubresource = subresource_layers;
+    buffer_image_copy.imageOffset = Offset3D(0, 0, 0);
+    buffer_image_copy.imageExtent = extent;
+  }
+
+  vkCmdCopyBufferToImage(command_buffer_, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, buffer_image_copy);
 }
 
 } // namespace Yuggoth

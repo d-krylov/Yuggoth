@@ -7,7 +7,7 @@ namespace Yuggoth {
 
 struct GraphicsPipelineSpecification {
   std::vector<std::filesystem::path> shader_paths_;
-  std::vector<DynamicState> dynamic_states_;
+  std::vector<DynamicState> dynamic_states_{DynamicState::E_VIEWPORT, DynamicState::E_SCISSOR};
   std::vector<Format> color_formats_;
 };
 

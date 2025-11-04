@@ -13,6 +13,10 @@ class ImGuiLayer {
 public:
   ImGuiLayer(Window *window);
 
+  void OnEvent(Event &event);
+
+  void NewFrame();
+
 protected:
   bool OnKeyEvent(const KeyEvent &event);
   bool OnMouseButtonEvent(const MouseButtonEvent &event);

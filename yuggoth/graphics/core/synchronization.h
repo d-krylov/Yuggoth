@@ -26,7 +26,7 @@ private:
 
 class Fence {
 public:
-  Fence(FenceCreateMask mask);
+  Fence(FenceCreateMask mask = {});
 
   ~Fence();
 
