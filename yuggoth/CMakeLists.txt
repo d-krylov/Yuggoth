@@ -2,6 +2,8 @@ set(YUGGOTH_SOURCE_DIR ${PROJECT_SOURCE_DIR}/yuggoth)
 
 set(YUGGOTH_EDITOR_SOURCES
   ${YUGGOTH_SOURCE_DIR}/editor/core/editor.cpp
+  ${YUGGOTH_SOURCE_DIR}/editor/editor_windows/viewport_window.cpp
+  ${YUGGOTH_SOURCE_DIR}/editor/editor_windows/hierarchy_window.cpp
 )
 
 set(YUGGOTH_GUI_SOURCES
@@ -13,8 +15,12 @@ set(YUGGOTH_GUI_SOURCES
 
 set(YUGGOTH_MODEL_SOURCES
   ${YUGGOTH_SOURCE_DIR}/model/model.cpp
+  ${YUGGOTH_SOURCE_DIR}/model/khronos_loader.cpp
 )
 
+set(YUGGOTH_SCENE_SOURCES
+  ${YUGGOTH_SOURCE_DIR}/scene/core/scene.cpp
+)
 
 set(YUGGOTH_GRAPHICS_SOURCES
   ${YUGGOTH_SOURCE_DIR}/graphics/core/synchronization.cpp
@@ -41,6 +47,7 @@ set(YUGGOTH_SOURCES
   ${YUGGOTH_GRAPHICS_SOURCES}
   ${YUGGOTH_EDITOR_SOURCES}
   ${YUGGOTH_MODEL_SOURCES}
+  ${YUGGOTH_SCENE_SOURCES}
   ${YUGGOTH_SOURCE_DIR}/application/yuggoth.cpp
   ${YUGGOTH_SOURCE_DIR}/application/application.cpp
   ${YUGGOTH_SOURCE_DIR}/core/core.cpp
@@ -81,6 +88,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
   Vulkan::volk
+  fastgltf
   glfw
   imgui
 )

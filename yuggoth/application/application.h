@@ -10,6 +10,7 @@
 #include "yuggoth/graphics/core/synchronization.h"
 #include "yuggoth/gui/imgui/imgui_layer.h"
 #include "yuggoth/gui/imgui/imgui_renderer.h"
+#include "yuggoth/editor/core/editor.h"
 
 namespace Yuggoth {
 
@@ -18,6 +19,9 @@ public:
   Application();
 
   void Run();
+
+  void OnImGui();
+  void OnEvent(Event &event);
 
   static Application *Get();
 
@@ -32,6 +36,7 @@ private:
   CommandPool command_pool_;
   ImGuiLayer imgui_layer_;
   ImGuiRenderer imgui_renderer_;
+  Editor editor_;
   std::vector<CommandBuffer> command_buffers_;
   std::vector<Semaphore> render_finished_semaphores_;
   std::vector<Semaphore> image_available_semaphores_;

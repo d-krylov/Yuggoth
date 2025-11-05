@@ -53,6 +53,9 @@ bool ImGuiLayer::OnCharEvent(const CharEvent &event) {
 
 ImGuiLayer::ImGuiLayer(Window *window) : window_(window) {
   ImGui::CreateContext();
+  ImGuiIO &io = ImGui::GetIO();
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
   window->SetEventHandler(BIND_FUNCTION(ImGuiLayer::OnEvent));
 }
 

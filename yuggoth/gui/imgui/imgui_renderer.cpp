@@ -18,17 +18,20 @@ ImGuiRenderer::ImGuiRenderer(Format color_format) {
 
   vertex_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_VERTEX_BUFFER_BIT, true);
   index_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_INDEX_BUFFER_BIT, true);
+
   CreateTexture();
 }
 
 void ImGuiRenderer::SetBuffers() {
   auto draw_data = ImGui::GetDrawData();
   std::size_t vbo_offset = 0, ibo_offset = 0;
+  auto vbo = vertex_buffer_.GetMappedAs<ImDrawVert>();
+  auto ibo = index_buffer_.GetMappedAs<ImDrawIdx>();
   for (const auto &commands : draw_data->CmdLists) {
     std::span<ImDrawVert> vertices(commands->VtxBuffer.Data, commands->VtxBuffer.Size);
     std::span<ImDrawIdx> indices(commands->IdxBuffer.Data, commands->IdxBuffer.Size);
-    std::ranges::copy(vertices, vertex_buffer_.GetMappedAs<ImDrawVert>().begin());
-    std::ranges::copy(indices, index_buffer_.GetMappedAs<ImDrawIdx>().begin());
+    std::ranges::copy(vertices, vbo.begin() + vbo_offset);
+    std::ranges::copy(indices, ibo.begin() + ibo_offset);
     vbo_offset += vertices.size();
     ibo_offset += indices.size();
   }
@@ -66,6 +69,13 @@ void ImGuiRenderer::RenderDrawData(CommandBuffer &command_buffer) {
     return;
   }
 
+  if (draw_data->Textures != nullptr) {
+    for (auto *texture : *draw_data->Textures) {
+      if (texture->Status != ImTextureStatus_OK) {
+      }
+    }
+  }
+
   if (draw_data->TotalVtxCount > 0) {
     SetBuffers();
   }
@@ -77,6 +87,8 @@ void ImGuiRenderer::RenderDrawData(CommandBuffer &command_buffer) {
 
   auto global_vertex_offset = 0;
   auto global_index_offset = 0;
+
+  Image *previous_image = nullptr;
 
   for (const auto commands : draw_data->CmdLists) {
     for (const auto command : commands->CmdBuffer) {
@@ -101,10 +113,11 @@ void ImGuiRenderer::RenderDrawData(CommandBuffer &command_buffer) {
 
         Image *image = reinterpret_cast<Image *>(command.GetTexID());
 
-        if (image != nullptr) {
+        if (image != previous_image) {
           command_buffer.CommandPushDescriptorSet(graphics_pipeline_.GetPipelineLayout(), 0, 0, image->GetImageView(), image->GetSampler());
         }
 
+        previous_image = image;
         command_buffer.CommandDrawIndexed(command.ElemCount, 1, first_index, vertex_offset, 0);
       }
     }
@@ -130,11 +143,12 @@ void ImGuiRenderer::CreateTexture() {
   image_specification.usage = ImageUsageMaskBits::E_SAMPLED_BIT | ImageUsageMaskBits::E_TRANSFER_DST_BIT;
   image_ = std::make_unique<Image>(image_specification);
   image_->SetImageData(std::as_bytes(data));
-  io.Fonts->SetTexID((ImTextureID)(intptr_t)image_.get());
+  io.Fonts->SetTexID((ImTextureID)image_.get());
 }
 
 void ImGuiRenderer::Begin(CommandBuffer &command_buffer, const Swapchain &swapchain) {
   ImGui::NewFrame();
+  ImGui::DockSpaceOverViewport();
 
   std::array<RenderingAttachmentInfo, 1> rendering_ai;
   {

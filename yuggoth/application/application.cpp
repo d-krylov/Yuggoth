@@ -33,8 +33,15 @@ Application::Application()
     swapchain_(main_window_.GetNativeWindow()),               //
     command_pool_(graphics_context_.GetGraphicsQueueIndex()), //
     imgui_layer_(&main_window_),                              //
-    imgui_renderer_(swapchain_.GetFormat()) {
+    imgui_renderer_(swapchain_.GetFormat()),                  //
+    editor_() {
   CreateSynchronizationObjects();
+}
+
+void Application::OnImGui() {
+}
+
+void Application::OnEvent(Event &event) {
 }
 
 void Application::Run() {
@@ -68,8 +75,7 @@ void Application::Run() {
     imgui_layer_.NewFrame();
     imgui_renderer_.Begin(command_buffer, swapchain_);
 
-    ImGui::Begin("Hello");
-    ImGui::End();
+    editor_.OnImGui();
 
     imgui_renderer_.End(command_buffer);
 

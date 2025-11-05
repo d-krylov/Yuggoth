@@ -8,7 +8,7 @@ namespace Yuggoth {
 
 VkImageView Image::CreateImageView(VkImage image, Format format) {
 
-  ImageViewCreateInfo image_view_ci{};
+  ImageViewCreateInfo image_view_ci;
   {
     image_view_ci.image = image;
     image_view_ci.viewType = ImageViewType::E_2D;
@@ -51,8 +51,8 @@ VkSampler CreateSampler(Filter filter, SamplerMipmapMode mipmap_mode, SamplerAdd
     sampler_ci.addressModeW = address_mode;
     sampler_ci.anisotropyEnable = false;
     sampler_ci.maxAnisotropy = 1.0f;
-    sampler_ci.minLod = 0.0f;
-    sampler_ci.maxLod = 16.0f;
+    sampler_ci.minLod = -1000;
+    sampler_ci.maxLod = 1000;
   }
   VK_CHECK(vkCreateSampler(GraphicsContext::Get()->GetDevice(), sampler_ci, 0, &sampler));
   return sampler;

@@ -22,13 +22,13 @@ ImageMemoryBarrier2 GetImageMemoryBarrier(VkImage image, ImageLayout from_layout
 }
 
 ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect, uint32_t base_level, uint32_t level_count) {
-  ImageSubresourceRange image_subresource_range{};
+  ImageSubresourceRange image_subresource_range;
   {
     image_subresource_range.aspectMask = aspect;
     image_subresource_range.baseMipLevel = base_level;
     image_subresource_range.levelCount = level_count;
     image_subresource_range.baseArrayLayer = 0;
-    image_subresource_range.layerCount = VK_REMAINING_ARRAY_LAYERS;
+    image_subresource_range.layerCount = 1;
   }
   return image_subresource_range;
 }

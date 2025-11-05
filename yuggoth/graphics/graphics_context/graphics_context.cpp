@@ -120,13 +120,12 @@ void GraphicsContext::CreateDevice() {
   queue_indices_ = PickPhysicalDeviceQueues(physical_device_);
 
   std::array queue_priorities = {0.0f};
-  std::vector<VkDeviceQueueCreateInfo> device_queue_cis;
+  std::vector<DeviceQueueCreateInfo> device_queue_cis;
   std::set<int32_t> unique_indices(queue_indices_.begin(), queue_indices_.end());
 
   for (const auto &queue_index : unique_indices) {
-    VkDeviceQueueCreateInfo queue_ci{};
+    DeviceQueueCreateInfo queue_ci;
     {
-      queue_ci.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
       queue_ci.queueFamilyIndex = queue_index;
       queue_ci.pQueuePriorities = queue_priorities.data();
       queue_ci.queueCount = 1;
@@ -134,48 +133,38 @@ void GraphicsContext::CreateDevice() {
     device_queue_cis.emplace_back(queue_ci);
   }
 
-  VkPhysicalDeviceRayQueryFeaturesKHR ray_query_features{};
-  {
-    ray_query_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR;
-    ray_query_features.rayQuery = true;
-  }
+  PhysicalDeviceRayQueryFeaturesKHR ray_query_features{};
+  ray_query_features.rayQuery = true;
 
-  VkPhysicalDeviceMeshShaderFeaturesEXT mesh_shader_features{};
+  PhysicalDeviceMeshShaderFeaturesEXT mesh_shader_features;
   {
-    mesh_shader_features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT;
     mesh_shader_features.meshShader = true;
     mesh_shader_features.taskShader = true;
     mesh_shader_features.meshShaderQueries = true;
     mesh_shader_features.pNext = nullptr;
   }
 
-  VkPhysicalDeviceVulkan14Features physical_device_features_14{};
+  PhysicalDeviceVulkan14Features physical_device_features_14;
   {
-    physical_device_features_14.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_4_FEATURES;
     physical_device_features_14.maintenance5 = true;
     physical_device_features_14.maintenance6 = true;
     physical_device_features_14.pushDescriptor = true;
   }
 
-  VkPhysicalDeviceVulkan13Features physical_device_features_13{};
+  PhysicalDeviceVulkan13Features physical_device_features_13;
   {
-    physical_device_features_13.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES;
-    physical_device_features_13.synchronization2 = VK_TRUE;
-    physical_device_features_13.dynamicRendering = VK_TRUE;
+    physical_device_features_13.synchronization2 = true;
+    physical_device_features_13.dynamicRendering = true;
     physical_device_features_13.pNext = &physical_device_features_14;
   }
 
-  VkPhysicalDeviceFeatures2 physical_device_features_2{};
-  {
-    physical_device_features_2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
-    physical_device_features_2.pNext = &physical_device_features_13;
-  }
+  PhysicalDeviceFeatures2 physical_device_features_2;
+  physical_device_features_2.pNext = &physical_device_features_13;
 
   auto required_device_extensions = GetRequiredDeviceExtensions();
 
-  VkDeviceCreateInfo device_ci{};
+  DeviceCreateInfo device_ci;
   {
-    device_ci.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
     device_ci.pQueueCreateInfos = device_queue_cis.data();
     device_ci.queueCreateInfoCount = device_queue_cis.size();
     device_ci.ppEnabledExtensionNames = required_device_extensions.data();
@@ -183,7 +172,7 @@ void GraphicsContext::CreateDevice() {
     device_ci.pNext = &physical_device_features_2;
   }
 
-  VK_CHECK(vkCreateDevice(physical_device_, &device_ci, nullptr, &device_));
+  VK_CHECK(vkCreateDevice(physical_device_, device_ci, nullptr, &device_));
 
   volkLoadDevice(device_);
 
