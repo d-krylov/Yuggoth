@@ -36,12 +36,17 @@ Application::Application()
     imgui_renderer_(swapchain_.GetFormat()),                  //
     editor_() {
   CreateSynchronizationObjects();
+  OnStart();
+  application_instance_ = this;
 }
 
 void Application::OnImGui() {
 }
 
 void Application::OnEvent(Event &event) {
+}
+
+void Application::OnStart() {
 }
 
 void Application::Run() {
@@ -107,6 +112,10 @@ void Application::Run() {
 
     frame_index_ = (frame_index_ + 1) % (swapchain_.GetNumberOfImages() - 1);
   }
+}
+
+SceneManager *Application::GetSceneManager() {
+  return &scene_manager_;
 }
 
 } // namespace Yuggoth

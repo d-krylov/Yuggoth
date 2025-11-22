@@ -1,11 +1,14 @@
 #ifndef YUGGOTH_MODEL_H
 #define YUGGOTH_MODEL_H
 
+#include "asset.h"
+#include "mesh.h"
+
 namespace Yuggoth {
 
-class Model {
+class Model : public Asset {
 public:
-  Model();
+  Model(const std::filesystem::path &model_path);
 
 private:
 };

@@ -11,3 +11,21 @@ FetchContent_Declare(
 	GIT_REPOSITORY https://github.com/ocornut/imgui.git
 	GIT_TAG docking
 )
+
+FetchContent_Declare(
+	imguizmo
+	GIT_REPOSITORY https://github.com/CedricGuillemet/ImGuizmo
+	GIT_TAG master
+)
+
+FetchContent_Declare(
+	entt
+	GIT_REPOSITORY https://github.com/skypjack/entt
+	GIT_TAG v3.15.0
+)
+
+FetchContent_Declare(
+	stb
+	GIT_REPOSITORY https://github.com/nothings/stb
+	GIT_TAG master
+)

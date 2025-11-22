@@ -17,7 +17,10 @@ include(cmake/shader-compiler.cmake)
 
 FetchContent_MakeAvailable(
   imgui
+  imguizmo
   fastgltf
+  entt
+  stb
 )
 
 add_subdirectory(yuggoth)

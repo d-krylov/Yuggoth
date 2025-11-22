@@ -24,6 +24,8 @@ protected:
   bool OnMouseMoveEvent(const MouseMoveEvent &event);
   bool OnCharEvent(const CharEvent &event);
 
+  void SetStyle();
+
 private:
   Window *window_ = nullptr;
 };

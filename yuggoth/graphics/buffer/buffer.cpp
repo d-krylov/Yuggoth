@@ -34,7 +34,7 @@ Buffer &Buffer::operator=(Buffer &&other) noexcept {
   std::swap(buffer_, other.buffer_);
   std::swap(vma_allocation_, other.vma_allocation_);
   std::swap(mapped_memory_, other.mapped_memory_);
-  buffer_size_ = other.buffer_size_;
+  std::swap(buffer_size_, other.buffer_size_);
   return *this;
 }
 

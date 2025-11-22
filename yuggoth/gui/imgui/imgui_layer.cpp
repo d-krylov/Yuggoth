@@ -55,8 +55,14 @@ ImGuiLayer::ImGuiLayer(Window *window) : window_(window) {
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-
+  SetStyle();
   window->SetEventHandler(BIND_FUNCTION(ImGuiLayer::OnEvent));
+}
+
+void ImGuiLayer::SetStyle() {
+  ImGuiStyle &style = ImGui::GetStyle();
+
+  style.Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void ImGuiLayer::OnEvent(Event &event) {

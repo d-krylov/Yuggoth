@@ -1,5 +1,6 @@
 #include "imgui_renderer.h"
 #include "imgui.h"
+#include "ImGuizmo.h"
 #include "yuggoth/core/include/core.h"
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
@@ -148,6 +149,7 @@ void ImGuiRenderer::CreateTexture() {
 
 void ImGuiRenderer::Begin(CommandBuffer &command_buffer, const Swapchain &swapchain) {
   ImGui::NewFrame();
+  ImGuizmo::BeginFrame();
   ImGui::DockSpaceOverViewport();
 
   std::array<RenderingAttachmentInfo, 1> rendering_ai;

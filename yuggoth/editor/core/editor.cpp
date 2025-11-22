@@ -15,6 +15,8 @@ void Editor::OnImGui() {
 
   viewport_window_.OnImGui();
   hierarchy_window_.OnImGui();
+  inspector_window_.OnImGui();
+  application_window_.OnImGui();
 }
 
 void Editor::DrawMainMenu() {

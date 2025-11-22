@@ -7,6 +7,10 @@ class HierarchyWindow {
 public:
   void OnImGui();
 
+protected:
+  void AddEntity();
+  void DrawNodes();
+
 private:
 };
 

@@ -17,6 +17,8 @@ protected:
 private:
   ViewportWindow viewport_window_;
   HierarchyWindow hierarchy_window_;
+  InspectorWindow inspector_window_;
+  ApplicationWindow application_window_;
 };
 
 } // namespace Yuggoth

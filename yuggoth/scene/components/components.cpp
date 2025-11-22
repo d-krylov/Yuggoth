@@ -1,3 +1,3 @@
-#include "yuggoth/model/include/model.h"
+#include "components.h"
 
 namespace Yuggoth {} // namespace Yuggoth

@@ -175,11 +175,11 @@ GraphicsPipeline::GraphicsPipeline(const GraphicsPipelineSpecification &specific
     auto &shader_module = shader_modules.emplace_back(shader_path);
     MergeDescriptorSets(descriptor_sets, shader_module.GetDescriptorSets());
   }
-  descriptor_set_layouts_.resize(descriptor_sets.size());
+  std::vector<VkDescriptorSetLayout> descriptor_set_layouts(descriptor_sets.size());
   for (const auto &[set, bindings] : descriptor_sets) {
-    descriptor_set_layouts_[set] = CreateDescriptorSetLayout(bindings);
+    descriptor_set_layouts[set] = CreateDescriptorSetLayout(bindings);
   }
-  pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts_, shader_modules[0].GetPushConstants());
+  pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts, shader_modules[0].GetPushConstants());
   pipeline_ = CreateGraphicsPipeline(specification, shader_modules, pipeline_layout_);
 }
 
@@ -189,13 +189,11 @@ GraphicsPipeline::~GraphicsPipeline() {
 GraphicsPipeline::GraphicsPipeline(GraphicsPipeline &&other) noexcept {
   pipeline_ = std::exchange(other.pipeline_, VK_NULL_HANDLE);
   pipeline_layout_ = std::exchange(other.pipeline_layout_, VK_NULL_HANDLE);
-  descriptor_set_layouts_ = std::move(other.descriptor_set_layouts_);
 }
 
 GraphicsPipeline &GraphicsPipeline::operator=(GraphicsPipeline &&other) noexcept {
   std::swap(pipeline_, other.pipeline_);
   std::swap(pipeline_layout_, other.pipeline_layout_);
-  descriptor_set_layouts_ = std::move(other.descriptor_set_layouts_);
   return *this;
 }
 

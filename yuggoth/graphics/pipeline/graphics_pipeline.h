@@ -29,7 +29,6 @@ public:
 private:
   VkPipeline pipeline_{VK_NULL_HANDLE};
   VkPipelineLayout pipeline_layout_{VK_NULL_HANDLE};
-  std::vector<VkDescriptorSetLayout> descriptor_set_layouts_;
 };
 
 } // namespace Yuggoth
