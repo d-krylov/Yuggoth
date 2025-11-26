@@ -17,8 +17,8 @@ ImGuiRenderer::ImGuiRenderer(Format color_format) {
   specification.shader_paths_ = {shaders_root / "gui" / "gui.vert.spv", shaders_root / "gui" / "gui.frag.spv"};
   graphics_pipeline_ = GraphicsPipeline(specification);
 
-  vertex_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_VERTEX_BUFFER_BIT, true);
-  index_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_INDEX_BUFFER_BIT, true);
+  vertex_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_VERTEX_BUFFER_BIT, Buffer::MAPPED);
+  index_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_INDEX_BUFFER_BIT, Buffer::MAPPED);
 
   CreateTexture();
 }
@@ -26,13 +26,13 @@ ImGuiRenderer::ImGuiRenderer(Format color_format) {
 void ImGuiRenderer::SetBuffers() {
   auto draw_data = ImGui::GetDrawData();
   std::size_t vbo_offset = 0, ibo_offset = 0;
-  auto vbo = vertex_buffer_.GetMappedAs<ImDrawVert>();
-  auto ibo = index_buffer_.GetMappedAs<ImDrawIdx>();
+  auto vertex_buffer_memory = vertex_buffer_.GetMappedAs<ImDrawVert>();
+  auto index_buffer_memory = index_buffer_.GetMappedAs<ImDrawIdx>();
   for (const auto &commands : draw_data->CmdLists) {
     std::span<ImDrawVert> vertices(commands->VtxBuffer.Data, commands->VtxBuffer.Size);
     std::span<ImDrawIdx> indices(commands->IdxBuffer.Data, commands->IdxBuffer.Size);
-    std::ranges::copy(vertices, vbo.begin() + vbo_offset);
-    std::ranges::copy(indices, ibo.begin() + ibo_offset);
+    std::ranges::copy(vertices, vertex_buffer_memory.begin() + vbo_offset);
+    std::ranges::copy(indices, index_buffer_memory.begin() + ibo_offset);
     vbo_offset += vertices.size();
     ibo_offset += indices.size();
   }
@@ -134,17 +134,8 @@ void ImGuiRenderer::CreateTexture() {
   int32_t width, height, channels;
   io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &channels);
   auto data = std::span(pixels, width * height * channels);
-
-  ImageSpecification image_specification;
-  image_specification.format = Format::E_R8G8B8A8_UNORM;
-  image_specification.extent = Extent3D(width, height, 1);
-  image_specification.image_type = ImageType::E_2D;
-  image_specification.layers = 1;
-  image_specification.levels = 1;
-  image_specification.usage = ImageUsageMaskBits::E_SAMPLED_BIT | ImageUsageMaskBits::E_TRANSFER_DST_BIT;
-  image_ = std::make_unique<Image>(image_specification);
-  image_->SetImageData(std::as_bytes(data));
-  io.Fonts->SetTexID((ImTextureID)image_.get());
+  image_ = Image2D(width, height, std::as_bytes(data), SamplerSpecification());
+  io.Fonts->SetTexID((ImTextureID)&image_);
 }
 
 void ImGuiRenderer::Begin(CommandBuffer &command_buffer, const Swapchain &swapchain) {

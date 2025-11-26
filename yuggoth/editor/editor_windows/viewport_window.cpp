@@ -1,6 +1,7 @@
 #include "viewport_window.h"
 #include "imgui.h"
 #include "ImGuizmo.h"
+#include "yuggoth/application/application.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
 
 namespace Yuggoth {
@@ -12,6 +13,13 @@ void ViewportWindow::OnImGui() {
   ImGui::Begin("Viewport");
   auto size = ImGui::GetContentRegionAvail();
   auto position = ImGui::GetWindowPos();
+
+  auto renderer = Application::Get()->GetSceneRenderer();
+
+  auto &image = renderer->GetImage();
+  auto &extent = image.GetExtent();
+
+  ImGui::Image((ImTextureID)(intptr_t)&image, ImVec2(extent.width, extent.height));
 
   ImGuizmo::SetDrawlist();
   ImGuizmo::SetRect(position.x, position.y, size.x, size.y);

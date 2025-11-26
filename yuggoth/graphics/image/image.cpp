@@ -1,88 +1,78 @@
 #include "image.h"
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/graphics/core/structure_tools.h"
+#include "yuggoth/graphics/graphics_context/graphics_allocator.h"
 #include <algorithm>
 
 namespace Yuggoth {
 
-VkImageView Image::CreateImageView(VkImage image, Format format) {
-
+VkImageView Image::CreateImageView(VkImage image, Format format, ImageViewType image_view_type, const ImageSubresourceRange &subresource_range) {
   ImageViewCreateInfo image_view_ci;
-  {
-    image_view_ci.image = image;
-    image_view_ci.viewType = ImageViewType::E_2D;
-    image_view_ci.format = format;
-    image_view_ci.subresourceRange = GetImageSubresourceRange(ImageAspectMaskBits::E_COLOR_BIT);
-  }
-
+  image_view_ci.image = image;
+  image_view_ci.viewType = image_view_type;
+  image_view_ci.format = format;
+  image_view_ci.subresourceRange = subresource_range;
   VkImageView image_view = VK_NULL_HANDLE;
-
-  VK_CHECK(vkCreateImageView(GraphicsContext::Get()->GetDevice(), image_view_ci, 0, &image_view));
-
+  VK_CHECK(vkCreateImageView(GraphicsContext::Get()->GetDevice(), image_view_ci, nullptr, &image_view));
   return image_view;
 }
 
-void Image::CreateImage(const Extent3D &extent, ImageType type, Format format, uint32_t mip_levels, uint32_t layers, ImageUsageMask usage) {
+VkImage Image::CreateImage(ImageType image_type, const ImageSpecification &image_specification, VmaAllocation &out_allocation) {
   ImageCreateInfo image_ci;
-  {
-    image_ci.imageType = type;
-    image_ci.format = format;
-    image_ci.extent = extent;
-    image_ci.mipLevels = mip_levels;
-    image_ci.arrayLayers = layers;
-    image_ci.samples = SampleCountMaskBits::E_1_BIT;
-    image_ci.tiling = ImageTiling::E_OPTIMAL;
-    image_ci.usage = usage;
-  }
-
-  vma_allocation_ = GraphicsAllocator::Get()->AllocateImage(image_ci, image_);
+  image_ci.imageType = image_type;
+  image_ci.extent = image_specification.extent_;
+  image_ci.mipLevels = image_specification.levels_;
+  image_ci.arrayLayers = image_specification.layers_;
+  image_ci.format = image_specification.format_;
+  image_ci.tiling = ImageTiling::E_OPTIMAL;
+  image_ci.initialLayout = ImageLayout::E_UNDEFINED;
+  image_ci.usage = image_specification.usage_;
+  image_ci.samples = SampleCountMaskBits::E_1_BIT;
+  image_ci.sharingMode = SharingMode::E_EXCLUSIVE;
+  VkImage image = VK_NULL_HANDLE;
+  auto allocation_information = GraphicsAllocator::Get()->AllocateImage(image_ci, image);
+  out_allocation = allocation_information.allocation_;
+  return image;
 }
 
-VkSampler CreateSampler(Filter filter, SamplerMipmapMode mipmap_mode, SamplerAddressMode address_mode) {
-  VkSampler sampler = VK_NULL_HANDLE;
-  SamplerCreateInfo sampler_ci;
-  {
-    sampler_ci.magFilter = filter;
-    sampler_ci.minFilter = filter;
-    sampler_ci.mipmapMode = mipmap_mode;
-    sampler_ci.addressModeU = address_mode;
-    sampler_ci.addressModeV = address_mode;
-    sampler_ci.addressModeW = address_mode;
-    sampler_ci.anisotropyEnable = false;
-    sampler_ci.maxAnisotropy = 1.0f;
-    sampler_ci.minLod = -1000;
-    sampler_ci.maxLod = 1000;
-  }
-  VK_CHECK(vkCreateSampler(GraphicsContext::Get()->GetDevice(), sampler_ci, 0, &sampler));
-  return sampler;
+void Image::Initialize(ImageType image_type, ImageViewType view_type, const ImageSpecification &image_specification,
+                       const std::optional<SamplerSpecification> &sampler_specification) {
+  image_specification_ = image_specification;
+  auto aspect_mask = GetAspectMask(GetFormat());
+  auto subresource = GetImageSubresourceRange(aspect_mask, 0, GetLevelCoount(), 0, GetLayerCoount());
+  image_ = CreateImage(image_type, image_specification_, allocation_);
+  image_view_ = CreateImageView(GetImage(), GetFormat(), view_type, subresource);
+  image_sampler_ = sampler_specification.has_value() ? Sampler::CreateSampler(sampler_specification.value()) : nullptr;
 }
 
-Image::Image(const ImageSpecification &image_specification) {
-  CreateImage(image_specification.extent, ImageType::E_2D, image_specification.format, 1, 1, image_specification.usage);
-  image_view_ = CreateImageView(image_, image_specification.format);
-  sampler_ = CreateSampler(Filter::E_LINEAR, SamplerMipmapMode::E_LINEAR, SamplerAddressMode::E_CLAMP_TO_EDGE);
-  extent_ = image_specification.extent;
+Image::Image(ImageType type, ImageViewType view_type, const ImageSpecification &specification,
+             const std::optional<SamplerSpecification> &sampler_specification) {
+  Initialize(type, view_type, specification, sampler_specification);
 }
 
 Image::Image(Image &&other) noexcept {
   image_ = std::exchange(other.image_, VK_NULL_HANDLE);
-  vma_allocation_ = std::exchange(other.vma_allocation_, VK_NULL_HANDLE);
+  allocation_ = std::exchange(other.allocation_, VK_NULL_HANDLE);
   image_view_ = std::exchange(other.image_view_, VK_NULL_HANDLE);
-  sampler_ = std::exchange(other.sampler_, VK_NULL_HANDLE);
+  image_sampler_ = std::exchange(other.image_sampler_, VK_NULL_HANDLE);
 }
 
 Image &Image::operator=(Image &&other) noexcept {
   std::swap(image_, other.image_);
-  std::swap(vma_allocation_, other.vma_allocation_);
+  std::swap(allocation_, other.allocation_);
   std::swap(image_view_, other.image_view_);
-  std::swap(sampler_, other.sampler_);
-  extent_ = other.extent_;
+  std::swap(image_sampler_, other.image_sampler_);
+  std::swap(image_specification_, other.image_specification_);
   return *this;
 }
 
+Image::~Image() {
+  vkDestroyImageView(GraphicsContext::Get()->GetDevice(), image_view_, nullptr);
+  GraphicsAllocator::Get()->DestroyImage(image_, allocation_);
+}
+
 const Extent3D &Image::GetExtent() const {
-  return extent_;
+  return image_specification_.extent_;
 }
 
 VkImage Image::GetImage() const {
@@ -94,38 +84,45 @@ VkImageView Image::GetImageView() const {
 }
 
 VkSampler Image::GetSampler() const {
-  return sampler_;
+  return image_sampler_;
 }
 
-Image::~Image() {
-  vkDestroyImage(GraphicsContext::Get()->GetDevice(), image_, nullptr);
-  vkDestroyImageView(GraphicsContext::Get()->GetDevice(), image_view_, nullptr);
+Format Image::GetFormat() const {
+  return image_specification_.format_;
+}
+
+uint32_t Image::GetLevelCoount() const {
+  return image_specification_.levels_;
+}
+
+uint32_t Image::GetLayerCoount() const {
+  return image_specification_.layers_;
+}
+
+ImageUsageMask Image::GetUsage() const {
+  return image_specification_.usage_;
+}
+
+void Image::SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer) {
+  if (new_layout == current_layout_) return;
+  auto access0 = GetAccessMaskFromLayout(current_layout_, false);
+  auto access1 = GetAccessMaskFromLayout(new_layout, true);
+  auto stage0 = GetPipelineStageMaskFromLayout(current_layout_, false);
+  auto stage1 = GetPipelineStageMaskFromLayout(new_layout, true);
+  auto subresource = GetImageSubresourceRange(ImageAspectMaskBits::E_COLOR_BIT);
+  command_buffer->TransitionImageLayout(GetImage(), current_layout_, new_layout, stage0, stage1, access0, access1, subresource);
+  current_layout_ = new_layout;
 }
 
 void Image::SetImageData(std::span<const std::byte> data) {
-  Buffer buffer(data.size(), BufferUsageMaskBits::E_TRANSFER_SRC_BIT, true);
-  std::ranges::copy(data, buffer.GetMapped().begin());
+  Buffer buffer(data.size(), BufferUsageMaskBits::E_TRANSFER_SRC_BIT, Buffer::CPU);
+  buffer.SetData<std::byte>(data);
   CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin();
-
-  auto subresource = GetImageSubresourceRange(ImageAspectMaskBits::E_COLOR_BIT);
-
-  auto barrier1 =
-    GetImageMemoryBarrier(GetImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_TRANSFER_DST_OPTIMAL, PipelineStageMaskBits2::E_TOP_OF_PIPE_BIT,
-                          PipelineStageMaskBits2::E_ALL_TRANSFER_BIT, {}, AccessMaskBits2::E_TRANSFER_READ_BIT, subresource);
-
-  command_buffer.CommandPipelineBarrier({}, {}, std::array{barrier1});
-
+  SetImageLayout(ImageLayout::E_TRANSFER_DST_OPTIMAL, &command_buffer);
   command_buffer.CommandCopyBufferToImage(buffer.GetHandle(), GetImage(), GetExtent());
-
-  auto barrier2 = GetImageMemoryBarrier(GetImage(), ImageLayout::E_TRANSFER_DST_OPTIMAL, ImageLayout::E_READ_ONLY_OPTIMAL,
-                                        PipelineStageMaskBits2::E_ALL_TRANSFER_BIT, PipelineStageMaskBits2::E_FRAGMENT_SHADER_BIT,
-                                        AccessMaskBits2::E_TRANSFER_READ_BIT, AccessMaskBits2::E_SHADER_READ_BIT, subresource);
-
-  command_buffer.CommandPipelineBarrier({}, {}, std::array{barrier2});
-
+  SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer);
   command_buffer.End();
-
   command_buffer.Submit();
 }
 

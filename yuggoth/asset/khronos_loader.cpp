@@ -58,7 +58,7 @@ void LoadImages(const fgf::Asset &asset, const std::filesystem::path &path) {
   }
 }
 
-void LoadGLTF(const std::filesystem::path &path) {
+void Model::LoadKhronos(const std::filesystem::path &path) {
 
   auto extensions = fgf::Extensions::KHR_mesh_quantization | fgf::Extensions::KHR_texture_transform | fgf::Extensions::KHR_materials_variants;
   auto options = fgf::Options::DontRequireValidAssetMember | fgf::Options::LoadExternalBuffers | fgf::Options::GenerateMeshIndices;

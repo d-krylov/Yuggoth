@@ -17,6 +17,7 @@ public:
   static Application *Get();
 
   SceneManager *GetSceneManager();
+  SceneRenderer *GetSceneRenderer();
 
   void OnStart();
 
@@ -33,6 +34,7 @@ private:
   ImGuiRenderer imgui_renderer_;
   SceneManager scene_manager_;
   Editor editor_;
+  SceneRenderer scene_renderer_;
   std::vector<CommandBuffer> command_buffers_;
   std::vector<Semaphore> render_finished_semaphores_;
   std::vector<Semaphore> image_available_semaphores_;

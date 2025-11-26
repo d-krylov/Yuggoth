@@ -2,34 +2,16 @@
 
 namespace Yuggoth {
 
-ImageMemoryBarrier2 GetImageMemoryBarrier(VkImage image, ImageLayout from_layout, ImageLayout to_layout, PipelineStageMask2 source_stage,
-                                          PipelineStageMask2 destination_stage, AccessMask2 source_access, AccessMask2 destination_access,
-                                          const ImageSubresourceRange &subresource) {
-  ImageMemoryBarrier2 image_memory_barrier;
-  {
-    image_memory_barrier.srcStageMask = source_stage;
-    image_memory_barrier.srcAccessMask = source_access;
-    image_memory_barrier.dstStageMask = destination_stage;
-    image_memory_barrier.dstAccessMask = destination_access;
-    image_memory_barrier.oldLayout = from_layout;
-    image_memory_barrier.newLayout = to_layout;
-    image_memory_barrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    image_memory_barrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-    image_memory_barrier.image = image;
-    image_memory_barrier.subresourceRange = subresource;
-  }
-  return image_memory_barrier;
-}
-
-ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect, uint32_t base_level, uint32_t level_count) {
+ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect, uint32_t base_level, uint32_t level_count, uint32_t base_layer,
+                                               uint32_t layer_count) {
   ImageSubresourceRange image_subresource_range;
-  {
-    image_subresource_range.aspectMask = aspect;
-    image_subresource_range.baseMipLevel = base_level;
-    image_subresource_range.levelCount = level_count;
-    image_subresource_range.baseArrayLayer = 0;
-    image_subresource_range.layerCount = 1;
-  }
+
+  image_subresource_range.aspectMask = aspect;
+  image_subresource_range.baseMipLevel = base_level;
+  image_subresource_range.levelCount = level_count;
+  image_subresource_range.baseArrayLayer = base_layer;
+  image_subresource_range.layerCount = layer_count;
+
   return image_subresource_range;
 }
 

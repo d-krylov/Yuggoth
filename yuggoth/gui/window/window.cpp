@@ -109,6 +109,12 @@ ViewportSize Window::GetFramebufferSize() const {
   return size;
 }
 
+CursorPosition Window::GetCursorPosition() const {
+  CursorPosition cursor_position;
+  glfwGetCursorPos(native_window_, &cursor_position.x, &cursor_position.y);
+  return cursor_position;
+}
+
 GLFWwindow *Window::GetNativeWindow() const {
   return native_window_;
 }

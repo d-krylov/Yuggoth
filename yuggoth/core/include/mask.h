@@ -9,8 +9,7 @@ namespace Yuggoth {
 template <typename T>
 concept ScopedEnum = std::is_scoped_enum_v<T>;
 
-template <ScopedEnum MaskBit>
-class Mask {
+template <ScopedEnum MaskBit> class Mask {
 public:
   using MaskType = typename std::underlying_type_t<MaskBit>;
 
@@ -48,6 +47,10 @@ public:
     return (*this & requiered_mask) == requiered_mask;
   }
 
+  bool HasAnyBits(const Mask<MaskBit> &requiered_mask) const {
+    return !(*this & requiered_mask);
+  }
+
   constexpr Mask<MaskBit> operator&(const Mask<MaskBit> &rhs) const {
     return Mask<MaskBit>(mask_ & rhs.mask_);
   }
@@ -80,28 +83,23 @@ private:
   MaskType mask_;
 };
 
-template <typename MaskBit>
-inline constexpr Mask<MaskBit> operator&(MaskBit bit, const Mask<MaskBit> &flags) {
+template <typename MaskBit> inline constexpr Mask<MaskBit> operator&(MaskBit bit, const Mask<MaskBit> &flags) {
   return flags.operator&(bit);
 }
 
-template <typename MaskBit>
-inline constexpr Mask<MaskBit> operator|(MaskBit bit, const Mask<MaskBit> &flags) {
+template <typename MaskBit> inline constexpr Mask<MaskBit> operator|(MaskBit bit, const Mask<MaskBit> &flags) {
   return flags.operator|(bit);
 }
 
-template <ScopedEnum MaskBit>
-inline constexpr Mask<MaskBit> operator&(MaskBit lhs, MaskBit rhs) {
+template <ScopedEnum MaskBit> inline constexpr Mask<MaskBit> operator&(MaskBit lhs, MaskBit rhs) {
   return Mask<MaskBit>(lhs) & rhs;
 }
 
-template <ScopedEnum MaskBit>
-inline constexpr Mask<MaskBit> operator|(MaskBit lhs, MaskBit rhs) {
+template <ScopedEnum MaskBit> inline constexpr Mask<MaskBit> operator|(MaskBit lhs, MaskBit rhs) {
   return Mask<MaskBit>(lhs) | rhs;
 }
 
-template <ScopedEnum MaskBit>
-inline constexpr Mask<MaskBit> operator^(MaskBit lhs, MaskBit rhs) {
+template <ScopedEnum MaskBit> inline constexpr Mask<MaskBit> operator^(MaskBit lhs, MaskBit rhs) {
   return Mask<MaskBit>(lhs) ^ rhs;
 }
 

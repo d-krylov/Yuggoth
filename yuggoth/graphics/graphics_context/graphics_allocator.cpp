@@ -40,7 +40,7 @@ void GraphicsAllocator::CreateAllocator() {
   VK_CHECK(vmaCreateAllocator(&allocator_ci, &vma_allocator_));
 }
 
-VmaAllocation GraphicsAllocator::AllocateImage(const ImageCreateInfo &image_ci, VkImage &image) {
+AllocationInformation GraphicsAllocator::AllocateImage(const ImageCreateInfo &image_ci, VkImage &out_image) {
   VmaAllocationCreateInfo vma_allocation_ci{};
   {
     vma_allocation_ci.flags = 0;
@@ -55,16 +55,28 @@ VmaAllocation GraphicsAllocator::AllocateImage(const ImageCreateInfo &image_ci, 
   VmaAllocation allocation{VK_NULL_HANDLE};
   VmaAllocationInfo allocation_info{};
 
-  VK_CHECK(vmaCreateImage(vma_allocator_, image_ci, &vma_allocation_ci, &image, &allocation, &allocation_info));
+  VK_CHECK(vmaCreateImage(vma_allocator_, image_ci, &vma_allocation_ci, &out_image, &allocation, &allocation_info));
 
-  return allocation;
+  AllocationInformation allocation_information;
+  allocation_information.allocation_ = allocation;
+
+  return allocation_information;
 }
 
-AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &buffer_ci, VkBuffer &buffer, VmaAllocationCreateFlags flags) {
+AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &buffer_ci, VkBuffer &out_buffer,
+                                                        AllocationCreateMask allocation_mask) {
+
+  AllocationCreateMask cpu_bit = AllocationCreateMaskBits::E_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | //
+                                 AllocationCreateMaskBits::E_HOST_ACCESS_RANDOM_BIT;
+
+  auto has_cpu = allocation_mask.HasAnyBits(cpu_bit);
+
+  VmaMemoryUsage memory_usage = has_cpu ? VMA_MEMORY_USAGE_AUTO_PREFER_HOST : VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
+
   VmaAllocationCreateInfo vma_allocation_ci{};
   {
-    vma_allocation_ci.flags = flags;
-    vma_allocation_ci.usage = VMA_MEMORY_USAGE_AUTO;
+    vma_allocation_ci.flags = allocation_mask.GetValue();
+    vma_allocation_ci.usage = memory_usage;
     vma_allocation_ci.requiredFlags = 0;
     vma_allocation_ci.preferredFlags = 0;
     vma_allocation_ci.memoryTypeBits = 0;
@@ -72,14 +84,16 @@ AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &
     vma_allocation_ci.pUserData = nullptr;
   }
 
-  VmaAllocationInfo allocation_info{};
   VmaAllocation allocation{VK_NULL_HANDLE};
+  VmaAllocationInfo allocation_info{};
 
-  VK_CHECK(vmaCreateBuffer(vma_allocator_, buffer_ci, &vma_allocation_ci, &buffer, &allocation, &allocation_info));
+  VK_CHECK(vmaCreateBuffer(vma_allocator_, buffer_ci, &vma_allocation_ci, &out_buffer, &allocation, &allocation_info));
 
-  auto mapped_memory = reinterpret_cast<std::byte *>(allocation_info.pMappedData);
+  AllocationInformation allocation_information;
+  allocation_information.allocation_ = allocation;
+  allocation_information.mapped_memory_ = static_cast<std::byte *>(allocation_info.pMappedData);
 
-  return std::make_pair(allocation, mapped_memory);
+  return allocation_information;
 }
 
 void GraphicsAllocator::MapMemory(VmaAllocation allocation, std::byte **memory) {
@@ -88,6 +102,10 @@ void GraphicsAllocator::MapMemory(VmaAllocation allocation, std::byte **memory) 
 
 void GraphicsAllocator::UnmapMemory(VmaAllocation allocation) {
   vmaUnmapMemory(vma_allocator_, allocation);
+}
+
+void GraphicsAllocator::CopyMemoryToAllocation(std::span<const std::byte> source, VmaAllocation destination, std::size_t offset) {
+  vmaCopyMemoryToAllocation(vma_allocator_, source.data(), destination, offset, source.size());
 }
 
 void GraphicsAllocator::DestroyImage(VkImage image, VmaAllocation vma_allocation) {

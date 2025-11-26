@@ -25,9 +25,12 @@ protected:
   bool OnCharEvent(const CharEvent &event);
 
   void SetStyle();
+  void UpdateMouseData();
+  void UpdateTime();
 
 private:
   Window *window_ = nullptr;
+  double time_ = 0.0;
 };
 
 } // namespace Yuggoth

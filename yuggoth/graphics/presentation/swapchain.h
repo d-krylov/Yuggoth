@@ -39,6 +39,7 @@ public:
 protected:
   void CreateSurface(GLFWwindow *native_window);
   void CreateSwapchain();
+  void CreateImageViews();
 
 private:
   VkSurfaceKHR surface_{VK_NULL_HANDLE};

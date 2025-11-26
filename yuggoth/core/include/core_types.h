@@ -6,13 +6,13 @@
 namespace Yuggoth {
 
 struct ViewportSize {
-
-  auto GetAspect() const {
-    return static_cast<float>(width) / static_cast<float>(height);
-  }
-
   int32_t width;
   int32_t height;
+};
+
+struct CursorPosition {
+  double x;
+  double y;
 };
 
 } // namespace Yuggoth

@@ -1,13 +1,5 @@
 set(YUGGOTH_SOURCE_DIR ${PROJECT_SOURCE_DIR}/yuggoth)
 
-set(YUGGOTH_EDITOR_SOURCES
-  ${YUGGOTH_SOURCE_DIR}/editor/core/editor.cpp
-  ${YUGGOTH_SOURCE_DIR}/editor/editor_windows/viewport_window.cpp
-  ${YUGGOTH_SOURCE_DIR}/editor/editor_windows/inspector_window.cpp
-  ${YUGGOTH_SOURCE_DIR}/editor/editor_windows/hierarchy_window.cpp
-  ${YUGGOTH_SOURCE_DIR}/editor/editor_windows/application_window.cpp
-)
-
 set(YUGGOTH_GUI_SOURCES
   ${YUGGOTH_SOURCE_DIR}/gui/window/window.cpp
   ${YUGGOTH_SOURCE_DIR}/gui/window/event_kind.cpp
@@ -15,49 +7,13 @@ set(YUGGOTH_GUI_SOURCES
   ${YUGGOTH_SOURCE_DIR}/gui/imgui/imgui_layer.cpp
 )
 
-set(YUGGOTH_ASSET_SOURCES
-  ${YUGGOTH_SOURCE_DIR}/asset/model.cpp
-  ${YUGGOTH_SOURCE_DIR}/asset/khronos_loader.cpp
-  ${YUGGOTH_SOURCE_DIR}/asset/asset_manager.cpp
-)
-
-set(YUGGOTH_CORE_SOURCES
-  ${YUGGOTH_SOURCE_DIR}/core/core.cpp
-  ${YUGGOTH_SOURCE_DIR}/core/uuid.cpp
-  ${YUGGOTH_SOURCE_DIR}/core/image_wrapper.cpp
-)
-
-set(YUGGOTH_SCENE_SOURCES
-  ${YUGGOTH_SOURCE_DIR}/scene/core/scene.cpp
-  ${YUGGOTH_SOURCE_DIR}/scene/core/scene_manager.cpp
-  ${YUGGOTH_SOURCE_DIR}/scene/core/entity.cpp
-  ${YUGGOTH_SOURCE_DIR}/scene/components/components.cpp
-)
-
-set(YUGGOTH_RENDERER_SOURCES
-  ${YUGGOTH_SOURCE_DIR}/renderer/scene_renderer.cpp
-)
-
-set(YUGGOTH_GRAPHICS_SOURCES
-  ${YUGGOTH_SOURCE_DIR}/graphics/core/synchronization.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/core/structure_tools.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/core/graphics_structures.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/graphics_context/graphics_context.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/graphics_context/graphics_allocator.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/graphics_context/graphics_tools.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/pipeline/shader_module.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/pipeline/graphics_pipeline.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/pipeline/compute_pipeline.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/pipeline/ray_tracing_pipeline.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/presentation/swapchain.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/command/command_pool.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/command/command_buffer.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/image/image.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/image/image_depth.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/image/image2D.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/image/sampler.cpp
-  ${YUGGOTH_SOURCE_DIR}/graphics/buffer/buffer.cpp
-)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/mathematics" ".cpp" YUGGOTH_MATHEMATICS_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/core" ".cpp" YUGGOTH_CORE_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/asset" ".cpp" YUGGOTH_ASSET_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/renderer" ".cpp" YUGGOTH_RENDERER_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/graphics" ".cpp" YUGGOTH_GRAPHICS_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/editor" ".cpp" YUGGOTH_EDITOR_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/scene" ".cpp" YUGGOTH_SCENE_SOURCES)
 
 set(YUGGOTH_SOURCES
   ${YUGGOTH_GUI_SOURCES}
@@ -67,6 +23,7 @@ set(YUGGOTH_SOURCES
   ${YUGGOTH_SCENE_SOURCES}
   ${YUGGOTH_RENDERER_SOURCES}
   ${YUGGOTH_CORE_SOURCES}
+  ${YUGGOTH_MATHEMATICS_SOURCES}
   ${YUGGOTH_SOURCE_DIR}/application/yuggoth.cpp
   ${YUGGOTH_SOURCE_DIR}/application/application.cpp
   ${Vulkan_INCLUDE_DIR}/SPIRV-Reflect/spirv_reflect.c
@@ -94,17 +51,18 @@ configure_file(
   ${CMAKE_BINARY_DIR}/config/yuggoth_config.h
 )
 
-# IMGUi
+# ImGui
 add_library(imgui STATIC ${IMGUI_SOURCES})
 target_include_directories(imgui PUBLIC ${imgui_SOURCE_DIR})
 
 # IMGUIZMO
 add_library(imguizmo STATIC ${IMGUIZMO_SOURCES})
-
 target_include_directories(imguizmo 
   PUBLIC ${imguizmo_SOURCE_DIR}  
   PUBLIC ${imgui_SOURCE_DIR}
 )
+
+target_link_libraries(ImGuiFileDialog PUBLIC imgui)
 
 # YUGGOTH
 add_executable(${PROJECT_NAME})
@@ -127,6 +85,8 @@ target_link_libraries(${PROJECT_NAME}
   glfw
   imgui
   imguizmo
+  ImGuiFileDialog
+  tinyobjloader
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC 

@@ -9,9 +9,12 @@ namespace Yuggoth {
 
 class Buffer {
 public:
+  static constexpr AllocationCreateMask CPU = AllocationCreateMaskBits::E_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
+  static constexpr AllocationCreateMask MAPPED = CPU | AllocationCreateMaskBits::E_MAPPED_BIT;
+
   Buffer() = default;
 
-  Buffer(std::size_t buffer_size, BufferUsageMask buffer_usage, bool mapped = false);
+  Buffer(std::size_t buffer_size, BufferUsageMask buffer_usage, AllocationCreateMask allocation_mask);
 
   ~Buffer();
 
@@ -23,19 +26,21 @@ public:
 
   std::size_t GetSize() const;
 
-  template <typename T>
-  std::span<T> GetMappedAs();
-
-  std::span<std::byte> GetMapped();
+  template <typename T> std::span<T> GetMappedAs();
+  template <typename T> void SetData(std::span<const T> data, std::size_t byte_offset = 0);
 
   void Map();
   void Unmap();
 
+  VkDeviceAddress GetBufferDeviceAddress() const;
   VkBuffer GetHandle() const;
+
+protected:
+  void CreateBuffer(AllocationCreateMask allocation_mask, std::size_t buffer_size, BufferUsageMask buffer_usage);
 
 private:
   VkBuffer buffer_{VK_NULL_HANDLE};
-  VmaAllocation vma_allocation_{VK_NULL_HANDLE};
+  VmaAllocation allocation_{VK_NULL_HANDLE};
   std::size_t buffer_size_{0};
   std::byte *mapped_memory_{nullptr};
 };

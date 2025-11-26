@@ -5,16 +5,13 @@
 
 namespace Yuggoth {
 
-template <typename T>
-struct FunctionTraits;
+template <typename T> struct FunctionTraits;
 
-template <typename R, typename... A>
-struct FunctionTraits<R (*)(A...)> {
+template <typename R, typename... A> struct FunctionTraits<R (*)(A...)> {
   using arguments_t = std::tuple<A...>;
 };
 
-template <typename R, typename... A>
-struct FunctionTraits<R(A...)> {
+template <typename R, typename... A> struct FunctionTraits<R(A...)> {
   using arguments_t = std::tuple<A...>;
 };
 

@@ -1,12 +1,15 @@
 #ifndef YUGGOTH_GRAPHICS_ALLOCATOR_H
 #define YUGGOTH_GRAPHICS_ALLOCATOR_H
 
-#include <vma/vk_mem_alloc.h>
 #include "graphics_context.h"
+#include <span>
 
 namespace Yuggoth {
 
-using AllocationInformation = std::pair<VmaAllocation, std::byte *>;
+struct AllocationInformation {
+  VmaAllocation allocation_{nullptr};
+  std::byte *mapped_memory_{nullptr};
+};
 
 class GraphicsAllocator {
 public:
@@ -16,14 +19,16 @@ public:
 
   static GraphicsAllocator *Get();
 
-  VmaAllocation AllocateImage(const ImageCreateInfo &image_ci, VkImage &image);
-  AllocationInformation AllocateBuffer(const BufferCreateInfo &buffer_ci, VkBuffer &buffer, VmaAllocationCreateFlags flags);
+  AllocationInformation AllocateImage(const ImageCreateInfo &image_ci, VkImage &out_image);
+  AllocationInformation AllocateBuffer(const BufferCreateInfo &buffer_ci, VkBuffer &out_buffer, AllocationCreateMask allocation_mask);
 
   void DestroyImage(VkImage image, VmaAllocation vma_allocation);
   void DestroyBuffer(VkBuffer buffer, VmaAllocation vma_allocation);
 
   void MapMemory(VmaAllocation allocation, std::byte **memory);
   void UnmapMemory(VmaAllocation allocation);
+
+  void CopyMemoryToAllocation(std::span<const std::byte> source, VmaAllocation destination, std::size_t offset);
 
 protected:
   void CreateAllocator();

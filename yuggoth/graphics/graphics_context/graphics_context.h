@@ -2,7 +2,7 @@
 #define YUGGOTH_GRAPHICS_CONTEXT_H
 
 #include "graphics_tools.h"
-#include "yuggoth/graphics/core/graphics_enums.h"
+#include "yuggoth/graphics/core/graphics_types.h"
 #include <array>
 
 namespace Yuggoth {

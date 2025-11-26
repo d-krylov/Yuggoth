@@ -8,8 +8,7 @@
 
 namespace Yuggoth {
 
-template <typename T, typename FUNCTION, typename... ARGUMENTS>
-inline auto Enumerate(FUNCTION &&enumerate_function, ARGUMENTS &&...arguments) {
+template <typename T, typename FUNCTION, typename... ARGUMENTS> inline auto Enumerate(FUNCTION &&enumerate_function, ARGUMENTS &&...arguments) {
   using A = std::remove_pointer_t<decltype(&enumerate_function)>;
   using R = FunctionTraits<A>::arguments_t;
   using V = std::tuple_element_t<std::tuple_size_v<R> - 1, R>;

@@ -1,6 +1,8 @@
 #include "editor.h"
 #include "imgui.h"
+#include "ImGuiFileDialog.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
+#include <print>
 
 namespace Yuggoth {
 
@@ -27,6 +29,9 @@ void Editor::DrawMainMenu() {
       if (ImGui::MenuItem("New", "Ctrl+N")) {
       }
       if (ImGui::MenuItem("Open", "Ctrl+O")) {
+        IGFD::FileDialogConfig config;
+        config.path = ".";
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", nullptr, config);
       }
       if (ImGui::MenuItem("Save", "Ctrl+S")) {
       }
@@ -44,6 +49,17 @@ void Editor::DrawMainMenu() {
     }
 
     ImGui::EndMainMenuBar();
+  }
+
+  if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
+    if (ImGuiFileDialog::Instance()->IsOk()) {
+      std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+      std::string fileNameOnly = ImGuiFileDialog::Instance()->GetCurrentFileName();
+
+      std::println("Selected file: {}", filePathName.c_str());
+    }
+
+    ImGuiFileDialog::Instance()->Close();
   }
 }
 

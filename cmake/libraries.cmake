@@ -29,3 +29,15 @@ FetchContent_Declare(
 	GIT_REPOSITORY https://github.com/nothings/stb
 	GIT_TAG master
 )
+
+FetchContent_Declare(
+	tinyobjloader
+	GIT_REPOSITORY https://github.com/tinyobjloader/tinyobjloader
+	GIT_TAG release
+)
+
+FetchContent_Declare(
+	ImGuiFileDialog
+	GIT_REPOSITORY https://github.com/aiekick/ImGuiFileDialog
+	GIT_TAG master
+)

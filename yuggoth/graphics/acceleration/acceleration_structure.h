@@ -1,0 +1,6 @@
+#ifndef YUGGOTH_ACCELERATION_STRUCTURE_H
+#define YUGGOTH_ACCELERATION_STRUCTURE_H
+
+namespace Yuggoth {} // namespace Yuggoth
+
+#endif // YUGGOTH_ACCELERATION_STRUCTURE_H

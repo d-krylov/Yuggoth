@@ -2,11 +2,14 @@
 #define YUGGOTH_CONFIG_H
 
 #include <filesystem>
+#include <string_view>
 
 namespace Yuggoth {
 
-std::filesystem::path YUGGOTH_PROJECT_ROOT_DIR = "@PROJECT_SOURCE_DIR@";
-std::filesystem::path YUGGOTH_PROJECT_BINARY_DIR = "@PROJECT_BINARY_DIR@";
+inline std::filesystem::path YUGGOTH_PROJECT_ROOT_DIR = "@PROJECT_SOURCE_DIR@";
+inline std::filesystem::path YUGGOTH_PROJECT_BINARY_DIR = "@PROJECT_BINARY_DIR@";
+
+inline std::string_view YUGGOTH_BUILD_TYPE = "@CMAKE_BUILD_TYPE@";
 
 } // namespace Yuggoth
 

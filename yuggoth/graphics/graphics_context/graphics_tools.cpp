@@ -12,8 +12,7 @@ void VK_CHECK(VkResult result, std::source_location source_location) {
   }
 }
 
-template <typename T>
-bool CompareStructures(const T &s1, const T &s2, uint32_t offset) {
+template <typename T> bool CompareStructures(const T &s1, const T &s2, uint32_t offset) {
   auto sa = std::as_bytes(std::span{&s1, 1});
   auto sb = std::as_bytes(std::span{&s2, 1});
   return std::ranges::equal(sa.subspan(offset), sb.subspan(offset));

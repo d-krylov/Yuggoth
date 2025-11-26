@@ -53,7 +53,11 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityF
                                                     const VkDebugUtilsMessengerCallbackDataEXT *data,
                                                     void *user_data) {
   std::println("Validation Layer: {0}", data->pMessage);
-  return VK_FALSE;
+  std::span<const VkDebugUtilsLabelEXT> command_buffer_labels(data->pCmdBufLabels, data->cmdBufLabelCount);
+  for (const auto &command_buffer_label: command_buffer_labels) {
+    std::println("Command Buffer Label: {}", command_buffer_label.pLabelName);
+  }
+  return false;
 }
 // clang-format on
 
@@ -77,11 +81,18 @@ void GraphicsContext::CreateInstance() {
 
   auto severity = DebugUtilsMessageSeverityMaskBitsEXT::E_ERROR_BIT_EXT | DebugUtilsMessageSeverityMaskBitsEXT::E_WARNING_BIT_EXT;
 
+  std::array enabled_validation{ValidationFeatureEnableEXT::E_SYNCHRONIZATION_VALIDATION_EXT, ValidationFeatureEnableEXT::E_BEST_PRACTICES_EXT};
+
+  ValidationFeaturesEXT validation_features;
+  validation_features.enabledValidationFeatureCount = enabled_validation.size();
+  validation_features.pEnabledValidationFeatures = enabled_validation.data();
+
   DebugUtilsMessengerCreateInfoEXT debug_ci{};
   {
     debug_ci.messageType = DebugUtilsMessageTypeMaskBitsEXT::E_VALIDATION_BIT_EXT;
     debug_ci.messageSeverity = severity;
     debug_ci.pfnUserCallback = DebugCallback;
+    debug_ci.pNext = &validation_features;
   }
 
   InstanceCreateInfo instance_ci{};

@@ -77,15 +77,17 @@ void CommandBuffer::CommandEndRendering() {
   vkCmdEndRendering(command_buffer_);
 }
 
-void CommandBuffer::CommandPipelineBarrier(DependencyMask dependency_mask, std::span<const BufferMemoryBarrier2> buffer_barriers,
-                                           std::span<const ImageMemoryBarrier2> image_barriers) {
+void CommandBuffer::CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> image_barriers, std::span<const MemoryBarrier2> memory_barriers,
+                                           std::span<const BufferMemoryBarrier2> buffer_barriers) {
   DependencyInfo dependency_info;
   {
-    dependency_info.dependencyFlags = dependency_mask;
+    dependency_info.dependencyFlags = DependencyMaskBits::E_BY_REGION_BIT;
     dependency_info.bufferMemoryBarrierCount = buffer_barriers.size();
     dependency_info.pBufferMemoryBarriers = buffer_barriers.data();
     dependency_info.imageMemoryBarrierCount = image_barriers.size();
     dependency_info.pImageMemoryBarriers = image_barriers.data();
+    dependency_info.memoryBarrierCount = memory_barriers.size();
+    dependency_info.pMemoryBarriers = memory_barriers.data();
   }
   vkCmdPipelineBarrier2(command_buffer_, dependency_info);
 }
@@ -195,6 +197,38 @@ void CommandBuffer::CommandCopyBufferToImage(VkBuffer buffer, VkImage image, con
   }
 
   vkCmdCopyBufferToImage(command_buffer_, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, buffer_image_copy);
+}
+
+void CommandBuffer::CommandBeginDebugUtilsLabel(std::string_view label_name) {
+  DebugUtilsLabelEXT debug_utils_label;
+  debug_utils_label.color[0] = 1.0f;
+  debug_utils_label.color[3] = 1.0f;
+  debug_utils_label.pLabelName = label_name.data();
+  vkCmdBeginDebugUtilsLabelEXT(command_buffer_, debug_utils_label);
+}
+
+void CommandBuffer::CommandEndDebugUtilsLabel() {
+  vkCmdEndDebugUtilsLabelEXT(command_buffer_);
+}
+
+// HELPERS
+void CommandBuffer::TransitionImageLayout(VkImage image, ImageLayout source_layout, ImageLayout destination_layout,
+                                          PipelineStageMask2 source_stage, PipelineStageMask2 destination_stage, AccessMask2 source_access,
+                                          AccessMask2 destination_access, const ImageSubresourceRange &subresource) {
+  std::array<ImageMemoryBarrier2, 1> image_memory_barriers;
+
+  image_memory_barriers[0].srcStageMask = source_stage;
+  image_memory_barriers[0].srcAccessMask = source_access;
+  image_memory_barriers[0].dstStageMask = destination_stage;
+  image_memory_barriers[0].dstAccessMask = destination_access;
+  image_memory_barriers[0].oldLayout = source_layout;
+  image_memory_barriers[0].newLayout = destination_layout;
+  image_memory_barriers[0].srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+  image_memory_barriers[0].dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+  image_memory_barriers[0].image = image;
+  image_memory_barriers[0].subresourceRange = subresource;
+
+  CommandPipelineBarrier(image_memory_barriers);
 }
 
 } // namespace Yuggoth

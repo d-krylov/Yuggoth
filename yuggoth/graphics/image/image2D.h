@@ -2,15 +2,28 @@
 #define YUGGOTH_IMAGE_2D_H
 
 #include "image.h"
-#include <span>
+#include <filesystem>
 
 namespace Yuggoth {
 
-class Image2D {
+class Image2D : public Image {
 public:
-  Image2D(uint32_t width, uint32_t height, std::span<const std::byte> data);
+  Image2D() = default;
 
-private:
+  Image2D(const std::filesystem::path &image_path, const std::optional<SamplerSpecification> &sampler_specification = std::nullopt);
+
+  Image2D(uint32_t width, uint32_t height, std::span<const std::byte> data,
+          const std::optional<SamplerSpecification> &sampler_specification = std::nullopt);
+
+  Image2D(uint32_t width, uint32_t height);
+
+  Image2D(Image2D &&other) noexcept = default;
+
+  Image2D &operator=(Image2D &&other) noexcept = default;
+
+protected:
+  void Create(uint32_t width, uint32_t height, Format format, ImageUsageMask usage_mask,
+              const std::optional<SamplerSpecification> &sampler_specification);
 };
 
 } // namespace Yuggoth

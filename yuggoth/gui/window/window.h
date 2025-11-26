@@ -21,6 +21,7 @@ public:
 
   ViewportSize GetWindowSize() const;
   ViewportSize GetFramebufferSize() const;
+  CursorPosition GetCursorPosition() const;
 
   bool ShouldClose() const;
   void PollEvents();

@@ -13,14 +13,11 @@ public:
   Scene *GetScene() const;
   entt::entity GetHandle() const;
 
-  template <typename T, typename... Arguments>
-  T &AddComponent(Arguments &&...arguments);
+  template <typename T, typename... Arguments> T &AddComponent(Arguments &&...arguments);
 
-  template <typename Component>
-  Component &GetComponent();
+  template <typename Component> Component &GetComponent();
 
-  template <typename Component>
-  Component *TryGetComponent();
+  template <typename Component> Component *TryGetComponent();
 
   bool operator==(const Entity &other) const = default;
 

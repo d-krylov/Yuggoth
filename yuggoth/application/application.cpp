@@ -37,6 +37,8 @@ Application::Application()
     editor_() {
   CreateSynchronizationObjects();
   OnStart();
+
+  main_window_.SetEventHandler(BIND_FUNCTION(Application::OnEvent));
   application_instance_ = this;
 }
 
@@ -44,6 +46,7 @@ void Application::OnImGui() {
 }
 
 void Application::OnEvent(Event &event) {
+  imgui_layer_.OnEvent(event);
 }
 
 void Application::OnStart() {
@@ -51,7 +54,7 @@ void Application::OnStart() {
 
 void Application::Run() {
 
-  VkPipelineStageFlags wait_stages[] = {VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT};
+  PipelineStageMask wait_stages[] = {PipelineStageMaskBits::E_COLOR_ATTACHMENT_OUTPUT_BIT};
 
   while (main_window_.ShouldClose() == false) {
     main_window_.PollEvents();
@@ -77,6 +80,12 @@ void Application::Run() {
     command_buffer.Reset();
     command_buffer.Begin();
 
+    auto subresource = GetImageSubresourceRange();
+    command_buffer.TransitionImageLayout(swapchain_.GetCurrentImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL,
+                                         PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT,
+                                         PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, AccessMaskBits2::E_NONE,
+                                         AccessMaskBits2::E_COLOR_ATTACHMENT_WRITE_BIT, subresource);
+
     imgui_layer_.NewFrame();
     imgui_renderer_.Begin(command_buffer, swapchain_);
 
@@ -84,29 +93,27 @@ void Application::Run() {
 
     imgui_renderer_.End(command_buffer);
 
-    auto present_barrier = GetImageMemoryBarrier(
-      swapchain_.GetCurrentImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_PRESENT_SRC_KHR, PipelineStageMaskBits2::E_TOP_OF_PIPE_BIT,
-      PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, {}, {}, GetImageSubresourceRange(ImageAspectMaskBits::E_COLOR_BIT));
+    scene_renderer_.Draw(command_buffer);
 
-    command_buffer.CommandPipelineBarrier(DependencyMaskBits::E_BY_REGION_BIT, {}, std::array{present_barrier});
+    command_buffer.TransitionImageLayout(swapchain_.GetCurrentImage(), ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, ImageLayout::E_PRESENT_SRC_KHR,
+                                         PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, PipelineStageMaskBits2::E_NONE,
+                                         AccessMaskBits2::E_COLOR_ATTACHMENT_WRITE_BIT, AccessMaskBits2::E_NONE, subresource);
 
     command_buffer.End();
 
     auto &render_finished_semaphore = render_finished_semaphores_[swapchain_.GetImageIndex()];
 
-    VkSubmitInfo submit_info{};
-    {
-      submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-      submit_info.waitSemaphoreCount = 1;
-      submit_info.pWaitSemaphores = image_available_semaphore.GetPointer();
-      submit_info.pWaitDstStageMask = wait_stages;
-      submit_info.commandBufferCount = 1;
-      submit_info.pCommandBuffers = command_buffer.GetPointer();
-      submit_info.signalSemaphoreCount = 1;
-      submit_info.pSignalSemaphores = render_finished_semaphore.GetPointer();
-    }
+    SubmitInfo submit_info{};
 
-    VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, &submit_info, fence.GetHandle()));
+    submit_info.waitSemaphoreCount = 1;
+    submit_info.pWaitSemaphores = image_available_semaphore.GetPointer();
+    submit_info.pWaitDstStageMask = wait_stages;
+    submit_info.commandBufferCount = 1;
+    submit_info.pCommandBuffers = command_buffer.GetPointer();
+    submit_info.signalSemaphoreCount = 1;
+    submit_info.pSignalSemaphores = render_finished_semaphore.GetPointer();
+
+    VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
 
     swapchain_.Present(render_finished_semaphore.GetPointer());
 
@@ -116,6 +123,10 @@ void Application::Run() {
 
 SceneManager *Application::GetSceneManager() {
   return &scene_manager_;
+}
+
+SceneRenderer *Application::GetSceneRenderer() {
+  return &scene_renderer_;
 }
 
 } // namespace Yuggoth

@@ -14,11 +14,14 @@ set(CMAKE_BUILD_TYPE RelWithDebInfo)
 include(cmake/libraries.cmake)
 include(cmake/clang-format.cmake)
 include(cmake/shader-compiler.cmake)
+include(cmake/helpers.cmake)
 
 FetchContent_MakeAvailable(
   imgui
   imguizmo
+  ImGuiFileDialog
   fastgltf
+  tinyobjloader
   entt
   stb
 )

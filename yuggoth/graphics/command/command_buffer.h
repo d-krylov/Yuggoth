@@ -2,6 +2,7 @@
 #define YUGGOTH_COMMAND_BUFFER_H
 
 #include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include <string_view>
 #include <span>
 
 namespace Yuggoth {
@@ -33,12 +34,15 @@ public:
 
   void Reset();
 
-  void CommandPipelineBarrier(DependencyMask dependency_mask, std::span<const BufferMemoryBarrier2> buffer_barriers,
-                              std::span<const ImageMemoryBarrier2> image_barriers);
+  void CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> image_barriers, std::span<const MemoryBarrier2> memory_barriers = {},
+                              std::span<const BufferMemoryBarrier2> buffer_barriers = {});
+
+  // DEBUG
+  void CommandBeginDebugUtilsLabel(std::string_view label_name);
+  void CommandEndDebugUtilsLabel();
 
   // PUSH
-  template <typename T>
-  void CommandPushConstants(VkPipelineLayout layout, ShaderStageMask stage, const T &data, uint32_t offset);
+  template <typename T> void CommandPushConstants(VkPipelineLayout layout, ShaderStageMask stage, const T &data, uint32_t offset);
   void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set_number, uint32_t binding, VkBuffer buffer);
   void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set_number, uint32_t binding, VkImageView image_view, VkSampler sampler);
 
@@ -60,6 +64,11 @@ public:
   void CommandDrawIndexed(uint32_t index_count, uint32_t instance_count, uint32_t first_index, int32_t vertex_offset, uint32_t first_instance);
 
   void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent);
+
+  // HELPERS
+  void TransitionImageLayout(VkImage image, ImageLayout source_layout, ImageLayout destination_layout, PipelineStageMask2 source_stage,
+                             PipelineStageMask2 destination_stage, AccessMask2 source_access, AccessMask2 destination_access,
+                             const ImageSubresourceRange &subresource);
 
 private:
   VkCommandBuffer command_buffer_{VK_NULL_HANDLE};

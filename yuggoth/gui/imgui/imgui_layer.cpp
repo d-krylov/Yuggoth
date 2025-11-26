@@ -51,12 +51,17 @@ bool ImGuiLayer::OnCharEvent(const CharEvent &event) {
   return true;
 }
 
+void ImGuiLayer::UpdateMouseData() {
+  ImGuiIO &io = ImGui::GetIO();
+  auto cursor_position = window_->GetCursorPosition();
+  io.AddMousePosEvent((float)cursor_position.x, (float)cursor_position.y);
+}
+
 ImGuiLayer::ImGuiLayer(Window *window) : window_(window) {
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
   SetStyle();
-  window->SetEventHandler(BIND_FUNCTION(ImGuiLayer::OnEvent));
 }
 
 void ImGuiLayer::SetStyle() {
@@ -74,6 +79,16 @@ void ImGuiLayer::OnEvent(Event &event) {
   dispatcher.Dispatch<KeyEvent>(BIND_FUNCTION(ImGuiLayer::OnKeyEvent));
 }
 
+void ImGuiLayer::UpdateTime() {
+  auto current_time = glfwGetTime();
+  auto &io = ImGui::GetIO();
+  if (current_time <= time_) {
+    current_time = time_ + 0.00001f;
+  }
+  io.DeltaTime = time_ > 0.0 ? (current_time - time_) : (1.0f / 60.0f);
+  time_ = current_time;
+}
+
 void ImGuiLayer::NewFrame() {
   auto &io = ImGui::GetIO();
 
@@ -87,6 +102,9 @@ void ImGuiLayer::NewFrame() {
     io.DisplayFramebufferScale.x = static_cast<float>(framebuffer_size.width) / static_cast<float>(window_size.width);
     io.DisplayFramebufferScale.y = static_cast<float>(framebuffer_size.height) / static_cast<float>(window_size.height);
   }
+
+  UpdateTime();
+  UpdateMouseData();
 }
 
 } // namespace Yuggoth

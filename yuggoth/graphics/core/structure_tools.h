@@ -5,11 +5,8 @@
 
 namespace Yuggoth {
 
-ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect, uint32_t base_level = 0, uint32_t level_count = 1);
-
-ImageMemoryBarrier2 GetImageMemoryBarrier(VkImage image, ImageLayout from_layout, ImageLayout to_layout, PipelineStageMask2 source_stage,
-                                          PipelineStageMask2 destination_stage, AccessMask2 source_access, AccessMask2 destination_access,
-                                          const ImageSubresourceRange &subresource);
+ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect = ImageAspectMaskBits::E_COLOR_BIT, uint32_t base_level = 0,
+                                               uint32_t level_count = 1, uint32_t base_layer = 0, uint32_t layer_count = 1);
 
 PipelineColorBlendAttachmentState GetColorBlendAttachmentState(bool enable, BlendFactor from_color = BlendFactor::E_SRC_ALPHA,
                                                                BlendFactor to_color = BlendFactor::E_ONE_MINUS_SRC_ALPHA,

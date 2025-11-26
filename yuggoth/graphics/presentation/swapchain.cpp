@@ -1,5 +1,6 @@
 #include "swapchain.h"
 #include "yuggoth/graphics/image/image.h"
+#include "yuggoth/graphics/command/command_buffer.h"
 #include <algorithm>
 #include <span>
 #include <limits>
@@ -54,8 +55,9 @@ Swapchain::Swapchain(GLFWwindow *native_window) {
   CreateSwapchain();
   images_ = Enumerate<VkImage>(vkGetSwapchainImagesKHR, GraphicsContext::Get()->GetDevice(), swapchain_current_);
   image_views_.resize(images_.size());
+  auto subresource = GetImageSubresourceRange();
   for (auto i = 0; i < images_.size(); i++) {
-    image_views_[i] = Image::CreateImageView(images_[i], surface_format_.format);
+    image_views_[i] = Image::CreateImageView(images_[i], surface_format_.format, ImageViewType::E_2D, subresource);
   }
 }
 
@@ -98,6 +100,9 @@ void Swapchain::Present(const VkSemaphore *wait_semaphore) {
   auto status = vkQueuePresentKHR(GraphicsContext::Get()->GetGraphicsQueue(), present_info);
 }
 
+void Swapchain::CreateImageViews() {
+}
+
 VkResult Swapchain::AcquireNextImage(const VkSemaphore semaphore) {
   auto status = vkAcquireNextImageKHR(GraphicsContext::Get()->GetDevice(), swapchain_current_, UINT64_MAX, semaphore, nullptr, &image_index_);
   return status;
@@ -115,10 +120,18 @@ void Swapchain::Recreate() {
   Cleanup();
   CreateSwapchain();
   images_ = Enumerate<VkImage>(vkGetSwapchainImagesKHR, GraphicsContext::Get()->GetDevice(), swapchain_current_);
+  auto subresource = GetImageSubresourceRange();
   image_views_.resize(images_.size());
+
+  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_buffer.Begin();
+
   for (auto i = 0; i < images_.size(); i++) {
-    image_views_[i] = Image::CreateImageView(images_[i], surface_format_.format);
+    image_views_[i] = Image::CreateImageView(images_[i], surface_format_.format, ImageViewType::E_2D, subresource);
   }
+
+  command_buffer.End();
+  command_buffer.Submit();
 }
 
 VkImage Swapchain::GetImage(uint32_t index) const {

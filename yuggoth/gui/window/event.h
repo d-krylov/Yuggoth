@@ -22,8 +22,7 @@ public:
   EventDispatcher(Event &event) : event_(event) {
   }
 
-  template <typename T, typename F>
-  bool Dispatch(const F &function) {
+  template <typename T, typename F> bool Dispatch(const F &function) {
     if (event_.GetEventKind() == T::event_kind) {
       event_.handled |= function(static_cast<T &>(event_));
       return true;
