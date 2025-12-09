@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_GRAPHICS_PIPELINE_H
 #define YUGGOTH_GRAPHICS_PIPELINE_H
 
-#include "shader_module.h"
+#include "pipeline_tools.h"
 
 namespace Yuggoth {
 
@@ -29,6 +29,7 @@ public:
 private:
   VkPipeline pipeline_{VK_NULL_HANDLE};
   VkPipelineLayout pipeline_layout_{VK_NULL_HANDLE};
+  std::vector<VkDescriptorSetLayout> descriptor_set_layouts_;
 };
 
 } // namespace Yuggoth

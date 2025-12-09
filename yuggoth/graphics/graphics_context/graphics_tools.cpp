@@ -19,17 +19,17 @@ template <typename T> bool CompareStructures(const T &s1, const T &s2, uint32_t 
 }
 
 bool CheckPhysicalDeviceFeatures(const VkPhysicalDevice physical_device) {
-  VkPhysicalDeviceRayQueryFeaturesKHR physical_device_ray_query_features{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR};
-  VkPhysicalDeviceMeshShaderFeaturesEXT physical_device_mesh_shader_features{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_MESH_SHADER_FEATURES_EXT};
-  VkPhysicalDeviceVulkan13Features physical_device_features13{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES};
-  VkPhysicalDeviceVulkan12Features physical_device_features12{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES};
-  VkPhysicalDeviceFeatures2 physical_device_features2{VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2};
+  PhysicalDeviceRayQueryFeaturesKHR physical_device_ray_query_features;
+  PhysicalDeviceMeshShaderFeaturesEXT physical_device_mesh_shader_features;
+  PhysicalDeviceVulkan13Features physical_device_features13;
+  PhysicalDeviceVulkan12Features physical_device_features12;
+  PhysicalDeviceFeatures2 physical_device_features2;
   physical_device_features2.pNext = &physical_device_features12;
   physical_device_features12.pNext = &physical_device_features13;
   physical_device_features13.pNext = &physical_device_mesh_shader_features;
   physical_device_mesh_shader_features.pNext = &physical_device_ray_query_features;
 
-  vkGetPhysicalDeviceFeatures2(physical_device, &physical_device_features2);
+  vkGetPhysicalDeviceFeatures2(physical_device, physical_device_features2);
 
   bool status = true;
   status &= physical_device_ray_query_features.rayQuery;

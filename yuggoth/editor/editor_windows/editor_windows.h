@@ -5,5 +5,6 @@
 #include "inspector_window.h"
 #include "hierarchy_window.h"
 #include "application_window.h"
+#include "asset_manager_window.h"
 
 #endif // YUGGOTH_EDITOR_WINDOWS_H

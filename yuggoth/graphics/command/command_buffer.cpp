@@ -1,15 +1,16 @@
 #include "command_buffer.h"
+#include "command_pool.h"
 #include "yuggoth/graphics/core/synchronization.h"
 
 namespace Yuggoth {
 
 CommandBuffer::CommandBuffer(const VkCommandPool command_pool) : command_pool_(command_pool), own_command_pool_(false) {
-  command_buffer_ = GraphicsContext::Get()->CreateCommandBuffer(command_pool_, CommandBufferLevel::E_PRIMARY);
+  command_buffer_ = CommandBuffer::AllocateCommandBuffer(command_pool_, CommandBufferLevel::E_PRIMARY);
 }
 
 CommandBuffer::CommandBuffer(uint32_t queue_family_index) : own_command_pool_(true) {
-  command_pool_ = GraphicsContext::Get()->CreateCommandPool(queue_family_index);
-  command_buffer_ = GraphicsContext::Get()->CreateCommandBuffer(command_pool_, CommandBufferLevel::E_PRIMARY);
+  command_pool_ = CommandPool::CreateCommandPool(queue_family_index);
+  command_buffer_ = CommandBuffer::AllocateCommandBuffer(command_pool_, CommandBufferLevel::E_PRIMARY);
 }
 
 CommandBuffer::~CommandBuffer() {
@@ -30,6 +31,17 @@ CommandBuffer &CommandBuffer::operator=(CommandBuffer &&other) noexcept {
   return *this;
 }
 
+VkCommandBuffer CommandBuffer::AllocateCommandBuffer(VkCommandPool command_pool, CommandBufferLevel level) {
+  CommandBufferAllocateInfo command_buffer_ai;
+  command_buffer_ai.commandPool = command_pool;
+  command_buffer_ai.level = level;
+  command_buffer_ai.commandBufferCount = 1;
+
+  VkCommandBuffer command_buffer = VK_NULL_HANDLE;
+  VK_CHECK(vkAllocateCommandBuffers(GraphicsContext::Get()->GetDevice(), command_buffer_ai, &command_buffer));
+  return command_buffer;
+}
+
 void CommandBuffer::Submit() {
   SubmitInfo submit_info;
   submit_info.commandBufferCount = 1;
@@ -44,9 +56,9 @@ const VkCommandBuffer *CommandBuffer::GetPointer() const {
   return &command_buffer_;
 }
 
-void CommandBuffer::Begin() {
+void CommandBuffer::Begin(CommandBufferUsageMask usage) {
   CommandBufferBeginInfo command_buffer_bi;
-  command_buffer_bi.flags = CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT;
+  command_buffer_bi.flags = usage;
   vkBeginCommandBuffer(command_buffer_, command_buffer_bi);
 }
 
@@ -55,16 +67,14 @@ void CommandBuffer::Reset() {
 }
 
 void CommandBuffer::CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors) {
-  RenderingInfo rendering_info{};
-  {
-    rendering_info.renderArea.offset = {0, 0};
-    rendering_info.renderArea.extent = extent;
-    rendering_info.layerCount = 1;
-    rendering_info.colorAttachmentCount = colors.size();
-    rendering_info.pColorAttachments = colors.data();
-    rendering_info.pDepthAttachment = nullptr;
-    rendering_info.pStencilAttachment = nullptr;
-  }
+  RenderingInfo rendering_info;
+  rendering_info.renderArea.offset = {0, 0};
+  rendering_info.renderArea.extent = extent;
+  rendering_info.layerCount = 1;
+  rendering_info.colorAttachmentCount = colors.size();
+  rendering_info.pColorAttachments = colors.data();
+  rendering_info.pDepthAttachment = nullptr;
+  rendering_info.pStencilAttachment = nullptr;
 
   vkCmdBeginRendering(command_buffer_, rendering_info);
 }
@@ -177,26 +187,31 @@ void CommandBuffer::CommandBindIndexBuffer(const VkBuffer buffer, std::size_t of
   vkCmdBindIndexBuffer(command_buffer_, buffer, offset, static_cast<VkIndexType>(index_type));
 }
 
+// COPY
 void CommandBuffer::CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent) {
   ImageSubresourceLayers subresource_layers;
-  {
-    subresource_layers.aspectMask = ImageAspectMaskBits::E_COLOR_BIT;
-    subresource_layers.mipLevel = 0;
-    subresource_layers.baseArrayLayer = 0;
-    subresource_layers.layerCount = 1;
-  }
+  subresource_layers.aspectMask = ImageAspectMaskBits::E_COLOR_BIT;
+  subresource_layers.mipLevel = 0;
+  subresource_layers.baseArrayLayer = 0;
+  subresource_layers.layerCount = 1;
 
   BufferImageCopy buffer_image_copy;
-  {
-    buffer_image_copy.bufferOffset = 0;
-    buffer_image_copy.bufferRowLength = 0;
-    buffer_image_copy.bufferImageHeight = 0;
-    buffer_image_copy.imageSubresource = subresource_layers;
-    buffer_image_copy.imageOffset = Offset3D(0, 0, 0);
-    buffer_image_copy.imageExtent = extent;
-  }
+  buffer_image_copy.bufferOffset = 0;
+  buffer_image_copy.bufferRowLength = 0;
+  buffer_image_copy.bufferImageHeight = 0;
+  buffer_image_copy.imageSubresource = subresource_layers;
+  buffer_image_copy.imageOffset = Offset3D(0, 0, 0);
+  buffer_image_copy.imageExtent = extent;
 
   vkCmdCopyBufferToImage(command_buffer_, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, buffer_image_copy);
+}
+
+void CommandBuffer::CommandCopyBuffer(VkBuffer source, VkBuffer destination, std::size_t from_offset, std::size_t to_offset, std::size_t size) {
+  BufferCopy buffer_copy;
+  buffer_copy.srcOffset = from_offset;
+  buffer_copy.dstOffset = to_offset;
+  buffer_copy.size = size;
+  vkCmdCopyBuffer(command_buffer_, source, destination, 1, buffer_copy);
 }
 
 void CommandBuffer::CommandBeginDebugUtilsLabel(std::string_view label_name) {

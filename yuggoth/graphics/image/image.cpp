@@ -39,7 +39,7 @@ void Image::Initialize(ImageType image_type, ImageViewType view_type, const Imag
                        const std::optional<SamplerSpecification> &sampler_specification) {
   image_specification_ = image_specification;
   auto aspect_mask = GetAspectMask(GetFormat());
-  auto subresource = GetImageSubresourceRange(aspect_mask, 0, GetLevelCoount(), 0, GetLayerCoount());
+  auto subresource = GetImageSubresourceRange(aspect_mask, 0, GetLevelCount(), 0, GetLayerCount());
   image_ = CreateImage(image_type, image_specification_, allocation_);
   image_view_ = CreateImageView(GetImage(), GetFormat(), view_type, subresource);
   image_sampler_ = sampler_specification.has_value() ? Sampler::CreateSampler(sampler_specification.value()) : nullptr;
@@ -62,6 +62,7 @@ Image &Image::operator=(Image &&other) noexcept {
   std::swap(allocation_, other.allocation_);
   std::swap(image_view_, other.image_view_);
   std::swap(image_sampler_, other.image_sampler_);
+  std::swap(current_layout_, other.current_layout_);
   std::swap(image_specification_, other.image_specification_);
   return *this;
 }
@@ -91,11 +92,11 @@ Format Image::GetFormat() const {
   return image_specification_.format_;
 }
 
-uint32_t Image::GetLevelCoount() const {
+uint32_t Image::GetLevelCount() const {
   return image_specification_.levels_;
 }
 
-uint32_t Image::GetLayerCoount() const {
+uint32_t Image::GetLayerCount() const {
   return image_specification_.layers_;
 }
 
@@ -118,7 +119,7 @@ void Image::SetImageData(std::span<const std::byte> data) {
   Buffer buffer(data.size(), BufferUsageMaskBits::E_TRANSFER_SRC_BIT, Buffer::CPU);
   buffer.SetData<std::byte>(data);
   CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
-  command_buffer.Begin();
+  command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   SetImageLayout(ImageLayout::E_TRANSFER_DST_OPTIMAL, &command_buffer);
   command_buffer.CommandCopyBufferToImage(buffer.GetHandle(), GetImage(), GetExtent());
   SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer);

@@ -6,32 +6,6 @@
 
 namespace Yuggoth {
 
-VkPipelineLayout CreatePipelineLayout(std::span<const VkDescriptorSetLayout> set_layouts, std::span<const PushConstantRange> push_constants) {
-  VkPipelineLayout pipeline_layout = VK_NULL_HANDLE;
-  PipelineLayoutCreateInfo pipeline_layout_ci;
-  {
-    pipeline_layout_ci.setLayoutCount = set_layouts.size();
-    pipeline_layout_ci.pSetLayouts = set_layouts.data();
-    pipeline_layout_ci.pushConstantRangeCount = push_constants.size();
-    pipeline_layout_ci.pPushConstantRanges = push_constants.data();
-  }
-  VK_CHECK(vkCreatePipelineLayout(GraphicsContext::Get()->GetDevice(), pipeline_layout_ci, nullptr, &pipeline_layout));
-  return pipeline_layout;
-}
-
-VkDescriptorSetLayout CreateDescriptorSetLayout(std::span<const VkDescriptorSetLayoutBinding> descriptor_set_bindings) {
-  VkDescriptorSetLayout descriptor_set_layout = VK_NULL_HANDLE;
-  VkDescriptorSetLayoutCreateInfo descriptor_set_layout_ci{};
-  {
-    descriptor_set_layout_ci.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-    descriptor_set_layout_ci.flags = VK_DESCRIPTOR_SET_LAYOUT_CREATE_PUSH_DESCRIPTOR_BIT;
-    descriptor_set_layout_ci.bindingCount = descriptor_set_bindings.size();
-    descriptor_set_layout_ci.pBindings = descriptor_set_bindings.data();
-  }
-  VK_CHECK(vkCreateDescriptorSetLayout(GraphicsContext::Get()->GetDevice(), &descriptor_set_layout_ci, 0, &descriptor_set_layout));
-  return descriptor_set_layout;
-}
-
 VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specification, std::span<const ShaderModule> shader_modules,
                                   VkPipelineLayout pipeline_layout) {
   VkPipeline graphics_pipleine = VK_NULL_HANDLE;
@@ -152,34 +126,16 @@ VkPipelineLayout GraphicsPipeline::GetPipelineLayout() const {
   return pipeline_layout_;
 }
 
-void MergeDescriptorSets(DescriptorSetMap &destination, const DescriptorSetMap &source) {
-  for (const auto &[set, set_bindings] : source) {
-    auto &destination_bindings = destination[set];
-    for (auto &set_binding : set_bindings) {
-      auto it = std::ranges::find(destination_bindings, set_binding.binding, &VkDescriptorSetLayoutBinding::binding);
-      if (it == destination_bindings.end()) {
-        destination_bindings.emplace_back(set_binding);
-      } else {
-        it->stageFlags |= set_binding.stageFlags;
-      }
-    }
-  }
-}
-
 // CONSTRUCTORS
 
 GraphicsPipeline::GraphicsPipeline(const GraphicsPipelineSpecification &specification) {
   std::vector<ShaderModule> shader_modules;
-  DescriptorSetMap descriptor_sets;
   for (const auto &shader_path : specification.shader_paths_) {
-    auto &shader_module = shader_modules.emplace_back(shader_path);
-    MergeDescriptorSets(descriptor_sets, shader_module.GetDescriptorSets());
+    shader_modules.emplace_back(shader_path);
   }
-  std::vector<VkDescriptorSetLayout> descriptor_set_layouts(descriptor_sets.size());
-  for (const auto &[set, bindings] : descriptor_sets) {
-    descriptor_set_layouts[set] = CreateDescriptorSetLayout(bindings);
-  }
-  pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts, shader_modules[0].GetPushConstants());
+
+  descriptor_set_layouts_ = CreateDescriptorSetLayouts(shader_modules);
+  pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts_, shader_modules[0].GetPushConstants());
   pipeline_ = CreateGraphicsPipeline(specification, shader_modules, pipeline_layout_);
 }
 

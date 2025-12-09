@@ -3,7 +3,7 @@
 #define YUGGOTH_GRAPHICS_MASKS_H
 
 // includes
-#include "yuggoth/core/include/mask.h"
+#include "yuggoth/core/tools/mask.h"
 
 namespace Yuggoth {
 

@@ -9,6 +9,7 @@ Buffer::Buffer(std::size_t buffer_size, BufferUsageMask buffer_usage, Allocation
 }
 
 Buffer::~Buffer() {
+  GraphicsAllocator::Get()->DestroyBuffer(buffer_, allocation_);
 }
 
 void Buffer::CreateBuffer(AllocationCreateMask allocation_mask, std::size_t buffer_size, BufferUsageMask buffer_usage) {

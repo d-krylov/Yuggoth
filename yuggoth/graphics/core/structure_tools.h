@@ -15,6 +15,8 @@ PipelineColorBlendAttachmentState GetColorBlendAttachmentState(bool enable, Blen
                                                                BlendFactor to_alpha = BlendFactor::E_ONE_MINUS_SRC_ALPHA,
                                                                BlendOp alpha_operation = BlendOp::E_ADD);
 
+RenderingAttachmentInfo GetRenderingAttachmentInfo(VkImageView view, ImageLayout layout, AttachmentLoadOp load, AttachmentStoreOp store);
+
 } // namespace Yuggoth
 
 #endif // YUGGOTH_STRUCTURE_TOOLS_H

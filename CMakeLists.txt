@@ -31,9 +31,9 @@ add_subdirectory(yuggoth)
 add_clang_format_target(format "build")
 
 file(GLOB_RECURSE SHADER_FILES
-  "${PROJECT_SOURCE_DIR}/shaders/*.vert"
-  "${PROJECT_SOURCE_DIR}/shaders/*.frag"
-  "${PROJECT_SOURCE_DIR}/shaders/*.mesh"
+  "${PROJECT_SOURCE_DIR}/assets/shaders/*.vert"
+  "${PROJECT_SOURCE_DIR}/assets/shaders/*.frag"
+  "${PROJECT_SOURCE_DIR}/assets/shaders/*.mesh"
 )
 
 compile_shaders("${SHADER_FILES}" "${PROJECT_BINARY_DIR}/spirv")

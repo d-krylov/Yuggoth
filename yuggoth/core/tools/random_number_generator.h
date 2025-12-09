@@ -1,13 +1,13 @@
 #ifndef YUGGOTH_RANDOM_NUMBER_GENERATOR_H
 #define YUGGOTH_RANDOM_NUMBER_GENERATOR_H
 
+#include <cstdint>
+
 namespace Yuggoth {
 
 class RandomNumberGenerator {
 public:
-  RandomNumberGenerator();
-
-private:
+  static uint64_t UniformU64();
 };
 
 } // namespace Yuggoth

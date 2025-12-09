@@ -1,5 +1,8 @@
 #include "yuggoth/renderer/include/scene_renderer.h"
-#include "yuggoth/core/include/core.h"
+#include "yuggoth/scene/core/scene.h"
+#include "yuggoth/scene/core/entity.h"
+#include "yuggoth/core/tools/core.h"
+#include <print>
 
 namespace Yuggoth {
 
@@ -28,13 +31,11 @@ void SceneRenderer::Draw(CommandBuffer &command_buffer) {
   target_image_.SetImageLayout(ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, &command_buffer);
 
   std::array<RenderingAttachmentInfo, 1> rendering_ai;
-  {
-    rendering_ai[0].imageView = target_image_.GetImageView();
-    rendering_ai[0].imageLayout = ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL;
-    rendering_ai[0].loadOp = AttachmentLoadOp::E_CLEAR;
-    rendering_ai[0].storeOp = AttachmentStoreOp::E_STORE;
-    rendering_ai[0].clearValue.color = {0.0f, 1.0f, 0.0f, 1.0f};
-  }
+  rendering_ai[0].imageView = target_image_.GetImageView();
+  rendering_ai[0].imageLayout = ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL;
+  rendering_ai[0].loadOp = AttachmentLoadOp::E_CLEAR;
+  rendering_ai[0].storeOp = AttachmentStoreOp::E_STORE;
+  rendering_ai[0].clearValue.color = {0.0f, 1.0f, 0.0f, 1.0f};
 
   auto &extent = target_image_.GetExtent();
 
@@ -44,6 +45,22 @@ void SceneRenderer::Draw(CommandBuffer &command_buffer) {
   command_buffer.CommandEndRendering();
 
   target_image_.SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer);
+}
+
+void SceneRenderer::Begin(Scene *scene) {
+
+  auto &registry = scene->GetRegistry();
+
+  auto model_group = registry.group<ModelComponent>();
+
+  std::vector<DrawIndexedIndirectCommand> commands;
+
+  for (auto model_entity : model_group) {
+
+    const auto &model_component = model_group.get<ModelComponent>(model_entity);
+
+    if (!model_component.model_) continue;
+  }
 }
 
 } // namespace Yuggoth

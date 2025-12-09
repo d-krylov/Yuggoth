@@ -1,12 +1,5 @@
 set(YUGGOTH_SOURCE_DIR ${PROJECT_SOURCE_DIR}/yuggoth)
 
-set(YUGGOTH_GUI_SOURCES
-  ${YUGGOTH_SOURCE_DIR}/gui/window/window.cpp
-  ${YUGGOTH_SOURCE_DIR}/gui/window/event_kind.cpp
-  ${YUGGOTH_SOURCE_DIR}/gui/imgui/imgui_renderer.cpp
-  ${YUGGOTH_SOURCE_DIR}/gui/imgui/imgui_layer.cpp
-)
-
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/mathematics" ".cpp" YUGGOTH_MATHEMATICS_SOURCES)
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/core" ".cpp" YUGGOTH_CORE_SOURCES)
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/asset" ".cpp" YUGGOTH_ASSET_SOURCES)
@@ -14,6 +7,9 @@ collect_source_recursive("${YUGGOTH_SOURCE_DIR}/renderer" ".cpp" YUGGOTH_RENDERE
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/graphics" ".cpp" YUGGOTH_GRAPHICS_SOURCES)
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/editor" ".cpp" YUGGOTH_EDITOR_SOURCES)
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/scene" ".cpp" YUGGOTH_SCENE_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/memory" ".cpp" YUGGOTH_MEMORY_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/gui" ".cpp" YUGGOTH_GUI_SOURCES)
+
 
 set(YUGGOTH_SOURCES
   ${YUGGOTH_GUI_SOURCES}
@@ -24,6 +20,7 @@ set(YUGGOTH_SOURCES
   ${YUGGOTH_RENDERER_SOURCES}
   ${YUGGOTH_CORE_SOURCES}
   ${YUGGOTH_MATHEMATICS_SOURCES}
+  ${YUGGOTH_MEMORY_SOURCES}
   ${YUGGOTH_SOURCE_DIR}/application/yuggoth.cpp
   ${YUGGOTH_SOURCE_DIR}/application/application.cpp
   ${Vulkan_INCLUDE_DIR}/SPIRV-Reflect/spirv_reflect.c
@@ -47,7 +44,7 @@ set(IMGUIZMO_SOURCES
 # CONFIG
 
 configure_file(
-  ${YUGGOTH_SOURCE_DIR}/core/include/config.h.in
+  ${YUGGOTH_SOURCE_DIR}/core/tools/config.h.in
   ${CMAKE_BINARY_DIR}/config/yuggoth_config.h
 )
 

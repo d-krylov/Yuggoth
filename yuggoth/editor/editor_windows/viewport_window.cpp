@@ -7,8 +7,20 @@
 namespace Yuggoth {
 
 void ViewportWindow::OnImGui() {
-  auto view = glm::lookAt(Vector3f(0.0f, 1.0f, 1.0f), Vector3f(0.0f), Vector3f(0.0f, 1.0f, 0.0f));
-  auto proj = glm::perspective(glm::radians(60.0f), 1.0f, 0.1f, 1000.0f);
+  auto scene_manager = Application::Get()->GetSceneManager();
+  auto current_scene = scene_manager->GetCurrentScene();
+
+  Matrix4f view(1.0f);
+  Matrix4f proj(1.0f);
+
+  if (current_scene) {
+    auto camera = current_scene->GetCurrentCamera();
+    if (camera) {
+      view = camera->GetLookAt();
+      proj = camera->GetProjection();
+    }
+  }
+
   auto m = Matrix4f(1.0f);
   ImGui::Begin("Viewport");
   auto size = ImGui::GetContentRegionAvail();
@@ -24,6 +36,7 @@ void ViewportWindow::OnImGui() {
   ImGuizmo::SetDrawlist();
   ImGuizmo::SetRect(position.x, position.y, size.x, size.y);
   ImGuizmo::DrawGrid(glm::value_ptr(view), glm::value_ptr(proj), glm::value_ptr(m), 200.0f);
+
   ImGui::End();
 }
 

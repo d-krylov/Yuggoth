@@ -124,7 +124,7 @@ void Swapchain::Recreate() {
   image_views_.resize(images_.size());
 
   CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
-  command_buffer.Begin();
+  command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
 
   for (auto i = 0; i < images_.size(); i++) {
     image_views_[i] = Image::CreateImageView(images_[i], surface_format_.format, ImageViewType::E_2D, subresource);

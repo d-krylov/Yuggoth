@@ -1,4 +1,4 @@
-#include "yuggoth/core/include/image_wrapper.h"
+#include "yuggoth/core/tools/image_wrapper.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 

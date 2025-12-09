@@ -15,9 +15,11 @@ public:
 
   template <typename T, typename... Arguments> T &AddComponent(Arguments &&...arguments);
 
-  template <typename Component> Component &GetComponent();
+  template <typename Component> Component &GetComponent() const;
 
-  template <typename Component> Component *TryGetComponent();
+  template <typename Component> Component *TryGetComponent() const;
+
+  template <typename Component> bool HasComponent() const;
 
   bool operator==(const Entity &other) const = default;
 

@@ -3,7 +3,7 @@
 namespace Yuggoth {
 
 CommandPool::CommandPool(uint32_t queue_family_index) {
-  command_pool_ = GraphicsContext::Get()->CreateCommandPool(queue_family_index);
+  command_pool_ = CommandPool::CreateCommandPool(queue_family_index);
 }
 
 CommandPool::~CommandPool() {
@@ -17,6 +17,16 @@ CommandPool::CommandPool(CommandPool &&other) noexcept {
 CommandPool &CommandPool::operator=(CommandPool &&other) noexcept {
   std::swap(command_pool_, other.command_pool_);
   return *this;
+}
+
+VkCommandPool CommandPool::CreateCommandPool(uint32_t queue_family_index) {
+  CommandPoolCreateInfo command_pool_ci;
+  command_pool_ci.flags = CommandPoolCreateMaskBits::E_RESET_COMMAND_BUFFER_BIT;
+  command_pool_ci.queueFamilyIndex = queue_family_index;
+
+  VkCommandPool command_pool = VK_NULL_HANDLE;
+  VK_CHECK(vkCreateCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_ci, 0, &command_pool));
+  return command_pool;
 }
 
 VkCommandPool CommandPool::GetHandle() const {

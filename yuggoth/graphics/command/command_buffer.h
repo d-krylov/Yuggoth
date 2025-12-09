@@ -21,18 +21,18 @@ public:
   CommandBuffer(CommandBuffer &&other) noexcept;
   CommandBuffer &operator=(CommandBuffer &&other) noexcept;
 
-public:
+  static VkCommandBuffer AllocateCommandBuffer(VkCommandPool command_pool, CommandBufferLevel level);
+
   const VkCommandBuffer *GetPointer() const;
 
   void Submit();
+  void Reset();
 
-  void Begin();
+  void Begin(CommandBufferUsageMask usage);
   void End();
 
   void CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors);
   void CommandEndRendering();
-
-  void Reset();
 
   void CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> image_barriers, std::span<const MemoryBarrier2> memory_barriers = {},
                               std::span<const BufferMemoryBarrier2> buffer_barriers = {});
@@ -63,7 +63,9 @@ public:
   // DRAW
   void CommandDrawIndexed(uint32_t index_count, uint32_t instance_count, uint32_t first_index, int32_t vertex_offset, uint32_t first_instance);
 
+  // COPY
   void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent);
+  void CommandCopyBuffer(VkBuffer source, VkBuffer destination, std::size_t from_offset, std::size_t to_offset, std::size_t size);
 
   // HELPERS
   void TransitionImageLayout(VkImage image, ImageLayout source_layout, ImageLayout destination_layout, PipelineStageMask2 source_stage,

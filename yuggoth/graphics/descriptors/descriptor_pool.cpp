@@ -4,12 +4,12 @@ namespace Yuggoth {
 
 DescriptorPool::DescriptorPool(std::span<const DescriptorPoolSize> descriptor_pool_sizes, DescriptorPoolCreateMask mask, uint32_t max_sets) {
   DescriptorPoolCreateInfo descriptor_pool_ci;
-  {
-    descriptor_pool_ci.flags = mask;
-    descriptor_pool_ci.maxSets = max_sets;
-    descriptor_pool_ci.poolSizeCount = descriptor_pool_sizes.size();
-    descriptor_pool_ci.pPoolSizes = descriptor_pool_sizes.data();
-  }
+
+  descriptor_pool_ci.flags = mask;
+  descriptor_pool_ci.maxSets = max_sets;
+  descriptor_pool_ci.poolSizeCount = descriptor_pool_sizes.size();
+  descriptor_pool_ci.pPoolSizes = descriptor_pool_sizes.data();
+
   VK_CHECK(vkCreateDescriptorPool(GraphicsContext::Get()->GetDevice(), descriptor_pool_ci, 0, &descriptor_pool_));
 }
 

@@ -18,6 +18,7 @@ public:
 
   SceneManager *GetSceneManager();
   SceneRenderer *GetSceneRenderer();
+  DeviceMemoryManager *GetDeviceMemoryManager();
 
   void OnStart();
 
@@ -30,6 +31,7 @@ private:
   GraphicsAllocator graphics_allocator_;
   Swapchain swapchain_;
   CommandPool command_pool_;
+  DeviceMemoryManager device_memory_manager_;
   ImGuiLayer imgui_layer_;
   ImGuiRenderer imgui_renderer_;
   SceneManager scene_manager_;

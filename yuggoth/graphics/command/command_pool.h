@@ -17,6 +17,8 @@ public:
   CommandPool(CommandPool &&other) noexcept;
   CommandPool &operator=(CommandPool &&other) noexcept;
 
+  static VkCommandPool CreateCommandPool(uint32_t queue_family_index);
+
   VkCommandPool GetHandle() const;
 
 private:

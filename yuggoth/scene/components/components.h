@@ -2,7 +2,11 @@
 #define YUGGOTH_COMPONENTS_H
 
 #include <string>
-#include "yuggoth/core/include/uuid.h"
+#include "yuggoth/core/tools/uuid.h"
+#include "yuggoth/scene/camera/camera.h"
+#include "yuggoth/scene/light/light.h"
+#include "yuggoth/mathematics/include/transform.h"
+#include "model_component.h"
 #include <entt/entity/fwd.hpp>
 
 namespace Yuggoth {

@@ -1,17 +1,19 @@
 #ifndef YUGGOTH_SCENE_RENDERER_H
 #define YUGGOTH_SCENE_RENDERER_H
 
-#include "yuggoth/graphics/buffer/buffer.h"
-#include "yuggoth/graphics/image/image2D.h"
-#include "yuggoth/graphics/command/command_buffer.h"
+#include "yuggoth/graphics/core/graphics_common.h"
 
 namespace Yuggoth {
+
+class Scene;
 
 class SceneRenderer {
 public:
   SceneRenderer();
 
   const Image2D &GetImage() const;
+
+  void Begin(Scene *scene);
 
   void Draw(CommandBuffer &command_buffer);
 
@@ -23,6 +25,7 @@ protected:
 private:
   Buffer vertex_buffer_;
   Buffer index_buffer_;
+  Buffer scratch_buffer_;
   Image2D target_image_;
 };
 

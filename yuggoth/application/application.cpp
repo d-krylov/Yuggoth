@@ -78,7 +78,7 @@ void Application::Run() {
 
     fence.Reset();
     command_buffer.Reset();
-    command_buffer.Begin();
+    command_buffer.Begin(CommandBufferUsageMask());
 
     auto subresource = GetImageSubresourceRange();
     command_buffer.TransitionImageLayout(swapchain_.GetCurrentImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL,
@@ -93,6 +93,9 @@ void Application::Run() {
 
     imgui_renderer_.End(command_buffer);
 
+    if (scene_manager_.HasValidScenes()) {
+      scene_renderer_.Begin(scene_manager_.GetCurrentScene());
+    }
     scene_renderer_.Draw(command_buffer);
 
     command_buffer.TransitionImageLayout(swapchain_.GetCurrentImage(), ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, ImageLayout::E_PRESENT_SRC_KHR,
@@ -127,6 +130,10 @@ SceneManager *Application::GetSceneManager() {
 
 SceneRenderer *Application::GetSceneRenderer() {
   return &scene_renderer_;
+}
+
+DeviceMemoryManager *Application::GetDeviceMemoryManager() {
+  return &device_memory_manager_;
 }
 
 } // namespace Yuggoth

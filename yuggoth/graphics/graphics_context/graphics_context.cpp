@@ -1,6 +1,6 @@
 #include "graphics_context.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
-#include "yuggoth/core/include/core.h"
+#include "yuggoth/core/tools/core.h"
 #include <print>
 #include <cassert>
 #include <set>
@@ -199,29 +199,6 @@ GraphicsContext::GraphicsContext() {
 }
 
 GraphicsContext::~GraphicsContext() {
-}
-
-VkCommandBuffer GraphicsContext::CreateCommandBuffer(VkCommandPool command_pool, CommandBufferLevel level) {
-  VkCommandBuffer command_buffer = VK_NULL_HANDLE;
-  CommandBufferAllocateInfo command_buffer_ai;
-  {
-    command_buffer_ai.commandPool = command_pool;
-    command_buffer_ai.level = level;
-    command_buffer_ai.commandBufferCount = 1;
-  }
-  VK_CHECK(vkAllocateCommandBuffers(GetDevice(), command_buffer_ai, &command_buffer));
-  return command_buffer;
-}
-
-VkCommandPool GraphicsContext::CreateCommandPool(uint32_t queue_family_index) {
-  VkCommandPool command_pool = VK_NULL_HANDLE;
-  CommandPoolCreateInfo command_pool_ci;
-  {
-    command_pool_ci.flags = CommandPoolCreateMaskBits::E_RESET_COMMAND_BUFFER_BIT;
-    command_pool_ci.queueFamilyIndex = queue_family_index;
-  }
-  VK_CHECK(vkCreateCommandPool(GetDevice(), command_pool_ci, 0, &command_pool));
-  return command_pool;
 }
 
 } // namespace Yuggoth

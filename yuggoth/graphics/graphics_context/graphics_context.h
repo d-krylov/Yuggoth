@@ -21,9 +21,6 @@ public:
 
   static GraphicsContext *Get();
 
-  VkCommandPool CreateCommandPool(uint32_t queue_family_index);
-  VkCommandBuffer CreateCommandBuffer(VkCommandPool command_pool, CommandBufferLevel level);
-
 protected:
   void CreateInstance();
   void PickPhysicalDevice();

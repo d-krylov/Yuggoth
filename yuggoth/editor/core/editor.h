@@ -2,6 +2,7 @@
 #define YUGGOTH_EDITOR_H
 
 #include "yuggoth/editor/editor_windows/editor_windows.h"
+#include "selection_manager.h"
 
 namespace Yuggoth {
 
@@ -11,16 +12,25 @@ public:
 
   void OnImGui();
 
+  template <typename T> T &GetEditorWindow();
+
+  SelectionManager *GetSelectionManager();
+
 protected:
   void DrawMainMenu();
+  void ImportFile();
 
 private:
   ViewportWindow viewport_window_;
   HierarchyWindow hierarchy_window_;
   InspectorWindow inspector_window_;
   ApplicationWindow application_window_;
+  AssetManagerWindow asset_manager_window_;
+  SelectionManager selection_manager_;
 };
 
 } // namespace Yuggoth
+
+#include "editor.ipp"
 
 #endif // YUGGOTH_EDITOR_H

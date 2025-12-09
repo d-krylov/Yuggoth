@@ -11,6 +11,8 @@ struct AllocationInformation {
   std::byte *mapped_memory_{nullptr};
 };
 
+struct GraphicsAllocatorStatistics {};
+
 class GraphicsAllocator {
 public:
   GraphicsAllocator();
@@ -34,7 +36,8 @@ protected:
   void CreateAllocator();
 
 private:
-  VmaAllocator vma_allocator_{VK_NULL_HANDLE};
+  VmaAllocator allocator_{VK_NULL_HANDLE};
+  GraphicsAllocatorStatistics statistics_;
 
   static GraphicsAllocator *graphics_allocator_instance_;
 };

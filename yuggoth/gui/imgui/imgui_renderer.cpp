@@ -1,7 +1,7 @@
 #include "imgui_renderer.h"
 #include "imgui.h"
 #include "ImGuizmo.h"
-#include "yuggoth/core/include/core.h"
+#include "yuggoth/core/tools/core.h"
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
@@ -144,13 +144,9 @@ void ImGuiRenderer::Begin(CommandBuffer &command_buffer, const Swapchain &swapch
   ImGui::DockSpaceOverViewport();
 
   std::array<RenderingAttachmentInfo, 1> rendering_ai;
-  {
-    rendering_ai[0].imageView = swapchain.GetCurrentImageView();
-    rendering_ai[0].imageLayout = ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL;
-    rendering_ai[0].loadOp = AttachmentLoadOp::E_CLEAR;
-    rendering_ai[0].storeOp = AttachmentStoreOp::E_STORE;
-    rendering_ai[0].clearValue.color = {0.0f, 0.0f, 0.0f, 1.0f};
-  }
+
+  rendering_ai[0] = GetRenderingAttachmentInfo(swapchain.GetCurrentImageView(), ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL,
+                                               AttachmentLoadOp::E_CLEAR, AttachmentStoreOp::E_STORE);
 
   command_buffer.CommandBeginRendering(swapchain.GetExtent(), rendering_ai);
 }

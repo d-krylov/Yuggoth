@@ -9,6 +9,7 @@ Semaphore::Semaphore() {
 }
 
 Semaphore::~Semaphore() {
+  vkDestroySemaphore(GraphicsContext::Get()->GetDevice(), semaphore_, nullptr);
 }
 
 Semaphore::Semaphore(Semaphore &&other) noexcept {
@@ -35,6 +36,7 @@ Fence::Fence(FenceCreateMask mask) {
 }
 
 Fence::~Fence() {
+  vkDestroyFence(GraphicsContext::Get()->GetDevice(), fence_, nullptr);
 }
 
 Fence::Fence(Fence &&other) noexcept {

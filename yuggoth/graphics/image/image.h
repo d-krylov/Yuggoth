@@ -41,8 +41,8 @@ public:
   VkSampler GetSampler() const;
   VkImageView GetImageView() const;
   const Extent3D &GetExtent() const;
-  uint32_t GetLevelCoount() const;
-  uint32_t GetLayerCoount() const;
+  uint32_t GetLevelCount() const;
+  uint32_t GetLayerCount() const;
   ImageUsageMask GetUsage() const;
 
   void SetImageData(std::span<const std::byte> data);

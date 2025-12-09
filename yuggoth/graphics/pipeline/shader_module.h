@@ -7,7 +7,7 @@
 
 namespace Yuggoth {
 
-using DescriptorSetMap = std::map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>>;
+using DescriptorSetLayoutBindingMap = std::map<uint32_t, std::vector<DescriptorSetLayoutBinding>>;
 
 class ShaderModule {
 public:
@@ -20,12 +20,14 @@ public:
   std::span<const VertexInputAttributeDescription> GetInputDescriptions() const;
   std::span<const PushConstantRange> GetPushConstants() const;
 
-  const DescriptorSetMap &GetDescriptorSets() const;
+  const DescriptorSetLayoutBindingMap &GetPushDescriptorSetLayoutBindings() const;
+  const DescriptorSetLayoutBindingMap &GetPoolDescriptorSetLayoutBindings() const;
 
 private:
   std::vector<uint32_t> spirv_;
   ShaderStageMaskBits shader_stage_;
-  DescriptorSetMap descriptor_sets_;
+  DescriptorSetLayoutBindingMap push_descriptor_set_bindings_;
+  DescriptorSetLayoutBindingMap pool_descriptor_set_bindings_;
   std::vector<PushConstantRange> push_constants_;
   std::vector<VertexInputAttributeDescription> vertex_input_descriptions_;
 };

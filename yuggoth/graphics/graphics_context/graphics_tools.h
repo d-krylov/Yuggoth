@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_GRAPHICS_TOOLS_H
 #define YUGGOTH_GRAPHICS_TOOLS_H
 
-#include "yuggoth/core/include/type_tools.h"
+#include "yuggoth/core/tools/type_tools.h"
 #include "yuggoth/graphics/core/graphics_structures.h"
 #include <source_location>
 #include <vector>

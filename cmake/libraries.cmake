@@ -41,3 +41,9 @@ FetchContent_Declare(
 	GIT_REPOSITORY https://github.com/aiekick/ImGuiFileDialog
 	GIT_TAG master
 )
+
+FetchContent_Declare(
+	pugixml
+	GIT_REPOSITORY https://github.com/zeux/pugixml
+	GIT_TAG master
+)

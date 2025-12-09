@@ -9,6 +9,15 @@ class UUID {
 public:
   UUID();
 
+  UUID(uint64_t uuid);
+
+  operator uint64_t();
+  operator uint64_t() const;
+
+  uint64_t GetValue() const;
+
+  bool IsValid() const;
+
 private:
   uint64_t uuid_;
 };

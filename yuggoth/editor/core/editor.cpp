@@ -1,15 +1,22 @@
 #include "editor.h"
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
-#include "yuggoth/mathematics/include/mathematics_types.h"
+#include "yuggoth/application/application.h"
+#include "yuggoth/scene/core/entity.h"
+#include "yuggoth/scene/components/components.h"
+#include "external/fonts/IconsFontAwesome6.h"
 #include <print>
 
 namespace Yuggoth {
 
 Editor::Editor() {
+  hierarchy_window_.SetEditor(this);
+  inspector_window_.SetEditor(this);
 }
 
-Vector3f v(0.0f);
+SelectionManager *Editor::GetSelectionManager() {
+  return &selection_manager_;
+}
 
 void Editor::OnImGui() {
 
@@ -19,6 +26,27 @@ void Editor::OnImGui() {
   hierarchy_window_.OnImGui();
   inspector_window_.OnImGui();
   application_window_.OnImGui();
+  asset_manager_window_.OnImGui();
+
+  ImportFile();
+}
+
+void Editor::ImportFile() {
+  auto scene_manager = Application::Get()->GetSceneManager();
+  if (ImGuiFileDialog::Instance()->Display("ChooseFile")) {
+    if (ImGuiFileDialog::Instance()->IsOk()) {
+      if (scene_manager->HasValidScenes() == false) {
+        scene_manager->EnqueueScene();
+      }
+      auto current_scene = scene_manager->GetCurrentScene();
+      std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
+      auto model_entity = current_scene->CreateEntityWithName("Model");
+      model_entity.AddComponent<ModelComponent>(path);
+      model_entity.AddComponent<Transform>();
+    }
+
+    ImGuiFileDialog::Instance()->Close();
+  }
 }
 
 void Editor::DrawMainMenu() {
@@ -26,14 +54,22 @@ void Editor::DrawMainMenu() {
 
     if (ImGui::BeginMenu("File")) {
 
-      if (ImGui::MenuItem("New", "Ctrl+N")) {
+      if (ImGui::MenuItem(ICON_FA_FILE " New", "Ctrl+N")) {
       }
-      if (ImGui::MenuItem("Open", "Ctrl+O")) {
+
+      if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " Open", "Ctrl+O")) {
+      }
+
+      ImGui::Separator();
+
+      if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save", "Ctrl+S")) {
+      }
+
+      ImGui::Separator();
+
+      if (ImGui::MenuItem(ICON_FA_FILE_IMPORT " Import")) {
         IGFD::FileDialogConfig config;
-        config.path = ".";
-        ImGuiFileDialog::Instance()->OpenDialog("ChooseFileDlgKey", "Choose File", nullptr, config);
-      }
-      if (ImGui::MenuItem("Save", "Ctrl+S")) {
+        ImGuiFileDialog::Instance()->OpenDialog("ChooseFile", "Choose File", ".gltf,.glb", config);
       }
 
       ImGui::Separator();
@@ -49,17 +85,6 @@ void Editor::DrawMainMenu() {
     }
 
     ImGui::EndMainMenuBar();
-  }
-
-  if (ImGuiFileDialog::Instance()->Display("ChooseFileDlgKey")) {
-    if (ImGuiFileDialog::Instance()->IsOk()) {
-      std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-      std::string fileNameOnly = ImGuiFileDialog::Instance()->GetCurrentFileName();
-
-      std::println("Selected file: {}", filePathName.c_str());
-    }
-
-    ImGuiFileDialog::Instance()->Close();
   }
 }
 

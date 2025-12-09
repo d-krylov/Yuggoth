@@ -19,6 +19,10 @@ constexpr inline std::size_t operator""_MiB(unsigned long long int x) {
 
 std::filesystem::path GetShadersRoot();
 
+std::filesystem::path GetYuggothRoot();
+
+std::size_t AlignUp(std::size_t value, std::size_t alignment);
+
 } // namespace Yuggoth
 
 #endif // YUGGOTH_CORE_H
