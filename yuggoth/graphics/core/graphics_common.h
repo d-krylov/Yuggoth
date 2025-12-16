@@ -11,7 +11,7 @@
 #include "yuggoth/graphics/image/image_depth.h"
 #include "yuggoth/graphics/acceleration/acceleration_structure.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
-#include "yuggoth/graphics/graphics_context/graphics_virtual_allocator.h"
-#include "synchronization.h"
+#include "yuggoth/graphics/synchronization/fence.h"
+#include "yuggoth/graphics/synchronization/semaphore.h"
 
 #endif // YUGGOTH_GRAPHICS_COMMON_H

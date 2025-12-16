@@ -1,7 +1,7 @@
 #include "imgui_renderer.h"
 #include "imgui.h"
 #include "ImGuizmo.h"
-#include "yuggoth/core/tools/core.h"
+#include "yuggoth/core/tools/include/core.h"
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
@@ -42,7 +42,7 @@ void ImGuiRenderer::SetupRenderState(CommandBuffer &command_buffer, int32_t fb_w
   auto &io = ImGui::GetIO();
   auto draw_data = ImGui::GetDrawData();
 
-  command_buffer.CommandBindPipeline(graphics_pipeline_.GetPipeline(), PipelineBindPoint::E_GRAPHICS);
+  command_buffer.CommandBindPipeline(graphics_pipeline_.GetHandle(), PipelineBindPoint::E_GRAPHICS);
 
   auto index_type = sizeof(ImDrawIdx) == 2 ? IndexType::E_UINT16 : IndexType::E_UINT32;
 
@@ -138,21 +138,22 @@ void ImGuiRenderer::CreateTexture() {
   io.Fonts->SetTexID((ImTextureID)&image_);
 }
 
-void ImGuiRenderer::Begin(CommandBuffer &command_buffer, const Swapchain &swapchain) {
+void ImGuiRenderer::Begin(CommandBuffer &command_buffer) {
   ImGui::NewFrame();
   ImGuizmo::BeginFrame();
   ImGui::DockSpaceOverViewport();
-
-  std::array<RenderingAttachmentInfo, 1> rendering_ai;
-
-  rendering_ai[0] = GetRenderingAttachmentInfo(swapchain.GetCurrentImageView(), ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL,
-                                               AttachmentLoadOp::E_CLEAR, AttachmentStoreOp::E_STORE);
-
-  command_buffer.CommandBeginRendering(swapchain.GetExtent(), rendering_ai);
 }
 
-void ImGuiRenderer::End(CommandBuffer &command_buffer) {
+void ImGuiRenderer::End(CommandBuffer &command_buffer, const Swapchain &swapchain) {
   ImGui::Render();
+
+  auto image_view = swapchain.GetCurrentImageView();
+
+  std::array<RenderingAttachmentInfo, 1> color;
+  color[0] = GetRenderingAttachmentInfo(image_view, ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, AttachmentLoadOp::E_CLEAR, AttachmentStoreOp::E_STORE);
+
+  command_buffer.CommandBeginRendering(swapchain.GetExtent(), color);
+
   RenderDrawData(command_buffer);
   command_buffer.CommandEndRendering();
 }

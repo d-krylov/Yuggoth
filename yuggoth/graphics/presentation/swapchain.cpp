@@ -21,16 +21,14 @@ uint32_t ComputeImageCount(const VkSurfaceCapabilitiesKHR &capabilities) {
 }
 
 SurfaceFormatKHR SelectSurfaceFormat(const VkSurfaceKHR surface, std::span<const SurfaceFormatKHR> required_formats) {
-  auto supported_formats =
-    Enumerate<SurfaceFormatKHR>(vkGetPhysicalDeviceSurfaceFormatsKHR, GraphicsContext::Get()->GetPhysicalDevice(), surface);
+  auto supported_formats = Enumerate<SurfaceFormatKHR>(vkGetPhysicalDeviceSurfaceFormatsKHR, GraphicsContext::Get()->GetPhysicalDevice(), surface);
   auto it = std::ranges::find_first_of(supported_formats, required_formats);
   return (it != supported_formats.end()) ? *it : supported_formats[0];
 }
 
 PresentModeKHR SelectPresentMode(const VkSurfaceKHR surface) {
   std::array required_modes = {PresentModeKHR::E_MAILBOX_KHR, PresentModeKHR::E_IMMEDIATE_KHR, PresentModeKHR::E_FIFO_KHR};
-  auto supported_modes =
-    Enumerate<PresentModeKHR>(vkGetPhysicalDeviceSurfacePresentModesKHR, GraphicsContext::Get()->GetPhysicalDevice(), surface);
+  auto supported_modes = Enumerate<PresentModeKHR>(vkGetPhysicalDeviceSurfacePresentModesKHR, GraphicsContext::Get()->GetPhysicalDevice(), surface);
   auto it = std::ranges::find_first_of(required_modes, supported_modes);
   return *it;
 }
@@ -69,33 +67,30 @@ void Swapchain::CreateSwapchain() {
   surface_extent_ = surface_capabilities.currentExtent;
 
   SwapchainCreateInfoKHR swapchain_ci{};
-  {
-    swapchain_ci.surface = surface_;
-    swapchain_ci.minImageCount = ComputeImageCount(surface_capabilities);
-    swapchain_ci.imageFormat = surface_format_.format;
-    swapchain_ci.imageColorSpace = surface_format_.colorSpace;
-    swapchain_ci.imageExtent = surface_capabilities.currentExtent;
-    swapchain_ci.imageArrayLayers = 1;
-    swapchain_ci.imageUsage = ImageUsageMaskBits::E_COLOR_ATTACHMENT_BIT;
-    swapchain_ci.imageSharingMode = SharingMode::E_EXCLUSIVE;
-    swapchain_ci.preTransform = surface_capabilities.currentTransform;
-    swapchain_ci.compositeAlpha = CompositeAlphaMaskBitsKHR::E_OPAQUE_BIT_KHR;
-    swapchain_ci.presentMode = SelectPresentMode(surface_);
-    swapchain_ci.clipped = true;
-    swapchain_ci.oldSwapchain = swapchain_previous_;
-  }
+  swapchain_ci.surface = surface_;
+  swapchain_ci.minImageCount = ComputeImageCount(surface_capabilities);
+  swapchain_ci.imageFormat = surface_format_.format;
+  swapchain_ci.imageColorSpace = surface_format_.colorSpace;
+  swapchain_ci.imageExtent = surface_capabilities.currentExtent;
+  swapchain_ci.imageArrayLayers = 1;
+  swapchain_ci.imageUsage = ImageUsageMaskBits::E_COLOR_ATTACHMENT_BIT;
+  swapchain_ci.imageSharingMode = SharingMode::E_EXCLUSIVE;
+  swapchain_ci.preTransform = surface_capabilities.currentTransform;
+  swapchain_ci.compositeAlpha = CompositeAlphaMaskBitsKHR::E_OPAQUE_BIT_KHR;
+  swapchain_ci.presentMode = SelectPresentMode(surface_);
+  swapchain_ci.clipped = true;
+  swapchain_ci.oldSwapchain = swapchain_previous_;
+
   VK_CHECK(vkCreateSwapchainKHR(GraphicsContext::Get()->GetDevice(), swapchain_ci, nullptr, &swapchain_current_));
 }
 
 void Swapchain::Present(const VkSemaphore *wait_semaphore) {
   PresentInfoKHR present_info;
-  {
-    present_info.waitSemaphoreCount = 1;
-    present_info.pWaitSemaphores = wait_semaphore;
-    present_info.swapchainCount = 1;
-    present_info.pSwapchains = &swapchain_current_;
-    present_info.pImageIndices = &image_index_;
-  }
+  present_info.waitSemaphoreCount = 1;
+  present_info.pWaitSemaphores = wait_semaphore;
+  present_info.swapchainCount = 1;
+  present_info.pSwapchains = &swapchain_current_;
+  present_info.pImageIndices = &image_index_;
 
   auto status = vkQueuePresentKHR(GraphicsContext::Get()->GetGraphicsQueue(), present_info);
 }

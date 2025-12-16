@@ -5,7 +5,7 @@
 
 namespace Yuggoth {
 
-class ApplicationWindow {
+class ApplicationWindow : public EditorWindow {
 public:
   void OnImGui();
 

@@ -35,6 +35,18 @@ private:
   int32_t height_;
 };
 
+class WindowCloseEvent : public Event {
+public:
+  static constexpr auto event_kind = EventKind::WINDOW_CLOSE;
+
+  WindowCloseEvent() {
+  }
+
+  EventKind GetEventKind() override {
+    return event_kind;
+  }
+};
+
 } // namespace Yuggoth
 
 #endif // YUGGOTH_WINDOW_EVENTS_H

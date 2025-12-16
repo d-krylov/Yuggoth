@@ -18,6 +18,7 @@ GraphicsAllocator::GraphicsAllocator() {
 }
 
 GraphicsAllocator::~GraphicsAllocator() {
+  vmaDestroyAllocator(allocator_);
 }
 
 void GraphicsAllocator::CreateAllocator() {
@@ -102,10 +103,12 @@ void GraphicsAllocator::CopyMemoryToAllocation(std::span<const std::byte> source
 
 void GraphicsAllocator::DestroyImage(VkImage image, VmaAllocation vma_allocation) {
   vmaDestroyImage(allocator_, image, vma_allocation);
+  statistics_.allocated_images_count_--;
 }
 
 void GraphicsAllocator::DestroyBuffer(VkBuffer buffer, VmaAllocation vma_allocation) {
   vmaDestroyBuffer(allocator_, buffer, vma_allocation);
+  statistics_.allocated_buffers_count_--;
 }
 
 } // namespace Yuggoth

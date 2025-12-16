@@ -1,7 +1,6 @@
 #ifndef YUGGOTH_ENTITY_H
 #define YUGGOTH_ENTITY_H
 
-#include <entt/entity/registry.hpp>
 #include "scene.h"
 
 namespace Yuggoth {

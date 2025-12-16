@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_ASSET_H
 #define YUGGOTH_ASSET_H
 
-#include "yuggoth/core/tools/uuid.h"
+#include "yuggoth/core/tools/include/uuid.h"
 #include <filesystem>
 
 namespace Yuggoth {

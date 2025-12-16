@@ -5,23 +5,28 @@ namespace Yuggoth {
 // CONSTRUCTORS
 
 Buffer::Buffer(std::size_t buffer_size, BufferUsageMask buffer_usage, AllocationCreateMask allocation_mask) : buffer_size_(buffer_size) {
-  CreateBuffer(allocation_mask, buffer_size, buffer_usage);
+  auto buffer_information = CreateBuffer(buffer_size, buffer_usage, allocation_mask);
+  buffer_ = buffer_information.buffer_;
+  allocation_ = buffer_information.allocation_;
+  mapped_memory_ = buffer_information.mapped_memory_;
 }
 
 Buffer::~Buffer() {
   GraphicsAllocator::Get()->DestroyBuffer(buffer_, allocation_);
 }
 
-void Buffer::CreateBuffer(AllocationCreateMask allocation_mask, std::size_t buffer_size, BufferUsageMask buffer_usage) {
+BufferInformation Buffer::CreateBuffer(std::size_t size, BufferUsageMask usage, AllocationCreateMask allocation_mask) {
   BufferCreateInfo buffer_ci;
-  buffer_ci.size = buffer_size;
-  buffer_ci.usage = buffer_usage;
+  buffer_ci.size = size;
+  buffer_ci.usage = usage;
   buffer_ci.sharingMode = SharingMode::E_EXCLUSIVE;
 
-  auto allocation_information = GraphicsAllocator::Get()->AllocateBuffer(buffer_ci, buffer_, allocation_mask);
+  BufferInformation buffer_information;
+  auto allocation_information = GraphicsAllocator::Get()->AllocateBuffer(buffer_ci, buffer_information.buffer_, allocation_mask);
 
-  allocation_ = allocation_information.allocation_;
-  mapped_memory_ = allocation_information.mapped_memory_;
+  buffer_information.allocation_ = allocation_information.allocation_;
+  buffer_information.mapped_memory_ = allocation_information.mapped_memory_;
+  return buffer_information;
 }
 
 Buffer::Buffer(Buffer &&other) noexcept {

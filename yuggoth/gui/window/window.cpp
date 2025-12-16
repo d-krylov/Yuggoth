@@ -47,6 +47,9 @@ void WindowSizeCallback(GLFWwindow *native_window, int32_t width, int32_t height
 }
 
 void WindowCloseCallback(GLFWwindow *native_window) {
+  auto *window = GetWindow(native_window);
+  auto event = WindowCloseEvent();
+  window->Invoke(event);
 }
 
 void WindowRefreshCallback(GLFWwindow *native_window) {
@@ -121,10 +124,6 @@ GLFWwindow *Window::GetNativeWindow() const {
 
 bool Window::ShouldClose() const {
   return glfwWindowShouldClose(native_window_);
-}
-
-void Window::PollEvents() {
-  glfwPollEvents();
 }
 
 int32_t Window::GetKey(int32_t key) const {

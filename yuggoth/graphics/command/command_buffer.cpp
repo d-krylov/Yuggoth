@@ -1,6 +1,6 @@
 #include "command_buffer.h"
 #include "command_pool.h"
-#include "yuggoth/graphics/core/synchronization.h"
+#include "yuggoth/graphics/synchronization/fence.h"
 
 namespace Yuggoth {
 
@@ -14,20 +14,19 @@ CommandBuffer::CommandBuffer(uint32_t queue_family_index) : own_command_pool_(tr
 }
 
 CommandBuffer::~CommandBuffer() {
-  vkFreeCommandBuffers(GraphicsContext::Get()->GetDevice(), command_pool_, 1, &command_buffer_);
-  if (own_command_pool_) {
-    vkDestroyCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_, nullptr);
-  }
+  vkDestroyCommandPool(GraphicsContext::Get()->GetDevice(), own_command_pool_ ? command_pool_ : VK_NULL_HANDLE, nullptr);
 }
 
 CommandBuffer::CommandBuffer(CommandBuffer &&other) noexcept {
   command_buffer_ = std::exchange(other.command_buffer_, VK_NULL_HANDLE);
   command_pool_ = std::exchange(other.command_pool_, VK_NULL_HANDLE);
+  own_command_pool_ = std::exchange(other.own_command_pool_, false);
 }
 
 CommandBuffer &CommandBuffer::operator=(CommandBuffer &&other) noexcept {
   std::swap(command_buffer_, other.command_buffer_);
   std::swap(command_pool_, other.command_pool_);
+  std::swap(own_command_pool_, other.own_command_pool_);
   return *this;
 }
 
@@ -42,17 +41,21 @@ VkCommandBuffer CommandBuffer::AllocateCommandBuffer(VkCommandPool command_pool,
   return command_buffer;
 }
 
+VkCommandBuffer CommandBuffer::GetHandle() const {
+  return command_buffer_;
+}
+
 void CommandBuffer::Submit() {
   SubmitInfo submit_info;
   submit_info.commandBufferCount = 1;
-  submit_info.pCommandBuffers = GetPointer();
+  submit_info.pCommandBuffers = get();
 
   Fence fence;
   VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
   fence.Wait();
 }
 
-const VkCommandBuffer *CommandBuffer::GetPointer() const {
+const VkCommandBuffer *CommandBuffer::get() const {
   return &command_buffer_;
 }
 
@@ -66,15 +69,16 @@ void CommandBuffer::Reset() {
   vkResetCommandBuffer(command_buffer_, 0);
 }
 
-void CommandBuffer::CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors) {
+void CommandBuffer::CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors,
+                                          const RenderingAttachmentInfo *depth, const RenderingAttachmentInfo *stencil) {
   RenderingInfo rendering_info;
   rendering_info.renderArea.offset = {0, 0};
   rendering_info.renderArea.extent = extent;
   rendering_info.layerCount = 1;
   rendering_info.colorAttachmentCount = colors.size();
   rendering_info.pColorAttachments = colors.data();
-  rendering_info.pDepthAttachment = nullptr;
-  rendering_info.pStencilAttachment = nullptr;
+  rendering_info.pDepthAttachment = depth;
+  rendering_info.pStencilAttachment = stencil;
 
   vkCmdBeginRendering(command_buffer_, rendering_info);
 }
@@ -123,8 +127,7 @@ void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t s
   vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set_number, 1, write_descriptor_set);
 }
 
-void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkImageView image_view,
-                                             VkSampler sampler) {
+void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkImageView image_view, VkSampler sampler) {
   DescriptorImageInfo descriptor_ii;
   {
     descriptor_ii.sampler = sampler;
@@ -169,8 +172,9 @@ void CommandBuffer::CommandEnableDepthWrite(bool enabled) {
   vkCmdSetDepthWriteEnable(command_buffer_, enabled);
 }
 
-void CommandBuffer::CommandDrawIndexed(uint32_t indices, uint32_t instances, uint32_t index0, int32_t vertex_offset, uint32_t instance0) {
-  vkCmdDrawIndexed(command_buffer_, indices, instances, index0, vertex_offset, instance0);
+// DRAW
+void CommandBuffer::CommandDrawIndexed(uint32_t indices, uint32_t instances, uint32_t first_index, int32_t vertex_offset, uint32_t first_instance) {
+  vkCmdDrawIndexed(command_buffer_, indices, instances, first_index, vertex_offset, first_instance);
 }
 
 // BIND
@@ -206,11 +210,7 @@ void CommandBuffer::CommandCopyBufferToImage(VkBuffer buffer, VkImage image, con
   vkCmdCopyBufferToImage(command_buffer_, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, buffer_image_copy);
 }
 
-void CommandBuffer::CommandCopyBuffer(VkBuffer source, VkBuffer destination, std::size_t from_offset, std::size_t to_offset, std::size_t size) {
-  BufferCopy buffer_copy;
-  buffer_copy.srcOffset = from_offset;
-  buffer_copy.dstOffset = to_offset;
-  buffer_copy.size = size;
+void CommandBuffer::CommandCopyBuffer(VkBuffer source, VkBuffer destination, const BufferCopy &buffer_copy) {
   vkCmdCopyBuffer(command_buffer_, source, destination, 1, buffer_copy);
 }
 
@@ -227,9 +227,9 @@ void CommandBuffer::CommandEndDebugUtilsLabel() {
 }
 
 // HELPERS
-void CommandBuffer::TransitionImageLayout(VkImage image, ImageLayout source_layout, ImageLayout destination_layout,
-                                          PipelineStageMask2 source_stage, PipelineStageMask2 destination_stage, AccessMask2 source_access,
-                                          AccessMask2 destination_access, const ImageSubresourceRange &subresource) {
+void CommandBuffer::TransitionImageLayout(VkImage image, ImageLayout source_layout, ImageLayout destination_layout, PipelineStageMask2 source_stage,
+                                          PipelineStageMask2 destination_stage, AccessMask2 source_access, AccessMask2 destination_access,
+                                          const ImageSubresourceRange &subresource) {
   std::array<ImageMemoryBarrier2, 1> image_memory_barriers;
 
   image_memory_barriers[0].srcStageMask = source_stage;

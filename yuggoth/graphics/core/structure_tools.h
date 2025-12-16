@@ -10,8 +10,7 @@ ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect = ImageAsp
 
 PipelineColorBlendAttachmentState GetColorBlendAttachmentState(bool enable, BlendFactor from_color = BlendFactor::E_SRC_ALPHA,
                                                                BlendFactor to_color = BlendFactor::E_ONE_MINUS_SRC_ALPHA,
-                                                               BlendOp color_operation = BlendOp::E_ADD,
-                                                               BlendFactor from_alpha = BlendFactor::E_ONE,
+                                                               BlendOp color_operation = BlendOp::E_ADD, BlendFactor from_alpha = BlendFactor::E_ONE,
                                                                BlendFactor to_alpha = BlendFactor::E_ONE_MINUS_SRC_ALPHA,
                                                                BlendOp alpha_operation = BlendOp::E_ADD);
 

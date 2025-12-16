@@ -6,8 +6,12 @@
 
 namespace Yuggoth {
 
+class AssetManager;
+
 class SceneManager {
 public:
+  SceneManager(AssetManager *asset_manager);
+
   void EnqueueScene();
 
   Scene *GetCurrentScene() const;
@@ -16,7 +20,8 @@ public:
 
 private:
   std::vector<std::unique_ptr<Scene>> scenes_;
-  Scene *current_scene_{nullptr};
+  AssetManager *asset_manager_ = nullptr;
+  Scene *current_scene_ = nullptr;
 };
 
 } // namespace Yuggoth

@@ -10,8 +10,22 @@
 namespace Yuggoth {
 
 Editor::Editor() {
+}
+
+void Editor::SetEditorContext(const EditorContext &editor_context) {
+  editor_context_ = editor_context;
+
+  viewport_window_.SetEditor(this);
   hierarchy_window_.SetEditor(this);
   inspector_window_.SetEditor(this);
+  application_window_.SetEditor(this);
+  asset_manager_window_.SetEditor(this);
+
+  viewport_window_.SetEditorContext(&editor_context_);
+  hierarchy_window_.SetEditorContext(&editor_context_);
+  inspector_window_.SetEditorContext(&editor_context_);
+  application_window_.SetEditorContext(&editor_context_);
+  asset_manager_window_.SetEditorContext(&editor_context_);
 }
 
 SelectionManager *Editor::GetSelectionManager() {
@@ -32,7 +46,7 @@ void Editor::OnImGui() {
 }
 
 void Editor::ImportFile() {
-  auto scene_manager = Application::Get()->GetSceneManager();
+  auto scene_manager = editor_context_.scene_manager_;
   if (ImGuiFileDialog::Instance()->Display("ChooseFile")) {
     if (ImGuiFileDialog::Instance()->IsOk()) {
       if (scene_manager->HasValidScenes() == false) {

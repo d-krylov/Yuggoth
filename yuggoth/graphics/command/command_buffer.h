@@ -9,6 +9,8 @@ namespace Yuggoth {
 
 class CommandBuffer {
 public:
+  CommandBuffer() = default;
+
   CommandBuffer(const VkCommandPool command_pool);
 
   CommandBuffer(uint32_t queue_family_index);
@@ -23,7 +25,9 @@ public:
 
   static VkCommandBuffer AllocateCommandBuffer(VkCommandPool command_pool, CommandBufferLevel level);
 
-  const VkCommandBuffer *GetPointer() const;
+  const VkCommandBuffer *get() const;
+
+  VkCommandBuffer GetHandle() const;
 
   void Submit();
   void Reset();
@@ -31,7 +35,10 @@ public:
   void Begin(CommandBufferUsageMask usage);
   void End();
 
-  void CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors);
+  void CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors, //
+                             const RenderingAttachmentInfo *depth = nullptr,                          //
+                             const RenderingAttachmentInfo *stencil = nullptr);
+
   void CommandEndRendering();
 
   void CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> image_barriers, std::span<const MemoryBarrier2> memory_barriers = {},
@@ -65,7 +72,7 @@ public:
 
   // COPY
   void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent);
-  void CommandCopyBuffer(VkBuffer source, VkBuffer destination, std::size_t from_offset, std::size_t to_offset, std::size_t size);
+  void CommandCopyBuffer(VkBuffer source, VkBuffer destination, const BufferCopy &buffer_copy);
 
   // HELPERS
   void TransitionImageLayout(VkImage image, ImageLayout source_layout, ImageLayout destination_layout, PipelineStageMask2 source_stage,

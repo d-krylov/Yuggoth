@@ -16,11 +16,14 @@ public:
 
   SelectionManager *GetSelectionManager();
 
+  void SetEditorContext(const EditorContext &editor_context);
+
 protected:
   void DrawMainMenu();
   void ImportFile();
 
 private:
+  EditorContext editor_context_;
   ViewportWindow viewport_window_;
   HierarchyWindow hierarchy_window_;
   InspectorWindow inspector_window_;

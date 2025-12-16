@@ -7,25 +7,35 @@
 namespace Yuggoth {
 
 class Entity;
+class SceneManager;
+class AssetManager;
+
+struct SceneContext {
+  SceneManager *scene_manager_ = nullptr;
+  AssetManager *asset_manager_ = nullptr;
+};
 
 class Scene {
 public:
-  Scene();
+  Scene(const SceneContext &scene_context);
 
   entt::registry &GetRegistry();
 
   Entity CreateEntity();
   Entity CreateEntityWithName(std::string_view name);
-  Entity GetEntityByUUID(UUID id);
 
   void DestroyEntity(Entity entity);
-
   void SetCurrentCamera(Camera *camera);
+
+  void SetName(std::string_view name);
 
   Camera *GetCurrentCamera();
 
 private:
   entt::registry registry_;
+  SceneManager *scene_manager_ = nullptr;
+  AssetManager *asset_manager_ = nullptr;
+  std::string scene_name_;
   Camera *current_camera_ = nullptr;
 };
 

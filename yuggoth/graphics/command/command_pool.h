@@ -7,6 +7,8 @@ namespace Yuggoth {
 
 class CommandPool {
 public:
+  CommandPool() = default;
+
   CommandPool(uint32_t queue_family_index);
 
   ~CommandPool();
@@ -18,6 +20,8 @@ public:
   CommandPool &operator=(CommandPool &&other) noexcept;
 
   static VkCommandPool CreateCommandPool(uint32_t queue_family_index);
+
+  void Reset();
 
   VkCommandPool GetHandle() const;
 

@@ -11,7 +11,10 @@ struct AllocationInformation {
   std::byte *mapped_memory_{nullptr};
 };
 
-struct GraphicsAllocatorStatistics {};
+struct GraphicsAllocatorStatistics {
+  std::size_t allocated_buffers_count_ = 0;
+  std::size_t allocated_images_count_ = 0;
+};
 
 class GraphicsAllocator {
 public:

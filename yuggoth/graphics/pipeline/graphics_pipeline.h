@@ -23,7 +23,7 @@ public:
   GraphicsPipeline(GraphicsPipeline &&other) noexcept;
   GraphicsPipeline &operator=(GraphicsPipeline &&other) noexcept;
 
-  VkPipeline GetPipeline() const;
+  VkPipeline GetHandle() const;
   VkPipelineLayout GetPipelineLayout() const;
 
 private:

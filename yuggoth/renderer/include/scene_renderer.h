@@ -14,8 +14,9 @@ public:
   const Image2D &GetImage() const;
 
   void Begin(Scene *scene);
+  void End();
 
-  void Draw(CommandBuffer &command_buffer);
+  void Draw();
 
   void OnViewportResize(uint32_t width, uint32_t height);
 
@@ -23,10 +24,11 @@ protected:
   void Initialize();
 
 private:
-  Buffer vertex_buffer_;
-  Buffer index_buffer_;
-  Buffer scratch_buffer_;
   Image2D target_image_;
+  ImageDepth depth_image_;
+  CommandBuffer command_buffer_;
+  GraphicsPipeline graphics_pipeline_;
+  std::vector<DrawIndexedIndirectCommand> commands_;
 };
 
 } // namespace Yuggoth

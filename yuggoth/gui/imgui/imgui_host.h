@@ -9,9 +9,9 @@ namespace Yuggoth {
 
 class Window;
 
-class ImGuiLayer {
+class ImGuiHost {
 public:
-  ImGuiLayer(Window *window);
+  ImGuiHost(const Window *window);
 
   void OnEvent(Event &event);
 
@@ -29,7 +29,7 @@ protected:
   void UpdateTime();
 
 private:
-  Window *window_ = nullptr;
+  const Window *window_ = nullptr;
   double time_ = 0.0;
 };
 

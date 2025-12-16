@@ -2,7 +2,7 @@
 #define YUGGOTH_COMPONENTS_H
 
 #include <string>
-#include "yuggoth/core/tools/uuid.h"
+#include "yuggoth/core/tools/include/uuid.h"
 #include "yuggoth/scene/camera/camera.h"
 #include "yuggoth/scene/light/light.h"
 #include "yuggoth/mathematics/include/transform.h"

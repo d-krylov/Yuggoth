@@ -2501,8 +2501,7 @@ PhysicalDeviceDeviceGeneratedCommandsFeaturesNV::operator VkPhysicalDeviceDevice
   return reinterpret_cast<VkPhysicalDeviceDeviceGeneratedCommandsFeaturesNV *>(this);
 }
 
-PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV::operator const VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV &()
-  const noexcept {
+PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV::operator const VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV *>(this);
 }
 
@@ -2510,8 +2509,7 @@ PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV::operator VkPhysicalDevic
   return *reinterpret_cast<VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV *>(this);
 }
 
-PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV::operator const VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV *()
-  const noexcept {
+PhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV::operator const VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceDeviceGeneratedCommandsComputeFeaturesNV *>(this);
 }
 
@@ -2599,8 +2597,7 @@ PhysicalDeviceClusterAccelerationStructureFeaturesNV::operator VkPhysicalDeviceC
   return reinterpret_cast<VkPhysicalDeviceClusterAccelerationStructureFeaturesNV *>(this);
 }
 
-PhysicalDeviceClusterAccelerationStructurePropertiesNV::operator const VkPhysicalDeviceClusterAccelerationStructurePropertiesNV &()
-  const noexcept {
+PhysicalDeviceClusterAccelerationStructurePropertiesNV::operator const VkPhysicalDeviceClusterAccelerationStructurePropertiesNV &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceClusterAccelerationStructurePropertiesNV *>(this);
 }
 
@@ -2608,8 +2605,7 @@ PhysicalDeviceClusterAccelerationStructurePropertiesNV::operator VkPhysicalDevic
   return *reinterpret_cast<VkPhysicalDeviceClusterAccelerationStructurePropertiesNV *>(this);
 }
 
-PhysicalDeviceClusterAccelerationStructurePropertiesNV::operator const VkPhysicalDeviceClusterAccelerationStructurePropertiesNV *()
-  const noexcept {
+PhysicalDeviceClusterAccelerationStructurePropertiesNV::operator const VkPhysicalDeviceClusterAccelerationStructurePropertiesNV *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceClusterAccelerationStructurePropertiesNV *>(this);
 }
 
@@ -2656,8 +2652,7 @@ ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV::operator const VkCl
   return *reinterpret_cast<const VkClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV *>(this);
 }
 
-ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV::
-operator VkClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV &() noexcept {
+ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV::operator VkClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV &() noexcept {
   return *reinterpret_cast<VkClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV *>(this);
 }
 
@@ -2666,8 +2661,7 @@ ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV::operator const VkCl
   return reinterpret_cast<const VkClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV *>(this);
 }
 
-ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV::
-operator VkClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV *() noexcept {
+ClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV::operator VkClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV *() noexcept {
   return reinterpret_cast<VkClusterAccelerationStructureGeometryIndexAndGeometryFlagsNV *>(this);
 }
 
@@ -2721,8 +2715,7 @@ ClusterAccelerationStructureGetTemplateIndicesInfoNV::operator VkClusterAccelera
   return reinterpret_cast<VkClusterAccelerationStructureGetTemplateIndicesInfoNV *>(this);
 }
 
-ClusterAccelerationStructureBuildTriangleClusterInfoNV::operator const VkClusterAccelerationStructureBuildTriangleClusterInfoNV &()
-  const noexcept {
+ClusterAccelerationStructureBuildTriangleClusterInfoNV::operator const VkClusterAccelerationStructureBuildTriangleClusterInfoNV &() const noexcept {
   return *reinterpret_cast<const VkClusterAccelerationStructureBuildTriangleClusterInfoNV *>(this);
 }
 
@@ -2730,8 +2723,7 @@ ClusterAccelerationStructureBuildTriangleClusterInfoNV::operator VkClusterAccele
   return *reinterpret_cast<VkClusterAccelerationStructureBuildTriangleClusterInfoNV *>(this);
 }
 
-ClusterAccelerationStructureBuildTriangleClusterInfoNV::operator const VkClusterAccelerationStructureBuildTriangleClusterInfoNV *()
-  const noexcept {
+ClusterAccelerationStructureBuildTriangleClusterInfoNV::operator const VkClusterAccelerationStructureBuildTriangleClusterInfoNV *() const noexcept {
   return reinterpret_cast<const VkClusterAccelerationStructureBuildTriangleClusterInfoNV *>(this);
 }
 
@@ -2739,8 +2731,8 @@ ClusterAccelerationStructureBuildTriangleClusterInfoNV::operator VkClusterAccele
   return reinterpret_cast<VkClusterAccelerationStructureBuildTriangleClusterInfoNV *>(this);
 }
 
-ClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV::
-operator const VkClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV &() const noexcept {
+ClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV::operator const VkClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV &()
+  const noexcept {
   return *reinterpret_cast<const VkClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV *>(this);
 }
 
@@ -2749,8 +2741,8 @@ operator VkClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV &() no
   return *reinterpret_cast<VkClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV *>(this);
 }
 
-ClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV::
-operator const VkClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV *() const noexcept {
+ClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV::operator const VkClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV *()
+  const noexcept {
   return reinterpret_cast<const VkClusterAccelerationStructureBuildTriangleClusterTemplateInfoNV *>(this);
 }
 
@@ -2775,8 +2767,7 @@ ClusterAccelerationStructureInstantiateClusterInfoNV::operator VkClusterAccelera
   return reinterpret_cast<VkClusterAccelerationStructureInstantiateClusterInfoNV *>(this);
 }
 
-ClusterAccelerationStructureClustersBottomLevelInputNV::operator const VkClusterAccelerationStructureClustersBottomLevelInputNV &()
-  const noexcept {
+ClusterAccelerationStructureClustersBottomLevelInputNV::operator const VkClusterAccelerationStructureClustersBottomLevelInputNV &() const noexcept {
   return *reinterpret_cast<const VkClusterAccelerationStructureClustersBottomLevelInputNV *>(this);
 }
 
@@ -2784,8 +2775,7 @@ ClusterAccelerationStructureClustersBottomLevelInputNV::operator VkClusterAccele
   return *reinterpret_cast<VkClusterAccelerationStructureClustersBottomLevelInputNV *>(this);
 }
 
-ClusterAccelerationStructureClustersBottomLevelInputNV::operator const VkClusterAccelerationStructureClustersBottomLevelInputNV *()
-  const noexcept {
+ClusterAccelerationStructureClustersBottomLevelInputNV::operator const VkClusterAccelerationStructureClustersBottomLevelInputNV *() const noexcept {
   return reinterpret_cast<const VkClusterAccelerationStructureClustersBottomLevelInputNV *>(this);
 }
 
@@ -4489,8 +4479,7 @@ PipelineDiscardRectangleStateCreateInfoEXT::operator VkPipelineDiscardRectangleS
   return reinterpret_cast<VkPipelineDiscardRectangleStateCreateInfoEXT *>(this);
 }
 
-PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX::operator const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX &()
-  const noexcept {
+PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX::operator const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX *>(this);
 }
 
@@ -4498,8 +4487,7 @@ PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX::operator VkPhysicalDevice
   return *reinterpret_cast<VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX *>(this);
 }
 
-PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX::operator const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX *()
-  const noexcept {
+PhysicalDeviceMultiviewPerViewAttributesPropertiesNVX::operator const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceMultiviewPerViewAttributesPropertiesNVX *>(this);
 }
 
@@ -8877,8 +8865,7 @@ AttachmentReferenceStencilLayout::operator VkAttachmentReferenceStencilLayout *(
   return reinterpret_cast<VkAttachmentReferenceStencilLayout *>(this);
 }
 
-PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT::operator const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT &()
-  const noexcept {
+PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT::operator const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *>(this);
 }
 
@@ -8886,8 +8873,7 @@ PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT::operator VkPhysicalDevice
   return *reinterpret_cast<VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *>(this);
 }
 
-PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT::operator const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *()
-  const noexcept {
+PhysicalDevicePrimitiveTopologyListRestartFeaturesEXT::operator const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *() const noexcept {
   return reinterpret_cast<const VkPhysicalDevicePrimitiveTopologyListRestartFeaturesEXT *>(this);
 }
 
@@ -8911,8 +8897,7 @@ AttachmentDescriptionStencilLayout::operator VkAttachmentDescriptionStencilLayou
   return reinterpret_cast<VkAttachmentDescriptionStencilLayout *>(this);
 }
 
-PhysicalDevicePipelineExecutablePropertiesFeaturesKHR::operator const VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR &()
-  const noexcept {
+PhysicalDevicePipelineExecutablePropertiesFeaturesKHR::operator const VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR *>(this);
 }
 
@@ -8920,8 +8905,7 @@ PhysicalDevicePipelineExecutablePropertiesFeaturesKHR::operator VkPhysicalDevice
   return *reinterpret_cast<VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR *>(this);
 }
 
-PhysicalDevicePipelineExecutablePropertiesFeaturesKHR::operator const VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR *()
-  const noexcept {
+PhysicalDevicePipelineExecutablePropertiesFeaturesKHR::operator const VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR *() const noexcept {
   return reinterpret_cast<const VkPhysicalDevicePipelineExecutablePropertiesFeaturesKHR *>(this);
 }
 
@@ -9553,8 +9537,7 @@ AccelerationStructureGeometryInstancesDataKHR::operator VkAccelerationStructureG
   return reinterpret_cast<VkAccelerationStructureGeometryInstancesDataKHR *>(this);
 }
 
-AccelerationStructureGeometryLinearSweptSpheresDataNV::operator const VkAccelerationStructureGeometryLinearSweptSpheresDataNV &()
-  const noexcept {
+AccelerationStructureGeometryLinearSweptSpheresDataNV::operator const VkAccelerationStructureGeometryLinearSweptSpheresDataNV &() const noexcept {
   return *reinterpret_cast<const VkAccelerationStructureGeometryLinearSweptSpheresDataNV *>(this);
 }
 
@@ -9562,8 +9545,7 @@ AccelerationStructureGeometryLinearSweptSpheresDataNV::operator VkAccelerationSt
   return *reinterpret_cast<VkAccelerationStructureGeometryLinearSweptSpheresDataNV *>(this);
 }
 
-AccelerationStructureGeometryLinearSweptSpheresDataNV::operator const VkAccelerationStructureGeometryLinearSweptSpheresDataNV *()
-  const noexcept {
+AccelerationStructureGeometryLinearSweptSpheresDataNV::operator const VkAccelerationStructureGeometryLinearSweptSpheresDataNV *() const noexcept {
   return reinterpret_cast<const VkAccelerationStructureGeometryLinearSweptSpheresDataNV *>(this);
 }
 
@@ -9959,8 +9941,7 @@ PhysicalDevicePartitionedAccelerationStructurePropertiesNV::operator VkPhysicalD
   return reinterpret_cast<VkPhysicalDevicePartitionedAccelerationStructurePropertiesNV *>(this);
 }
 
-BuildPartitionedAccelerationStructureIndirectCommandNV::operator const VkBuildPartitionedAccelerationStructureIndirectCommandNV &()
-  const noexcept {
+BuildPartitionedAccelerationStructureIndirectCommandNV::operator const VkBuildPartitionedAccelerationStructureIndirectCommandNV &() const noexcept {
   return *reinterpret_cast<const VkBuildPartitionedAccelerationStructureIndirectCommandNV *>(this);
 }
 
@@ -9968,8 +9949,7 @@ BuildPartitionedAccelerationStructureIndirectCommandNV::operator VkBuildPartitio
   return *reinterpret_cast<VkBuildPartitionedAccelerationStructureIndirectCommandNV *>(this);
 }
 
-BuildPartitionedAccelerationStructureIndirectCommandNV::operator const VkBuildPartitionedAccelerationStructureIndirectCommandNV *()
-  const noexcept {
+BuildPartitionedAccelerationStructureIndirectCommandNV::operator const VkBuildPartitionedAccelerationStructureIndirectCommandNV *() const noexcept {
   return reinterpret_cast<const VkBuildPartitionedAccelerationStructureIndirectCommandNV *>(this);
 }
 
@@ -10025,8 +10005,8 @@ PartitionedAccelerationStructureUpdateInstanceDataNV::operator VkPartitionedAcce
   return reinterpret_cast<VkPartitionedAccelerationStructureUpdateInstanceDataNV *>(this);
 }
 
-PartitionedAccelerationStructureWritePartitionTranslationDataNV::
-operator const VkPartitionedAccelerationStructureWritePartitionTranslationDataNV &() const noexcept {
+PartitionedAccelerationStructureWritePartitionTranslationDataNV::operator const VkPartitionedAccelerationStructureWritePartitionTranslationDataNV &()
+  const noexcept {
   return *reinterpret_cast<const VkPartitionedAccelerationStructureWritePartitionTranslationDataNV *>(this);
 }
 
@@ -10035,8 +10015,8 @@ operator VkPartitionedAccelerationStructureWritePartitionTranslationDataNV &() n
   return *reinterpret_cast<VkPartitionedAccelerationStructureWritePartitionTranslationDataNV *>(this);
 }
 
-PartitionedAccelerationStructureWritePartitionTranslationDataNV::
-operator const VkPartitionedAccelerationStructureWritePartitionTranslationDataNV *() const noexcept {
+PartitionedAccelerationStructureWritePartitionTranslationDataNV::operator const VkPartitionedAccelerationStructureWritePartitionTranslationDataNV *()
+  const noexcept {
   return reinterpret_cast<const VkPartitionedAccelerationStructureWritePartitionTranslationDataNV *>(this);
 }
 
@@ -10207,8 +10187,7 @@ PhysicalDeviceImageRobustnessFeatures::operator VkPhysicalDeviceImageRobustnessF
   return reinterpret_cast<VkPhysicalDeviceImageRobustnessFeatures *>(this);
 }
 
-PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR::operator const VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR &()
-  const noexcept {
+PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR::operator const VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR *>(this);
 }
 
@@ -10216,8 +10195,7 @@ PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR::operator VkPhysicalDevic
   return *reinterpret_cast<VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR *>(this);
 }
 
-PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR::operator const VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR *()
-  const noexcept {
+PhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR::operator const VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceWorkgroupMemoryExplicitLayoutFeaturesKHR *>(this);
 }
 
@@ -10678,8 +10656,7 @@ PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT::operator const VkPh
   return *reinterpret_cast<const VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT *>(this);
 }
 
-PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT::
-operator VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT &() noexcept {
+PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT::operator VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT &() noexcept {
   return *reinterpret_cast<VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT *>(this);
 }
 
@@ -10688,8 +10665,7 @@ PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT::operator const VkPh
   return reinterpret_cast<const VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT *>(this);
 }
 
-PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT::
-operator VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT *() noexcept {
+PhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT::operator VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT *() noexcept {
   return reinterpret_cast<VkPhysicalDeviceAttachmentFeedbackLoopDynamicStateFeaturesEXT *>(this);
 }
 
@@ -13691,8 +13667,7 @@ PhysicalDeviceProvokingVertexPropertiesEXT::operator VkPhysicalDeviceProvokingVe
   return reinterpret_cast<VkPhysicalDeviceProvokingVertexPropertiesEXT *>(this);
 }
 
-PipelineRasterizationProvokingVertexStateCreateInfoEXT::operator const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT &()
-  const noexcept {
+PipelineRasterizationProvokingVertexStateCreateInfoEXT::operator const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT &() const noexcept {
   return *reinterpret_cast<const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT *>(this);
 }
 
@@ -13700,8 +13675,7 @@ PipelineRasterizationProvokingVertexStateCreateInfoEXT::operator VkPipelineRaste
   return *reinterpret_cast<VkPipelineRasterizationProvokingVertexStateCreateInfoEXT *>(this);
 }
 
-PipelineRasterizationProvokingVertexStateCreateInfoEXT::operator const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT *()
-  const noexcept {
+PipelineRasterizationProvokingVertexStateCreateInfoEXT::operator const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT *() const noexcept {
   return reinterpret_cast<const VkPipelineRasterizationProvokingVertexStateCreateInfoEXT *>(this);
 }
 
@@ -13885,8 +13859,7 @@ PhysicalDeviceDescriptorBufferPropertiesEXT::operator VkPhysicalDeviceDescriptor
   return reinterpret_cast<VkPhysicalDeviceDescriptorBufferPropertiesEXT *>(this);
 }
 
-PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT::operator const VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT &()
-  const noexcept {
+PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT::operator const VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT *>(this);
 }
 
@@ -13894,8 +13867,7 @@ PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT::operator VkPhysicalDevice
   return *reinterpret_cast<VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT *>(this);
 }
 
-PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT::operator const VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT *()
-  const noexcept {
+PhysicalDeviceDescriptorBufferDensityMapPropertiesEXT::operator const VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceDescriptorBufferDensityMapPropertiesEXT *>(this);
 }
 
@@ -14564,8 +14536,7 @@ PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT::operator const VkPh
   return *reinterpret_cast<const VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT *>(this);
 }
 
-PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT::
-operator VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT &() noexcept {
+PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT::operator VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT &() noexcept {
   return *reinterpret_cast<VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT *>(this);
 }
 
@@ -14574,8 +14545,7 @@ PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT::operator const VkPh
   return reinterpret_cast<const VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT *>(this);
 }
 
-PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT::
-operator VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT *() noexcept {
+PhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT::operator VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT *() noexcept {
   return reinterpret_cast<VkPhysicalDeviceRasterizationOrderAttachmentAccessFeaturesEXT *>(this);
 }
 
@@ -15479,8 +15449,7 @@ AmigoProfilingSubmitInfoSEC::operator VkAmigoProfilingSubmitInfoSEC *() noexcept
   return reinterpret_cast<VkAmigoProfilingSubmitInfoSEC *>(this);
 }
 
-PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT::operator const VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT &()
-  const noexcept {
+PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT::operator const VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT *>(this);
 }
 
@@ -15488,8 +15457,7 @@ PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT::operator VkPhysicalDevice
   return *reinterpret_cast<VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT *>(this);
 }
 
-PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT::operator const VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT *()
-  const noexcept {
+PhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT::operator const VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT *>(this);
 }
 
@@ -16075,8 +16043,7 @@ PhysicalDeviceRayTracingInvocationReorderFeaturesNV::operator VkPhysicalDeviceRa
   return reinterpret_cast<VkPhysicalDeviceRayTracingInvocationReorderFeaturesNV *>(this);
 }
 
-PhysicalDeviceRayTracingInvocationReorderPropertiesNV::operator const VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV &()
-  const noexcept {
+PhysicalDeviceRayTracingInvocationReorderPropertiesNV::operator const VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV *>(this);
 }
 
@@ -16084,8 +16051,7 @@ PhysicalDeviceRayTracingInvocationReorderPropertiesNV::operator VkPhysicalDevice
   return *reinterpret_cast<VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV *>(this);
 }
 
-PhysicalDeviceRayTracingInvocationReorderPropertiesNV::operator const VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV *()
-  const noexcept {
+PhysicalDeviceRayTracingInvocationReorderPropertiesNV::operator const VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceRayTracingInvocationReorderPropertiesNV *>(this);
 }
 
@@ -16221,8 +16187,7 @@ PhysicalDeviceShaderCorePropertiesARM::operator VkPhysicalDeviceShaderCoreProper
   return reinterpret_cast<VkPhysicalDeviceShaderCorePropertiesARM *>(this);
 }
 
-PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM::operator const VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM &()
-  const noexcept {
+PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM::operator const VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM *>(this);
 }
 
@@ -16230,8 +16195,7 @@ PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM::operator VkPhysicalDevice
   return *reinterpret_cast<VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM *>(this);
 }
 
-PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM::operator const VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM *()
-  const noexcept {
+PhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM::operator const VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceMultiviewPerViewRenderAreasFeaturesQCOM *>(this);
 }
 
@@ -17727,8 +17691,7 @@ DispatchTileInfoQCOM::operator VkDispatchTileInfoQCOM *() noexcept {
   return reinterpret_cast<VkDispatchTileInfoQCOM *>(this);
 }
 
-PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE::operator const VkPhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE &()
-  const noexcept {
+PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE::operator const VkPhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE *>(this);
 }
 
@@ -17736,8 +17699,7 @@ PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE::operator VkPhysicalDevic
   return *reinterpret_cast<VkPhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE *>(this);
 }
 
-PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE::operator const VkPhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE *()
-  const noexcept {
+PhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE::operator const VkPhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE *() const noexcept {
   return reinterpret_cast<const VkPhysicalDeviceFragmentDensityMapLayeredPropertiesVALVE *>(this);
 }
 
@@ -18278,8 +18240,7 @@ DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM::operator const VkD
   return *reinterpret_cast<const VkDataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM *>(this);
 }
 
-DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM::
-operator VkDataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM &() noexcept {
+DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM::operator VkDataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM &() noexcept {
   return *reinterpret_cast<VkDataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM *>(this);
 }
 
@@ -18288,8 +18249,7 @@ DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM::operator const VkD
   return reinterpret_cast<const VkDataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM *>(this);
 }
 
-DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM::
-operator VkDataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM *() noexcept {
+DataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM::operator VkDataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM *() noexcept {
   return reinterpret_cast<VkDataGraphPipelineConstantTensorSemiStructuredSparsityInfoARM *>(this);
 }
 
@@ -18615,8 +18575,7 @@ DataGraphProcessingEngineCreateInfoARM::operator VkDataGraphProcessingEngineCrea
   return reinterpret_cast<VkDataGraphProcessingEngineCreateInfoARM *>(this);
 }
 
-PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC::operator const VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC &()
-  const noexcept {
+PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC::operator const VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC &() const noexcept {
   return *reinterpret_cast<const VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC *>(this);
 }
 
@@ -18624,8 +18583,7 @@ PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC::operator VkPhysicalDevice
   return *reinterpret_cast<VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC *>(this);
 }
 
-PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC::operator const VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC *()
-  const noexcept {
+PhysicalDevicePipelineCacheIncrementalModeFeaturesSEC::operator const VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC *() const noexcept {
   return reinterpret_cast<const VkPhysicalDevicePipelineCacheIncrementalModeFeaturesSEC *>(this);
 }
 

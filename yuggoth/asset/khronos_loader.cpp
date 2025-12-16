@@ -2,7 +2,7 @@
 #include "fastgltf/core.hpp"
 #include "fastgltf/types.hpp"
 #include "fastgltf/tools.hpp"
-#include "yuggoth/asset/include/model.h"
+#include "yuggoth/asset/include/model_loader.h"
 
 namespace Yuggoth {
 
@@ -66,7 +66,7 @@ void LoadImages(const fgf::Asset &asset, const std::filesystem::path &path) {
   }
 }
 
-void Model::LoadKhronos(const std::filesystem::path &path) {
+void ModelLoader::LoadKhronos(const std::filesystem::path &path) {
 
   auto extensions = fgf::Extensions::KHR_mesh_quantization | fgf::Extensions::KHR_texture_transform | fgf::Extensions::KHR_materials_variants;
   auto options = fgf::Options::DontRequireValidAssetMember | fgf::Options::LoadExternalBuffers | fgf::Options::GenerateMeshIndices;
@@ -77,7 +77,13 @@ void Model::LoadKhronos(const std::filesystem::path &path) {
 
   auto asset = parser.loadGltf(gltf_file.get(), path.parent_path(), options);
 
-  GetModelProperties(asset.get(), vertices_.buffer_count_, indices_.buffer_count_);
+  uint32_t vertices_count = 0, indices_count = 0;
+  GetModelProperties(asset.get(), vertices_count, indices_count);
+
+  vertices_.resize(vertices_count);
+  indices_.resize(indices_count);
+
+  LoadPrimitives(asset.get(), vertices_, indices_);
 }
 
 } // namespace Yuggoth

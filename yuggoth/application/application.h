@@ -2,6 +2,7 @@
 #define YUGGOTH_APPLICATION_H
 
 #include "yuggoth.h"
+#include "window_manager.h"
 
 namespace Yuggoth {
 
@@ -14,11 +15,7 @@ public:
   void OnImGui();
   void OnEvent(Event &event);
 
-  static Application *Get();
-
-  SceneManager *GetSceneManager();
-  SceneRenderer *GetSceneRenderer();
-  DeviceMemoryManager *GetDeviceMemoryManager();
+  bool OnApplicationExit(const WindowCloseEvent &event);
 
   void OnStart();
 
@@ -26,22 +23,15 @@ protected:
   void CreateSynchronizationObjects();
 
 private:
-  Window main_window_;
-  GraphicsContext graphics_context_;
-  GraphicsAllocator graphics_allocator_;
-  Swapchain swapchain_;
-  CommandPool command_pool_;
-  DeviceMemoryManager device_memory_manager_;
-  ImGuiLayer imgui_layer_;
+  WindowManager window_manager_;
+  BufferManager buffer_manager_;
+  ImGuiHost imgui_host_;
   ImGuiRenderer imgui_renderer_;
+  AssetManager asset_manager_;
   SceneManager scene_manager_;
-  Editor editor_;
   SceneRenderer scene_renderer_;
-  std::vector<CommandBuffer> command_buffers_;
-  std::vector<Semaphore> render_finished_semaphores_;
-  std::vector<Semaphore> image_available_semaphores_;
-  std::vector<Fence> frame_fences_;
-  uint32_t frame_index_ = 0;
+  Editor editor_;
+  bool running_ = false;
 
   static Application *application_instance_;
 };

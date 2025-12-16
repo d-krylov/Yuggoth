@@ -118,7 +118,7 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
   return graphics_pipleine;
 }
 
-VkPipeline GraphicsPipeline::GetPipeline() const {
+VkPipeline GraphicsPipeline::GetHandle() const {
   return pipeline_;
 }
 

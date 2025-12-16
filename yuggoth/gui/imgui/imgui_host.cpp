@@ -1,7 +1,7 @@
-#include "imgui_layer.h"
+#include "imgui_host.h"
 #include "imgui.h"
 #include "yuggoth/gui/window/window.h"
-#include "yuggoth/core/tools/core.h"
+#include "yuggoth/core/tools/include/core.h"
 #include "external/fonts/IconsFontAwesome6.h"
 #include <GLFW/glfw3.h>
 
@@ -15,7 +15,7 @@ void UpdateKeyModifiers(const Window *window) {
   io.AddKeyEvent(ImGuiMod_Super, (window->GetKey(GLFW_KEY_LEFT_SUPER) == GLFW_PRESS) || (window->GetKey(GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS));
 }
 
-bool ImGuiLayer::OnKeyEvent(const KeyEvent &event) {
+bool ImGuiHost::OnKeyEvent(const KeyEvent &event) {
   auto action = event.GetAction();
   if (action != Action::PRESS && action != Action::RELEASE) {
     return true;
@@ -28,38 +28,38 @@ bool ImGuiLayer::OnKeyEvent(const KeyEvent &event) {
   return true;
 }
 
-bool ImGuiLayer::OnMouseButtonEvent(const MouseButtonEvent &event) {
+bool ImGuiHost::OnMouseButtonEvent(const MouseButtonEvent &event) {
   auto &io = ImGui::GetIO();
   UpdateKeyModifiers(window_);
   io.AddMouseButtonEvent(int32_t(event.GetMouseButton()), event.GetAction() == Action::PRESS);
   return true;
 }
 
-bool ImGuiLayer::OnMouseScrollEvent(const MouseScrollEvent &event) {
+bool ImGuiHost::OnMouseScrollEvent(const MouseScrollEvent &event) {
   auto &io = ImGui::GetIO();
   io.AddMouseWheelEvent(event.GetX(), event.GetY());
   return true;
 }
 
-bool ImGuiLayer::OnMouseMoveEvent(const MouseMoveEvent &event) {
+bool ImGuiHost::OnMouseMoveEvent(const MouseMoveEvent &event) {
   auto &io = ImGui::GetIO();
   io.AddMousePosEvent(event.GetX(), event.GetY());
   return true;
 }
 
-bool ImGuiLayer::OnCharEvent(const CharEvent &event) {
+bool ImGuiHost::OnCharEvent(const CharEvent &event) {
   auto &io = ImGui::GetIO();
   io.AddInputCharacter(event.GetCharacter());
   return true;
 }
 
-void ImGuiLayer::UpdateMouseData() {
+void ImGuiHost::UpdateMouseData() {
   ImGuiIO &io = ImGui::GetIO();
   auto cursor_position = window_->GetCursorPosition();
   io.AddMousePosEvent((float)cursor_position.x, (float)cursor_position.y);
 }
 
-ImGuiLayer::ImGuiLayer(Window *window) : window_(window) {
+ImGuiHost::ImGuiHost(const Window *window) : window_(window) {
   ImGui::CreateContext();
   ImGuiIO &io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -85,22 +85,22 @@ ImGuiLayer::ImGuiLayer(Window *window) : window_(window) {
   SetStyle();
 }
 
-void ImGuiLayer::SetStyle() {
+void ImGuiHost::SetStyle() {
   ImGuiStyle &style = ImGui::GetStyle();
 
   style.Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
-void ImGuiLayer::OnEvent(Event &event) {
+void ImGuiHost::OnEvent(Event &event) {
   EventDispatcher dispatcher(event);
-  dispatcher.Dispatch<MouseMoveEvent>(BIND_FUNCTION(ImGuiLayer::OnMouseMoveEvent));
-  dispatcher.Dispatch<MouseButtonEvent>(BIND_FUNCTION(ImGuiLayer::OnMouseButtonEvent));
-  dispatcher.Dispatch<MouseScrollEvent>(BIND_FUNCTION(ImGuiLayer::OnMouseScrollEvent));
-  dispatcher.Dispatch<CharEvent>(BIND_FUNCTION(ImGuiLayer::OnCharEvent));
-  dispatcher.Dispatch<KeyEvent>(BIND_FUNCTION(ImGuiLayer::OnKeyEvent));
+  dispatcher.Dispatch<MouseMoveEvent>(BIND_FUNCTION(ImGuiHost::OnMouseMoveEvent));
+  dispatcher.Dispatch<MouseButtonEvent>(BIND_FUNCTION(ImGuiHost::OnMouseButtonEvent));
+  dispatcher.Dispatch<MouseScrollEvent>(BIND_FUNCTION(ImGuiHost::OnMouseScrollEvent));
+  dispatcher.Dispatch<CharEvent>(BIND_FUNCTION(ImGuiHost::OnCharEvent));
+  dispatcher.Dispatch<KeyEvent>(BIND_FUNCTION(ImGuiHost::OnKeyEvent));
 }
 
-void ImGuiLayer::UpdateTime() {
+void ImGuiHost::UpdateTime() {
   auto current_time = glfwGetTime();
   auto &io = ImGui::GetIO();
   if (current_time <= time_) {
@@ -110,7 +110,7 @@ void ImGuiLayer::UpdateTime() {
   time_ = current_time;
 }
 
-void ImGuiLayer::NewFrame() {
+void ImGuiHost::NewFrame() {
   auto &io = ImGui::GetIO();
 
   auto window_size = window_->GetWindowSize();

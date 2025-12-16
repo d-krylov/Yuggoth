@@ -1,13 +1,14 @@
 #include "hierarchy_window.h"
-#include "yuggoth/application/application.h"
 #include "yuggoth/scene/core/entity.h"
 #include "yuggoth/scene/components/components.h"
+#include "yuggoth/editor/core/editor.h"
+#include "external/fonts/IconsFontAwesome6.h"
 #include "imgui.h"
 
 namespace Yuggoth {
 
 void HierarchyWindow::AddEntity() {
-  auto scene = Application::Get()->GetSceneManager()->GetCurrentScene();
+  auto scene = GetEditorContext()->scene_manager_->GetCurrentScene();
 
   if (ImGui::Selectable("Camera")) {
     auto camera_entity = scene->CreateEntityWithName("Camera");
@@ -26,14 +27,30 @@ void HierarchyWindow::AddEntity() {
 
   if (ImGui::BeginMenu("Primitive")) {
 
+    if (ImGui::Selectable("Box")) {
+      scene->CreateEntityWithName("Box");
+    }
+
+    if (ImGui::Selectable("Sphere")) {
+      scene->CreateEntityWithName("Sphere");
+    }
+
+    if (ImGui::Selectable("Torus")) {
+      scene->CreateEntityWithName("Torus");
+    }
+
+    if (ImGui::Selectable("Cylinder")) {
+      scene->CreateEntityWithName("Cylinder");
+    }
+
     ImGui::EndMenu();
   }
 }
 
 void HierarchyWindow::DrawNodes() {
-  if (Application::Get()->GetSceneManager()->HasValidScenes() == false) return;
+  if (GetEditorContext()->scene_manager_->HasValidScenes() == false) return;
 
-  auto scene = Application::Get()->GetSceneManager()->GetCurrentScene();
+  auto scene = GetEditorContext()->scene_manager_->GetCurrentScene();
   auto &registry = scene->GetRegistry();
 
   for (auto [raw_entity] : registry.storage<entt::entity>().each()) {
@@ -57,7 +74,7 @@ void HierarchyWindow::DrawNodes() {
 void HierarchyWindow::OnImGui() {
   ImGui::Begin("Scene");
 
-  auto scene_manager = Application::Get()->GetSceneManager();
+  auto scene_manager = GetEditorContext()->scene_manager_;
 
   ImGui::BeginDisabled(!scene_manager->HasValidScenes());
 

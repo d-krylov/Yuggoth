@@ -1,4 +1,4 @@
-#include "yuggoth/core/tools/random_number_generator.h"
+#include "yuggoth/core/tools/include/random_number_generator.h"
 #include <random>
 
 namespace Yuggoth {

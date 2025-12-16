@@ -17,8 +17,8 @@ public:
 
   void RenderDrawData(CommandBuffer &command_buffer);
 
-  void Begin(CommandBuffer &command_buffer, const Swapchain &swapchain);
-  void End(CommandBuffer &command_buffer);
+  void Begin(CommandBuffer &command_buffer);
+  void End(CommandBuffer &command_buffer, const Swapchain &swapchain);
 
 protected:
   struct ImGuiPushConstants {

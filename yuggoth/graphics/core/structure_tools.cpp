@@ -15,9 +15,8 @@ ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect, uint32_t 
   return image_subresource_range;
 }
 
-PipelineColorBlendAttachmentState GetColorBlendAttachmentState(bool enable, BlendFactor from_color, BlendFactor to_color,
-                                                               BlendOp color_operation, BlendFactor from_alpha, BlendFactor to_alpha,
-                                                               BlendOp alpha_operation) {
+PipelineColorBlendAttachmentState GetColorBlendAttachmentState(bool enable, BlendFactor from_color, BlendFactor to_color, BlendOp color_operation,
+                                                               BlendFactor from_alpha, BlendFactor to_alpha, BlendOp alpha_operation) {
   PipelineColorBlendAttachmentState color_blend_attachment_state;
   color_blend_attachment_state.blendEnable = enable;
   color_blend_attachment_state.srcColorBlendFactor = from_color;

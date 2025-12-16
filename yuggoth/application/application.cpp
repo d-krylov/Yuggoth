@@ -5,135 +5,80 @@
 
 namespace Yuggoth {
 
-Application *Application::application_instance_ = nullptr;
-
-Application *Application::Get() {
-  assert(application_instance_ != nullptr);
-  return application_instance_;
-}
-
-void Application::CreateSynchronizationObjects() {
-  auto object_count = swapchain_.GetNumberOfImages();
-  image_available_semaphores_.resize(object_count);
-  render_finished_semaphores_.resize(object_count);
-  frame_fences_.reserve(object_count);
-  for (auto i = 0; i < object_count; ++i) {
-    frame_fences_.emplace_back(FenceCreateMaskBits::E_SIGNALED_BIT);
-  }
-  command_buffers_.reserve(object_count);
-  for (auto i = 0; i < object_count; ++i) {
-    command_buffers_.emplace_back(command_pool_.GetHandle());
-  }
-}
-
 Application::Application()
-  : main_window_(800, 600, "Yuggoth Engine"),                 //
-    graphics_context_(),                                      //
-    graphics_allocator_(),                                    //
-    swapchain_(main_window_.GetNativeWindow()),               //
-    command_pool_(graphics_context_.GetGraphicsQueueIndex()), //
-    imgui_layer_(&main_window_),                              //
-    imgui_renderer_(swapchain_.GetFormat()),                  //
+  : window_manager_(),                                            //
+    buffer_manager_(), imgui_host_(window_manager_.GetWindow()),  //
+    imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()), //
+    asset_manager_(&buffer_manager_),                             //
+    scene_manager_(&asset_manager_),                              //
+    scene_renderer_(),                                            //
     editor_() {
-  CreateSynchronizationObjects();
-  OnStart();
 
-  main_window_.SetEventHandler(BIND_FUNCTION(Application::OnEvent));
-  application_instance_ = this;
+  OnStart();
+  window_manager_.SetEventHandler(BIND_FUNCTION(Application::OnEvent));
 }
 
 void Application::OnImGui() {
+  editor_.OnImGui();
 }
 
 void Application::OnEvent(Event &event) {
-  imgui_layer_.OnEvent(event);
+  EventDispatcher dispatcher(event);
+  dispatcher.Dispatch<WindowCloseEvent>(BIND_FUNCTION(Application::OnApplicationExit));
+  imgui_host_.OnEvent(event);
+}
+
+bool Application::OnApplicationExit(const WindowCloseEvent &event) {
+  running_ = false;
+  return true;
 }
 
 void Application::OnStart() {
+  running_ = true;
+
+  EditorContext editor_context;
+  editor_context.scene_manager_ = &scene_manager_;
+  editor_context.scene_renderer_ = &scene_renderer_;
+  editor_context.asset_manager_ = &asset_manager_;
+  editor_.SetEditorContext(editor_context);
 }
 
 void Application::Run() {
+  while (running_) {
 
-  PipelineStageMask wait_stages[] = {PipelineStageMaskBits::E_COLOR_ATTACHMENT_OUTPUT_BIT};
+    WindowManager::PollEvents();
 
-  while (main_window_.ShouldClose() == false) {
-    main_window_.PollEvents();
+    auto command_buffer = window_manager_.BeginFrame();
+    auto swapchain = window_manager_.GetSwapchain();
 
-    auto &fence = frame_fences_[frame_index_];
-    auto &command_buffer = command_buffers_[frame_index_];
-    auto &image_available_semaphore = image_available_semaphores_[frame_index_];
-
-    fence.Wait();
-
-    auto status = swapchain_.AcquireNextImage(image_available_semaphore.GetHandle());
-
-    if ((status == VK_ERROR_OUT_OF_DATE_KHR) || (status == VK_SUBOPTIMAL_KHR)) {
-      if (status == VK_ERROR_OUT_OF_DATE_KHR) {
-        swapchain_.Recreate();
-      }
-      continue;
-    } else {
-      VK_CHECK(status);
-    }
-
-    fence.Reset();
-    command_buffer.Reset();
-    command_buffer.Begin(CommandBufferUsageMask());
+    if (command_buffer == nullptr) continue;
 
     auto subresource = GetImageSubresourceRange();
-    command_buffer.TransitionImageLayout(swapchain_.GetCurrentImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL,
-                                         PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                         PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, AccessMaskBits2::E_NONE,
-                                         AccessMaskBits2::E_COLOR_ATTACHMENT_WRITE_BIT, subresource);
+    command_buffer->TransitionImageLayout(swapchain->GetCurrentImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL,
+                                          PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT,
+                                          PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, AccessMaskBits2::E_NONE,
+                                          AccessMaskBits2::E_COLOR_ATTACHMENT_WRITE_BIT, subresource);
 
-    imgui_layer_.NewFrame();
-    imgui_renderer_.Begin(command_buffer, swapchain_);
+    imgui_host_.NewFrame();
+    imgui_renderer_.Begin(*command_buffer);
 
-    editor_.OnImGui();
-
-    imgui_renderer_.End(command_buffer);
+    OnImGui();
 
     if (scene_manager_.HasValidScenes()) {
       scene_renderer_.Begin(scene_manager_.GetCurrentScene());
     }
-    scene_renderer_.Draw(command_buffer);
 
-    command_buffer.TransitionImageLayout(swapchain_.GetCurrentImage(), ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, ImageLayout::E_PRESENT_SRC_KHR,
-                                         PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, PipelineStageMaskBits2::E_NONE,
-                                         AccessMaskBits2::E_COLOR_ATTACHMENT_WRITE_BIT, AccessMaskBits2::E_NONE, subresource);
+    scene_renderer_.Draw();
+    imgui_renderer_.End(*command_buffer, *swapchain);
 
-    command_buffer.End();
+    command_buffer->TransitionImageLayout(swapchain->GetCurrentImage(), ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, ImageLayout::E_PRESENT_SRC_KHR,
+                                          PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, PipelineStageMaskBits2::E_NONE,
+                                          AccessMaskBits2::E_COLOR_ATTACHMENT_WRITE_BIT, AccessMaskBits2::E_NONE, subresource);
 
-    auto &render_finished_semaphore = render_finished_semaphores_[swapchain_.GetImageIndex()];
-
-    SubmitInfo submit_info{};
-
-    submit_info.waitSemaphoreCount = 1;
-    submit_info.pWaitSemaphores = image_available_semaphore.GetPointer();
-    submit_info.pWaitDstStageMask = wait_stages;
-    submit_info.commandBufferCount = 1;
-    submit_info.pCommandBuffers = command_buffer.GetPointer();
-    submit_info.signalSemaphoreCount = 1;
-    submit_info.pSignalSemaphores = render_finished_semaphore.GetPointer();
-
-    VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
-
-    swapchain_.Present(render_finished_semaphore.GetPointer());
-
-    frame_index_ = (frame_index_ + 1) % (swapchain_.GetNumberOfImages() - 1);
+    window_manager_.EndFrame(*command_buffer);
   }
-}
 
-SceneManager *Application::GetSceneManager() {
-  return &scene_manager_;
-}
-
-SceneRenderer *Application::GetSceneRenderer() {
-  return &scene_renderer_;
-}
-
-DeviceMemoryManager *Application::GetDeviceMemoryManager() {
-  return &device_memory_manager_;
+  vkDeviceWaitIdle(GraphicsContext::Get()->GetDevice());
 }
 
 } // namespace Yuggoth

@@ -1,6 +1,6 @@
 #include "graphics_context.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
-#include "yuggoth/core/tools/core.h"
+#include "yuggoth/core/tools/include/core.h"
 #include <print>
 #include <cassert>
 #include <set>
@@ -65,13 +65,11 @@ void GraphicsContext::CreateInstance() {
   VK_CHECK(volkInitialize());
 
   ApplicationInfo application_info;
-  {
-    application_info.pApplicationName = "Yuggoth";
-    application_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
-    application_info.pEngineName = "Yuggoth Engine";
-    application_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
-    application_info.apiVersion = VK_API_VERSION_1_3;
-  }
+  application_info.pApplicationName = "Yuggoth";
+  application_info.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+  application_info.pEngineName = "Yuggoth Engine";
+  application_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+  application_info.apiVersion = VK_API_VERSION_1_3;
 
   std::vector<const char *> required_layers = GetInstanceLayers();
   std::vector<const char *> required_extensions{VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
@@ -87,22 +85,18 @@ void GraphicsContext::CreateInstance() {
   validation_features.enabledValidationFeatureCount = enabled_validation.size();
   validation_features.pEnabledValidationFeatures = enabled_validation.data();
 
-  DebugUtilsMessengerCreateInfoEXT debug_ci{};
-  {
-    debug_ci.messageType = DebugUtilsMessageTypeMaskBitsEXT::E_VALIDATION_BIT_EXT;
-    debug_ci.messageSeverity = severity;
-    debug_ci.pfnUserCallback = DebugCallback;
-    debug_ci.pNext = &validation_features;
-  }
+  DebugUtilsMessengerCreateInfoEXT debug_ci;
+  debug_ci.messageType = DebugUtilsMessageTypeMaskBitsEXT::E_VALIDATION_BIT_EXT;
+  debug_ci.messageSeverity = severity;
+  debug_ci.pfnUserCallback = DebugCallback;
+  debug_ci.pNext = &validation_features;
 
-  InstanceCreateInfo instance_ci{};
-  {
-    instance_ci.pApplicationInfo = &application_info;
-    instance_ci.enabledLayerCount = required_layers.size();
-    instance_ci.ppEnabledLayerNames = required_layers.data();
-    instance_ci.enabledExtensionCount = required_extensions.size();
-    instance_ci.ppEnabledExtensionNames = required_extensions.data();
-  }
+  InstanceCreateInfo instance_ci;
+  instance_ci.pApplicationInfo = &application_info;
+  instance_ci.enabledLayerCount = required_layers.size();
+  instance_ci.ppEnabledLayerNames = required_layers.data();
+  instance_ci.enabledExtensionCount = required_extensions.size();
+  instance_ci.ppEnabledExtensionNames = required_extensions.data();
 
   instance_ci.pNext = &debug_ci;
 
@@ -136,11 +130,10 @@ void GraphicsContext::CreateDevice() {
 
   for (const auto &queue_index : unique_indices) {
     DeviceQueueCreateInfo queue_ci;
-    {
-      queue_ci.queueFamilyIndex = queue_index;
-      queue_ci.pQueuePriorities = queue_priorities.data();
-      queue_ci.queueCount = 1;
-    }
+    queue_ci.queueFamilyIndex = queue_index;
+    queue_ci.pQueuePriorities = queue_priorities.data();
+    queue_ci.queueCount = 1;
+
     device_queue_cis.emplace_back(queue_ci);
   }
 
@@ -148,26 +141,20 @@ void GraphicsContext::CreateDevice() {
   ray_query_features.rayQuery = true;
 
   PhysicalDeviceMeshShaderFeaturesEXT mesh_shader_features;
-  {
-    mesh_shader_features.meshShader = true;
-    mesh_shader_features.taskShader = true;
-    mesh_shader_features.meshShaderQueries = true;
-    mesh_shader_features.pNext = nullptr;
-  }
+  mesh_shader_features.meshShader = true;
+  mesh_shader_features.taskShader = true;
+  mesh_shader_features.meshShaderQueries = true;
+  mesh_shader_features.pNext = nullptr;
 
   PhysicalDeviceVulkan14Features physical_device_features_14;
-  {
-    physical_device_features_14.maintenance5 = true;
-    physical_device_features_14.maintenance6 = true;
-    physical_device_features_14.pushDescriptor = true;
-  }
+  physical_device_features_14.maintenance5 = true;
+  physical_device_features_14.maintenance6 = true;
+  physical_device_features_14.pushDescriptor = true;
 
   PhysicalDeviceVulkan13Features physical_device_features_13;
-  {
-    physical_device_features_13.synchronization2 = true;
-    physical_device_features_13.dynamicRendering = true;
-    physical_device_features_13.pNext = &physical_device_features_14;
-  }
+  physical_device_features_13.synchronization2 = true;
+  physical_device_features_13.dynamicRendering = true;
+  physical_device_features_13.pNext = &physical_device_features_14;
 
   PhysicalDeviceFeatures2 physical_device_features_2;
   physical_device_features_2.pNext = &physical_device_features_13;
@@ -175,13 +162,11 @@ void GraphicsContext::CreateDevice() {
   auto required_device_extensions = GetRequiredDeviceExtensions();
 
   DeviceCreateInfo device_ci;
-  {
-    device_ci.pQueueCreateInfos = device_queue_cis.data();
-    device_ci.queueCreateInfoCount = device_queue_cis.size();
-    device_ci.ppEnabledExtensionNames = required_device_extensions.data();
-    device_ci.enabledExtensionCount = required_device_extensions.size();
-    device_ci.pNext = &physical_device_features_2;
-  }
+  device_ci.pQueueCreateInfos = device_queue_cis.data();
+  device_ci.queueCreateInfoCount = device_queue_cis.size();
+  device_ci.ppEnabledExtensionNames = required_device_extensions.data();
+  device_ci.enabledExtensionCount = required_device_extensions.size();
+  device_ci.pNext = &physical_device_features_2;
 
   VK_CHECK(vkCreateDevice(physical_device_, device_ci, nullptr, &device_));
 
@@ -190,15 +175,37 @@ void GraphicsContext::CreateDevice() {
   vkGetDeviceQueue(GetDevice(), GetGraphicsQueueIndex(), 0, &queues_[0]);
 }
 
+void GraphicsContext::SetPhysicalDeviceProperties() {
+  vkGetPhysicalDeviceProperties2(GetPhysicalDevice(), physical_device_properties_);
+  vkGetPhysicalDeviceMemoryProperties2(GetPhysicalDevice(), physical_device_memory_properties_);
+}
+
 GraphicsContext::GraphicsContext() {
   CreateInstance();
   PickPhysicalDevice();
+  SetPhysicalDeviceProperties();
   CreateDevice();
 
   graphics_context_instance_ = this;
 }
 
 GraphicsContext::~GraphicsContext() {
+}
+
+void GraphicsContext::SetObjectName(ObjectType object_type, std::string_view name, void *handle) {
+  DebugUtilsObjectNameInfoEXT object_name_info;
+  object_name_info.objectType = object_type;
+  object_name_info.objectHandle = reinterpret_cast<uint64_t>(handle);
+  object_name_info.pObjectName = name.data();
+  vkSetDebugUtilsObjectNameEXT(GraphicsContext::Get()->GetDevice(), object_name_info);
+}
+
+const PhysicalDeviceProperties2 &GraphicsContext::GetPhysicalDeviceProperties() const {
+  return physical_device_properties_;
+}
+
+const PhysicalDeviceMemoryProperties2 GraphicsContext::GetPhysicalDeviceMemoryProperties() const {
+  return physical_device_memory_properties_;
 }
 
 } // namespace Yuggoth

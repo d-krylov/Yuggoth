@@ -1,4 +1,4 @@
-#include "yuggoth/core/tools/core.h"
+#include "yuggoth/core/tools/include/core.h"
 #include "config/yuggoth_config.h"
 #include <print>
 

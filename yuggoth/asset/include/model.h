@@ -14,20 +14,15 @@ public:
 
   const std::filesystem::path &GetModelPath() const;
 
-  const BufferInformation &GetVerticesInformation() const;
-  const BufferInformation &GetIndicesInformation() const;
+  const BufferRangeInformation &GetVerticesInformation() const;
+  const BufferRangeInformation &GetIndicesInformation() const;
 
-  DrawIndexedIndirectCommand GetDrawCommand() const;
-
-protected:
-  void LoadKhronos(const std::filesystem::path &path);
-  void LoadWavefront(const std::filesystem::path &path);
+  void SetVerticesInformation(const BufferRangeInformation &vertices);
+  void SetIndicesInformation(const BufferRangeInformation &indices);
 
 private:
-  uint32_t vertices_count_{0};
-  uint32_t indices_count_{0};
-  BufferInformation vertices_;
-  BufferInformation indices_;
+  BufferRangeInformation vertices_;
+  BufferRangeInformation indices_;
   std::filesystem::path model_path_;
 };
 

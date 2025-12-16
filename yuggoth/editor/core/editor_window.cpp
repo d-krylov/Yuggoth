@@ -14,8 +14,16 @@ Editor *EditorWindow::GetEditor() const {
   return editor_;
 }
 
+EditorContext *EditorWindow::GetEditorContext() const {
+  return editor_context_;
+}
+
 void EditorWindow::SetEditor(Editor *editor) {
   editor_ = editor;
+}
+
+void EditorWindow::SetEditorContext(EditorContext *editor_context) {
+  editor_context_ = editor_context;
 }
 
 std::string_view EditorWindow::GetName() const {

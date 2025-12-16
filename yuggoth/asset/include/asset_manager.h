@@ -2,12 +2,23 @@
 #define YUGGOTH_ASSET_MANAGER_H
 
 #include "asset.h"
+#include <unordered_map>
 
 namespace Yuggoth {
 
+class BufferManager;
+
+class Model;
+
 class AssetManager {
 public:
+  AssetManager(BufferManager *buffer_manager);
+
+  void RegisterModel(const std::filesystem::path &path);
+
 private:
+  BufferManager *buffer_manager_;
+  std::unordered_map<std::filesystem::path, UUID> uuids_;
 };
 
 } // namespace Yuggoth

@@ -33,4 +33,8 @@ VkCommandPool CommandPool::GetHandle() const {
   return command_pool_;
 }
 
+void CommandPool::Reset() {
+  vkResetCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_, 0);
+}
+
 } // namespace Yuggoth

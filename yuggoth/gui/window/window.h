@@ -3,7 +3,7 @@
 
 #include <string_view>
 #include <functional>
-#include "yuggoth/core/tools/core_types.h"
+#include "yuggoth/core/tools/include/core_types.h"
 
 struct GLFWwindow;
 
@@ -11,10 +11,10 @@ namespace Yuggoth {
 
 class Event;
 
+using EventHandler = std::function<void(Event &)>;
+
 class Window {
 public:
-  using EventHandler = std::function<void(Event &)>;
-
   Window(int32_t width, int32_t height, std::string_view name);
 
   GLFWwindow *GetNativeWindow() const;
@@ -24,7 +24,6 @@ public:
   CursorPosition GetCursorPosition() const;
 
   bool ShouldClose() const;
-  void PollEvents();
 
   int32_t GetKey(int32_t key) const;
 

@@ -1,5 +1,5 @@
 #include "shader_module.h"
-#include "yuggoth/core/tools/core.h"
+#include "yuggoth/core/tools/include/core.h"
 #include <SPIRV-Reflect/spirv_reflect.h>
 #include <vulkan/utility/vk_format_utils.h>
 #include <numeric>
@@ -38,8 +38,8 @@ std::vector<VertexInputAttributeDescription> ReflecttShaderInputs(const SpvRefle
   return result;
 }
 
-auto ReflectDescriptorSetBindings(const SpvReflectShaderModule &module, ShaderStageMaskBits stage,
-                                  DescriptorSetLayoutBindingMap &out_push_bindngs, DescriptorSetLayoutBindingMap &out_pull_bindngs) {
+auto ReflectDescriptorSetBindings(const SpvReflectShaderModule &module, ShaderStageMaskBits stage, DescriptorSetLayoutBindingMap &out_push_bindngs,
+                                  DescriptorSetLayoutBindingMap &out_pull_bindngs) {
   auto spv_descriptor_sets = Enumerate<SpvReflectDescriptorSet *>(spvReflectEnumerateDescriptorSets, &module);
   std::map<uint32_t, std::vector<VkDescriptorSetLayoutBinding>> out_sets_bindings;
   for (const auto &spv_descriptor_set : spv_descriptor_sets) {

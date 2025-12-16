@@ -7,6 +7,12 @@
 
 namespace Yuggoth {
 
+struct BufferInformation {
+  VkBuffer buffer_{VK_NULL_HANDLE};
+  VmaAllocation allocation_{VK_NULL_HANDLE};
+  std::byte *mapped_memory_{nullptr};
+};
+
 class Buffer {
 public:
   static constexpr AllocationCreateMask CPU = AllocationCreateMaskBits::E_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
@@ -32,11 +38,10 @@ public:
   void Map();
   void Unmap();
 
-  VkDeviceAddress GetBufferDeviceAddress() const;
   VkBuffer GetHandle() const;
+  VkDeviceAddress GetBufferDeviceAddress() const;
 
-protected:
-  void CreateBuffer(AllocationCreateMask allocation_mask, std::size_t buffer_size, BufferUsageMask buffer_usage);
+  static BufferInformation CreateBuffer(std::size_t size, BufferUsageMask usage, AllocationCreateMask allocation_mask);
 
 private:
   VkBuffer buffer_{VK_NULL_HANDLE};

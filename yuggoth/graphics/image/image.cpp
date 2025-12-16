@@ -69,6 +69,7 @@ Image &Image::operator=(Image &&other) noexcept {
 
 Image::~Image() {
   vkDestroyImageView(GraphicsContext::Get()->GetDevice(), image_view_, nullptr);
+  vkDestroySampler(GraphicsContext::Get()->GetDevice(), image_sampler_, nullptr);
   GraphicsAllocator::Get()->DestroyImage(image_, allocation_);
 }
 
