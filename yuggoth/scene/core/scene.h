@@ -17,17 +17,18 @@ struct SceneContext {
 
 class Scene {
 public:
-  Scene(const SceneContext &scene_context);
-
-  entt::registry &GetRegistry();
+  Scene(const SceneContext &scene_context, std::string_view name = "Scene");
 
   Entity CreateEntity();
   Entity CreateEntityWithName(std::string_view name);
 
   void DestroyEntity(Entity entity);
   void SetCurrentCamera(Camera *camera);
-
   void SetName(std::string_view name);
+
+  entt::registry &GetRegistry();
+
+  std::string_view GetName() const;
 
   Camera *GetCurrentCamera();
 

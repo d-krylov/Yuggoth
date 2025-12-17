@@ -172,6 +172,10 @@ void CommandBuffer::CommandEnableDepthWrite(bool enabled) {
   vkCmdSetDepthWriteEnable(command_buffer_, enabled);
 }
 
+void CommandBuffer::CommandEnableStencilTest(bool enabled) {
+  vkCmdSetStencilTestEnable(command_buffer_, enabled);
+}
+
 // DRAW
 void CommandBuffer::CommandDrawIndexed(uint32_t indices, uint32_t instances, uint32_t first_index, int32_t vertex_offset, uint32_t first_instance) {
   vkCmdDrawIndexed(command_buffer_, indices, instances, first_index, vertex_offset, first_instance);

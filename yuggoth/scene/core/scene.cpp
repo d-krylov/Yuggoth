@@ -6,7 +6,8 @@
 
 namespace Yuggoth {
 
-Scene::Scene(const SceneContext &scene_context) : scene_manager_(scene_context.scene_manager_), asset_manager_(scene_context.asset_manager_) {
+Scene::Scene(const SceneContext &scene_context, std::string_view name)
+  : scene_manager_(scene_context.scene_manager_), asset_manager_(scene_context.asset_manager_), scene_name_(name) {
 }
 
 entt::registry &Scene::GetRegistry() {
@@ -31,6 +32,10 @@ void Scene::DestroyEntity(Entity entity) {
 
 void Scene::SetName(std::string_view name) {
   scene_name_ = name;
+}
+
+std::string_view Scene::GetName() const {
+  return scene_name_;
 }
 
 void Scene::SetCurrentCamera(Camera *camera) {

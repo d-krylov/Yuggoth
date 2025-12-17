@@ -46,10 +46,6 @@ void ViewportWindow::OnImGui() {
 
   ImGui::Image((ImTextureID)(intptr_t)&image, ImVec2(viewport_size_.width, viewport_size_.height));
 
-  ImGuizmo::SetDrawlist();
-  ImGuizmo::SetRect(position.x, position.y, size.x, size.y);
-  ImGuizmo::DrawGrid(glm::value_ptr(view), glm::value_ptr(projection), glm::value_ptr(model), 200.0f);
-
   ImGui::End();
 }
 

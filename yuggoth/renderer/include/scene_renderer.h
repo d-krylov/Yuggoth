@@ -16,7 +16,9 @@ public:
   void Begin(Scene *scene);
   void End();
 
-  void Draw();
+  void Draw(Scene *scene);
+
+  void DirectDraw(Scene *scene);
 
   void OnViewportResize(uint32_t width, uint32_t height);
 

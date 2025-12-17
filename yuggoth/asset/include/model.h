@@ -20,6 +20,8 @@ public:
   void SetVerticesInformation(const BufferRangeInformation &vertices);
   void SetIndicesInformation(const BufferRangeInformation &indices);
 
+  AssetKind GetAssetKind() const override;
+
 private:
   BufferRangeInformation vertices_;
   BufferRangeInformation indices_;

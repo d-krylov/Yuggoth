@@ -6,6 +6,12 @@
 
 namespace Yuggoth {
 
+struct PushConstants {
+  Matrix4f projection_ = Matrix4f(1.0f);
+  Matrix4f view_ = Matrix4f(1.0f);
+  Matrix4f model_ = Matrix4f(1.0f);
+};
+
 SceneRenderer::SceneRenderer() {
   Initialize();
   command_buffer_ = CommandBuffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
@@ -13,10 +19,13 @@ SceneRenderer::SceneRenderer() {
 
 void SceneRenderer::Initialize() {
   target_image_ = Image2D(100, 100);
+  depth_image_ = ImageDepth(100, 100);
   GraphicsPipelineSpecification specification;
   specification.color_formats_.emplace_back(Format::E_R8G8B8A8_UNORM);
   specification.dynamic_states_.emplace_back(DynamicState::E_DEPTH_TEST_ENABLE);
   specification.dynamic_states_.emplace_back(DynamicState::E_DEPTH_WRITE_ENABLE);
+  specification.depth_format_ = Format::E_D32_SFLOAT;
+  specification.cull_mode_ = CullModeMaskBits::E_BACK_BIT;
   auto shaders = GetShadersRoot();
   specification.shader_paths_ = {shaders / "base" / "mesh.vert.spv", shaders / "base" / "mesh.frag.spv"};
   graphics_pipeline_ = GraphicsPipeline(specification);
@@ -31,7 +40,7 @@ void SceneRenderer::OnViewportResize(uint32_t width, uint32_t height) {
   depth_image_ = ImageDepth(width, height);
 }
 
-void SceneRenderer::Draw() {
+void SceneRenderer::Draw(Scene *scene) {
   command_buffer_.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
 
   target_image_.SetImageLayout(ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, &command_buffer_);
@@ -53,9 +62,11 @@ void SceneRenderer::Draw() {
   auto &extent = target_image_.GetExtent();
 
   command_buffer_.CommandBeginRendering(Extent2D(extent.width, extent.height), color_ai, &depth_ai);
-  command_buffer_.CommandBindPipeline(graphics_pipeline_.GetHandle(), PipelineBindPoint::E_GRAPHICS);
-  command_buffer_.CommandSetViewport(0, 0, extent.width, extent.height);
+  command_buffer_.CommandSetViewport(0.0f, extent.height, extent.width, -float(extent.height));
   command_buffer_.CommandSetScissor(0, 0, extent.width, extent.height);
+
+  DirectDraw(scene);
+
   command_buffer_.CommandEndRendering();
 
   target_image_.SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer_);
@@ -74,6 +85,43 @@ void SceneRenderer::Begin(Scene *scene) {
     const auto &model_component = model_group.get<ModelComponent>(model_entity);
 
     if (!model_component.model_) continue;
+  }
+}
+
+void SceneRenderer::DirectDraw(Scene *scene) {
+
+  if (scene == nullptr) return;
+
+  command_buffer_.CommandBindPipeline(graphics_pipeline_.GetHandle(), PipelineBindPoint::E_GRAPHICS);
+  command_buffer_.CommandEnableDepthTest(true);
+  command_buffer_.CommandEnableDepthWrite(true);
+
+  PushConstants push_constants;
+
+  if (scene->GetCurrentCamera() != nullptr) {
+    push_constants.view_ = scene->GetCurrentCamera()->GetLookAt();
+    push_constants.projection_ = scene->GetCurrentCamera()->GetProjection();
+  }
+
+  auto &registry = scene->GetRegistry();
+
+  auto model_group = registry.group<ModelComponent>();
+
+  for (auto model_entity : model_group) {
+
+    auto model = Entity(model_entity, scene);
+
+    const auto &model_component = model_group.get<ModelComponent>(model_entity);
+    const auto &transform_component = model.GetComponent<Transform>();
+
+    push_constants.model_ = transform_component.GetMatrix();
+    command_buffer_.CommandPushConstants(graphics_pipeline_.GetPipelineLayout(), ShaderStageMaskBits::E_VERTEX_BIT, push_constants, 0);
+
+    if (!model_component.model_) continue;
+
+    command_buffer_.CommandBindVertexBuffer(model_component.model_->GetVertexBuffer().GetHandle(), 0);
+    command_buffer_.CommandBindIndexBuffer(model_component.model_->GetIndexBuffer().GetHandle(), 0, IndexType::E_UINT32);
+    command_buffer_.CommandDrawIndexed(model_component.model_->GetIndexBuffer().GetSize() / sizeof(uint32_t), 1, 0, 0, 0);
   }
 }
 

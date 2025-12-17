@@ -15,6 +15,8 @@ public:
   const Vector3f &GetTranslation() const;
   const Vector3f &GetScale() const;
 
+  Matrix4f GetMatrix() const;
+
 private:
   Vector3f translation_;
   Vector3f scale_;

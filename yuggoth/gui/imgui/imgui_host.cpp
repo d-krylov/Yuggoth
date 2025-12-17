@@ -89,6 +89,12 @@ void ImGuiHost::SetStyle() {
   ImGuiStyle &style = ImGui::GetStyle();
 
   style.Colors[ImGuiCol_WindowBg] = ImVec4(0.0f, 0.0f, 0.0f, 1.0f);
+
+  style.FrameRounding = 3.0f;
+  style.PopupRounding = 6.0f;
+  style.WindowRounding = 8.0f;
+  style.ScrollbarRounding = 6.0f;
+  style.GrabRounding = 6.0f;
 }
 
 void ImGuiHost::OnEvent(Event &event) {

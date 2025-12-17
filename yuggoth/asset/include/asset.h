@@ -14,7 +14,13 @@ enum class AssetKind {
 
 class Asset {
 public:
-  AssetKind kind_;
+  virtual ~Asset() {
+  }
+
+  virtual AssetKind GetAssetKind() const {
+    return AssetKind::UNKNOWN;
+  }
+
   UUID uuid_;
 };
 

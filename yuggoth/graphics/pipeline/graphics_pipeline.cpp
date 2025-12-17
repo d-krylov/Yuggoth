@@ -15,17 +15,13 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
 
   for (auto i = 0; i < shader_modules.size(); i++) {
     ShaderModuleCreateInfo shader_module_ci;
-    {
-      shader_modules_cis[i].codeSize = shader_modules[i].GetSize();
-      shader_modules_cis[i].pCode = shader_modules[i].GetBinaryData().data();
-    }
+    shader_modules_cis[i].codeSize = shader_modules[i].GetSize();
+    shader_modules_cis[i].pCode = shader_modules[i].GetBinaryData().data();
 
     PipelineShaderStageCreateInfo shader_stage_ci;
-    {
-      shader_stages_cis[i].stage = shader_modules[i].GetStage();
-      shader_stages_cis[i].pNext = &shader_modules_cis[i];
-      shader_stages_cis[i].pName = "main";
-    }
+    shader_stages_cis[i].stage = shader_modules[i].GetStage();
+    shader_stages_cis[i].pNext = &shader_modules_cis[i];
+    shader_stages_cis[i].pName = "main";
   }
 
   auto vertex_input_attributes = shader_modules[0].GetInputDescriptions();
@@ -53,39 +49,34 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
   input_assembly_state_ci.topology = PrimitiveTopology::E_TRIANGLE_LIST;
 
   PipelineViewportStateCreateInfo viewport_state_ci;
-  {
-    viewport_state_ci.viewportCount = 1;
-    viewport_state_ci.scissorCount = 1;
-  }
+
+  viewport_state_ci.viewportCount = 1;
+  viewport_state_ci.scissorCount = 1;
 
   PipelineRasterizationStateCreateInfo rasterization_state_ci;
-  {
-    rasterization_state_ci.lineWidth = 1.0f;
-    rasterization_state_ci.frontFace = FrontFace::E_COUNTER_CLOCKWISE;
-    rasterization_state_ci.polygonMode = PolygonMode::E_FILL;
-    rasterization_state_ci.depthBiasEnable = false;
-  }
+
+  rasterization_state_ci.lineWidth = 1.0f;
+  rasterization_state_ci.frontFace = FrontFace::E_COUNTER_CLOCKWISE;
+  rasterization_state_ci.polygonMode = PolygonMode::E_FILL;
+  rasterization_state_ci.cullMode = specification.cull_mode_;
+
+  rasterization_state_ci.depthBiasEnable = false;
 
   PipelineDynamicStateCreateInfo dynamic_state_ci;
-  {
-    dynamic_state_ci.dynamicStateCount = specification.dynamic_states_.size();
-    dynamic_state_ci.pDynamicStates = specification.dynamic_states_.data();
-  }
+
+  dynamic_state_ci.dynamicStateCount = specification.dynamic_states_.size();
+  dynamic_state_ci.pDynamicStates = specification.dynamic_states_.data();
 
   PipelineDepthStencilStateCreateInfo depth_stencil_state_ci;
-  {
-    depth_stencil_state_ci.depthCompareOp = CompareOp::E_LESS;
-    depth_stencil_state_ci.depthTestEnable = false;
-    depth_stencil_state_ci.stencilTestEnable = false;
-  }
+  depth_stencil_state_ci.depthCompareOp = CompareOp::E_LESS;
+  depth_stencil_state_ci.depthTestEnable = false;
+  depth_stencil_state_ci.stencilTestEnable = false;
 
   PipelineRenderingCreateInfo pipeline_rendering_ci;
-  {
-    pipeline_rendering_ci.colorAttachmentCount = specification.color_formats_.size();
-    pipeline_rendering_ci.pColorAttachmentFormats = specification.color_formats_.data();
-    pipeline_rendering_ci.depthAttachmentFormat = Format::E_UNDEFINED;
-    pipeline_rendering_ci.stencilAttachmentFormat = Format::E_UNDEFINED;
-  }
+  pipeline_rendering_ci.colorAttachmentCount = specification.color_formats_.size();
+  pipeline_rendering_ci.pColorAttachmentFormats = specification.color_formats_.data();
+  pipeline_rendering_ci.depthAttachmentFormat = specification.depth_format_;
+  pipeline_rendering_ci.stencilAttachmentFormat = specification.stencil_format_;
 
   PipelineMultisampleStateCreateInfo multisample_state_ci;
   multisample_state_ci.rasterizationSamples = SampleCountMaskBits::E_1_BIT;
@@ -93,26 +84,22 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
   auto color_blend_attachment_state = GetColorBlendAttachmentState(true);
 
   PipelineColorBlendStateCreateInfo color_blend_state_ci;
-  {
-    color_blend_state_ci.attachmentCount = 1;
-    color_blend_state_ci.pAttachments = &color_blend_attachment_state;
-  }
+  color_blend_state_ci.attachmentCount = 1;
+  color_blend_state_ci.pAttachments = &color_blend_attachment_state;
 
   GraphicsPipelineCreateInfo graphics_pipeline_ci;
-  {
-    graphics_pipeline_ci.pNext = &pipeline_rendering_ci;
-    graphics_pipeline_ci.stageCount = shader_stages_cis.size();
-    graphics_pipeline_ci.pStages = shader_stages_cis.data();
-    graphics_pipeline_ci.pVertexInputState = vertex_input_attributes.empty() ? nullptr : &vertex_input_state_ci;
-    graphics_pipeline_ci.pInputAssemblyState = &input_assembly_state_ci;
-    graphics_pipeline_ci.pViewportState = &viewport_state_ci;
-    graphics_pipeline_ci.pRasterizationState = &rasterization_state_ci;
-    graphics_pipeline_ci.pMultisampleState = &multisample_state_ci;
-    graphics_pipeline_ci.pDepthStencilState = &depth_stencil_state_ci;
-    graphics_pipeline_ci.pColorBlendState = &color_blend_state_ci;
-    graphics_pipeline_ci.pDynamicState = &dynamic_state_ci;
-    graphics_pipeline_ci.layout = pipeline_layout;
-  }
+  graphics_pipeline_ci.pNext = &pipeline_rendering_ci;
+  graphics_pipeline_ci.stageCount = shader_stages_cis.size();
+  graphics_pipeline_ci.pStages = shader_stages_cis.data();
+  graphics_pipeline_ci.pVertexInputState = vertex_input_attributes.empty() ? nullptr : &vertex_input_state_ci;
+  graphics_pipeline_ci.pInputAssemblyState = &input_assembly_state_ci;
+  graphics_pipeline_ci.pViewportState = &viewport_state_ci;
+  graphics_pipeline_ci.pRasterizationState = &rasterization_state_ci;
+  graphics_pipeline_ci.pMultisampleState = &multisample_state_ci;
+  graphics_pipeline_ci.pDepthStencilState = &depth_stencil_state_ci;
+  graphics_pipeline_ci.pColorBlendState = &color_blend_state_ci;
+  graphics_pipeline_ci.pDynamicState = &dynamic_state_ci;
+  graphics_pipeline_ci.layout = pipeline_layout;
 
   VK_CHECK(vkCreateGraphicsPipelines(GraphicsContext::Get()->GetDevice(), nullptr, 1, graphics_pipeline_ci, 0, &graphics_pipleine));
   return graphics_pipleine;

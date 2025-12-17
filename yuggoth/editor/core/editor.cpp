@@ -47,16 +47,21 @@ void Editor::OnImGui() {
 
 void Editor::ImportFile() {
   auto scene_manager = editor_context_.scene_manager_;
+  auto asset_manager = editor_context_.asset_manager_;
+
   if (ImGuiFileDialog::Instance()->Display("ChooseFile")) {
     if (ImGuiFileDialog::Instance()->IsOk()) {
       if (scene_manager->HasValidScenes() == false) {
         scene_manager->EnqueueScene();
       }
       auto current_scene = scene_manager->GetCurrentScene();
-      std::string path = ImGuiFileDialog::Instance()->GetFilePathName();
-      auto model_entity = current_scene->CreateEntityWithName("Model");
-      model_entity.AddComponent<ModelComponent>(path);
+      std::filesystem::path path = ImGuiFileDialog::Instance()->GetFilePathName();
+      auto model_entity = current_scene->CreateEntityWithName(path.filename().c_str());
+
+      auto &model_component = model_entity.AddComponent<ModelComponent>();
       model_entity.AddComponent<Transform>();
+
+      model_component.model_ = asset_manager->RegisterModel(path);
     }
 
     ImGuiFileDialog::Instance()->Close();

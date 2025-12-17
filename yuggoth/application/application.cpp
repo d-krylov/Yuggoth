@@ -64,11 +64,8 @@ void Application::Run() {
 
     OnImGui();
 
-    if (scene_manager_.HasValidScenes()) {
-      scene_renderer_.Begin(scene_manager_.GetCurrentScene());
-    }
+    scene_renderer_.Draw(scene_manager_.GetCurrentScene());
 
-    scene_renderer_.Draw();
     imgui_renderer_.End(*command_buffer, *swapchain);
 
     command_buffer->TransitionImageLayout(swapchain->GetCurrentImage(), ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, ImageLayout::E_PRESENT_SRC_KHR,

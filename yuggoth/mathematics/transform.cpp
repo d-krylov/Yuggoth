@@ -21,4 +21,10 @@ void Transform::SetScale(const Vector3f &scale) {
   scale_ = scale;
 }
 
+Matrix4f Transform::GetMatrix() const {
+  auto translate = glm::translate(Matrix4f(1.0f), translation_);
+  auto scale = glm::scale(Matrix4f(1.0f), scale_);
+  return translate * scale;
+}
+
 } // namespace Yuggoth

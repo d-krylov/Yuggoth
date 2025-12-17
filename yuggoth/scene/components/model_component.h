@@ -2,15 +2,13 @@
 #define YUGGOTH_MODEL_COMPONENT_H
 
 #include "yuggoth/asset/include/model.h"
+#include "yuggoth/asset/include/buffer_owning_model.h"
 #include <memory>
 
 namespace Yuggoth {
 
 struct ModelComponent {
-
-  ModelComponent(const std::filesystem::path path);
-
-  std::shared_ptr<Model> model_;
+  std::shared_ptr<BufferOwningModel> model_;
 };
 
 } // namespace Yuggoth

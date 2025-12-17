@@ -95,6 +95,29 @@ void HierarchyWindow::OnImGui() {
     scene_manager->EnqueueScene();
   }
 
+  ImGui::SameLine();
+
+  std::string_view current_scene_name;
+
+  if (scene_manager->HasValidScenes()) {
+    current_scene_name = scene_manager->GetCurrentScene()->GetName();
+  }
+
+  if (ImGui::BeginCombo("Scenes", current_scene_name.data())) {
+    for (int i = 0; i < scene_manager->GetNumberScenes(); i++) {
+      auto scene_name = scene_manager->GetSceneWithIndex(i)->GetName();
+      auto is_selected = (current_scene_name == scene_name);
+      if (ImGui::Selectable(scene_name.data(), is_selected)) {
+        current_scene_name = scene_name;
+        scene_manager->SwitchScene(i);
+      }
+      if (is_selected) {
+        ImGui::SetItemDefaultFocus();
+      }
+    }
+    ImGui::EndCombo();
+  }
+
   if (ImGui::IsWindowFocused() && ImGui::IsKeyPressed(ImGuiKey_Delete)) {
     auto current_scene = scene_manager->GetCurrentScene();
     auto selection_manager = GetEditor()->GetSelectionManager();

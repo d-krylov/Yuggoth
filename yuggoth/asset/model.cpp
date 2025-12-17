@@ -26,4 +26,8 @@ void Model::SetIndicesInformation(const BufferRangeInformation &indices) {
   indices_ = indices;
 }
 
+AssetKind Model::GetAssetKind() const {
+  return AssetKind::MODEL;
+}
+
 } // namespace Yuggoth

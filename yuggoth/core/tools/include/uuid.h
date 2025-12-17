@@ -2,6 +2,7 @@
 #define YUGOGTH_UUID_H
 
 #include <cstdint>
+#include <functional>
 
 namespace Yuggoth {
 
@@ -23,5 +24,15 @@ private:
 };
 
 } // namespace Yuggoth
+
+namespace std {
+
+template <> struct hash<Yuggoth::UUID> {
+  std::size_t operator()(const Yuggoth::UUID &uuid) const {
+    return hash<uint64_t>()(uuid.GetValue());
+  }
+};
+
+} // namespace std
 
 #endif // YUGOGTH_UUID_H
