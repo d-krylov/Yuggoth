@@ -37,6 +37,7 @@ public:
 
   void Map();
   void Unmap();
+  void Destroy();
 
   VkBuffer GetHandle() const;
   VkDeviceAddress GetBufferDeviceAddress() const;

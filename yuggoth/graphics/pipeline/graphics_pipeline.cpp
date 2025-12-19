@@ -91,7 +91,7 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
   graphics_pipeline_ci.pNext = &pipeline_rendering_ci;
   graphics_pipeline_ci.stageCount = shader_stages_cis.size();
   graphics_pipeline_ci.pStages = shader_stages_cis.data();
-  graphics_pipeline_ci.pVertexInputState = vertex_input_attributes.empty() ? nullptr : &vertex_input_state_ci;
+  graphics_pipeline_ci.pVertexInputState = &vertex_input_state_ci;
   graphics_pipeline_ci.pInputAssemblyState = &input_assembly_state_ci;
   graphics_pipeline_ci.pViewportState = &viewport_state_ci;
   graphics_pipeline_ci.pRasterizationState = &rasterization_state_ci;

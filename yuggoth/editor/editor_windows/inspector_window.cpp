@@ -21,11 +21,16 @@ void DrawCameramWidget(Camera &camera) {
 
 void DrawTransformWidget(Transform &transform) {
   auto position = transform.GetTranslation();
+  auto rotation = transform.GetRotation();
   auto scale = transform.GetScale();
   ImGui::DragFloat3("Translation", glm::value_ptr(position));
   ImGui::DragFloat3("Scale", glm::value_ptr(scale));
+  ImGui::SliderAngle("X", &rotation.x);
+  ImGui::SliderAngle("Y", &rotation.y);
+  ImGui::SliderAngle("Z", &rotation.z);
   transform.SetTranslation(position);
   transform.SetScale(scale);
+  transform.SetOrientation(rotation);
 }
 
 void DrawLightWidget(Light &light) {

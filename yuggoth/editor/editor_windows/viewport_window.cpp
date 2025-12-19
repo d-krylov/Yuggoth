@@ -42,7 +42,6 @@ void ViewportWindow::OnImGui() {
   }
 
   auto &image = renderer->GetImage();
-  auto &extent = image.GetExtent();
 
   ImGui::Image((ImTextureID)(intptr_t)&image, ImVec2(viewport_size_.width, viewport_size_.height));
 

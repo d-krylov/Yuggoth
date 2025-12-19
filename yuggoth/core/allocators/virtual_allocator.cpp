@@ -28,9 +28,10 @@ VirtualAllocator &VirtualAllocator::operator=(VirtualAllocator &&other) noexcept
   return *this;
 }
 
-std::size_t VirtualAllocator::Allocate(std::size_t size, std::size_t alignment) {
+std::size_t VirtualAllocator::Allocate(std::size_t size, std::size_t alignment, VirtualAllocationCreateMask mask) {
   VmaVirtualAllocationCreateInfo allocation_ci{};
   allocation_ci.size = size;
+  allocation_ci.flags = mask.GetValue();
   allocation_ci.alignment = alignment;
   VmaVirtualAllocation virtual_allocation;
   std::size_t offset{0};

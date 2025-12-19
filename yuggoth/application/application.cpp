@@ -11,7 +11,7 @@ Application::Application()
     imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()), //
     asset_manager_(&buffer_manager_),                             //
     scene_manager_(&asset_manager_),                              //
-    scene_renderer_(),                                            //
+    scene_renderer_(&buffer_manager_),                            //
     editor_() {
 
   OnStart();
@@ -52,6 +52,8 @@ void Application::Run() {
     auto swapchain = window_manager_.GetSwapchain();
 
     if (command_buffer == nullptr) continue;
+
+    asset_manager_.Update();
 
     auto subresource = GetImageSubresourceRange();
     command_buffer->TransitionImageLayout(swapchain->GetCurrentImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL,

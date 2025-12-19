@@ -16,11 +16,15 @@ class AssetManager {
 public:
   AssetManager(BufferManager *buffer_manager);
 
-  std::shared_ptr<BufferOwningModel> RegisterModel(const std::filesystem::path &path);
+  std::shared_ptr<BufferOwningModel> RegisterBufferOwningModel(const std::filesystem::path &path);
+
+  std::shared_ptr<Model> RegisterModel(const std::filesystem::path &path);
+
+  void Update();
 
 private:
-  BufferManager *buffer_manager_;
-  std::unordered_map<UUID, std::shared_ptr<Asset>> assets_;
+  BufferManager *buffer_manager_ = nullptr;
+  std::unordered_map<UUID, std::weak_ptr<Asset>> assets_;
   std::unordered_map<std::filesystem::path, UUID> uuids_;
 };
 

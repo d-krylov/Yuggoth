@@ -26,12 +26,11 @@ std::vector<VertexInputAttributeDescription> ReflecttShaderInputs(const SpvRefle
   for (const auto &input : inputs) {
     if ((input->decoration_flags & SPV_REFLECT_DECORATION_BUILT_IN) == 0) {
       auto &vertex_input_description = result.emplace_back();
-      {
-        vertex_input_description.location = input->location;
-        vertex_input_description.binding = 0;
-        vertex_input_description.format = Format(input->format);
-        vertex_input_description.offset = offset;
-      }
+      vertex_input_description.location = input->location;
+      vertex_input_description.binding = 0;
+      vertex_input_description.format = Format(input->format);
+      vertex_input_description.offset = offset;
+
       offset += vkuFormatTexelBlockSize(VkFormat(input->format));
     }
   }

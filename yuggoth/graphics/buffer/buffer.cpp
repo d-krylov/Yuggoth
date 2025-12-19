@@ -12,6 +12,11 @@ Buffer::Buffer(std::size_t buffer_size, BufferUsageMask buffer_usage, Allocation
 }
 
 Buffer::~Buffer() {
+  Destroy();
+}
+
+void Buffer::Destroy() {
+  if (allocation_ == nullptr && buffer_ == nullptr) return;
   GraphicsAllocator::Get()->DestroyBuffer(buffer_, allocation_);
 }
 
@@ -32,6 +37,8 @@ BufferInformation Buffer::CreateBuffer(std::size_t size, BufferUsageMask usage, 
 Buffer::Buffer(Buffer &&other) noexcept {
   buffer_ = std::exchange(other.buffer_, VK_NULL_HANDLE);
   allocation_ = std::exchange(other.allocation_, VK_NULL_HANDLE);
+  mapped_memory_ = std::exchange(other.mapped_memory_, nullptr);
+  buffer_size_ = std::exchange(other.buffer_size_, 0);
 }
 
 Buffer &Buffer::operator=(Buffer &&other) noexcept {

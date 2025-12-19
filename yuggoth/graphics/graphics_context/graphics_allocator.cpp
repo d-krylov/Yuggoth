@@ -2,6 +2,7 @@
 #define VMA_IMPLEMENTATION
 #include <vma/vk_mem_alloc.h>
 #include <cassert>
+#include <print>
 
 namespace Yuggoth {
 
@@ -52,6 +53,9 @@ AllocationInformation GraphicsAllocator::AllocateImage(const ImageCreateInfo &im
 
   VK_CHECK(vmaCreateImage(allocator_, image_ci, &vma_allocation_ci, &out_image, &allocation, &allocation_info));
 
+  statistics_.allocated_images_count_++;
+  statistics_.allocated_image_memory_ += allocation_info.size;
+
   AllocationInformation allocation_information;
   allocation_information.allocation_ = allocation;
 
@@ -82,6 +86,9 @@ AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &
 
   VK_CHECK(vmaCreateBuffer(allocator_, buffer_ci, &vma_allocation_ci, &out_buffer, &allocation, &allocation_info));
 
+  statistics_.allocated_buffers_count_++;
+  statistics_.allocated_buffer_memory_ += allocation_info.size;
+
   AllocationInformation allocation_information;
   allocation_information.allocation_ = allocation;
   allocation_information.mapped_memory_ = static_cast<std::byte *>(allocation_info.pMappedData);
@@ -107,8 +114,15 @@ void GraphicsAllocator::DestroyImage(VkImage image, VmaAllocation vma_allocation
 }
 
 void GraphicsAllocator::DestroyBuffer(VkBuffer buffer, VmaAllocation vma_allocation) {
+  VmaAllocationInfo allocation_info{};
+  vmaGetAllocationInfo(allocator_, vma_allocation, &allocation_info);
   vmaDestroyBuffer(allocator_, buffer, vma_allocation);
+  statistics_.allocated_buffer_memory_ -= allocation_info.size;
   statistics_.allocated_buffers_count_--;
+}
+
+const GraphicsAllocatorStatistics &GraphicsAllocator::GetStatistics() const {
+  return statistics_;
 }
 
 } // namespace Yuggoth

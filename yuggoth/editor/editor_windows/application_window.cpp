@@ -5,22 +5,33 @@
 
 namespace Yuggoth {
 
-void ApplicationWindow::OnImGui() {
-  ImGui::Begin("Application");
+void ApplicationWindow::DrawMemoryStatistics() {
+  const auto &allocator_statistics = GraphicsAllocator::Get()->GetStatistics();
 
+  auto buffer_allocated_memory = allocator_statistics.allocated_buffer_memory_ / (1024.0f * 1024.0f);
+  auto image_allocated_memory = allocator_statistics.allocated_image_memory_ / (1024.0f * 1024.0f);
+
+  if (ImGui::CollapsingHeader("Memory")) {
+    ImGui::Text("Number of Allocated Buffers: %zu", allocator_statistics.allocated_buffers_count_);
+    ImGui::Text("Number of Allocated Images: %zu", allocator_statistics.allocated_images_count_);
+    ImGui::Text("The size of the allocated memory for buffers: %f MiB", buffer_allocated_memory);
+    ImGui::Text("The size of the allocated memory for images: %f MiB", image_allocated_memory);
+  }
+}
+
+void ApplicationWindow::DrawSystemStatistics() {
   const auto &memory_properties = GraphicsContext::Get()->GetPhysicalDeviceMemoryProperties();
   const auto &device_properties = GraphicsContext::Get()->GetPhysicalDeviceProperties();
 
-  ImGui::Text("Device Name: %s", device_properties.properties.deviceName);
-  ImGui::Text("Number of Memory Types: %d", memory_properties.memoryProperties.memoryTypeCount);
-  ImGui::Text("Number of Memory Heaps: %d", memory_properties.memoryProperties.memoryHeapCount);
-
-  std::span memory_heaps(memory_properties.memoryProperties.memoryHeaps, memory_properties.memoryProperties.memoryHeapCount);
-
-  for (const auto &memory_heap : memory_heaps) {
-    ImGui::Text("Memory Heap: %zu", memory_heap.size);
+  if (ImGui::CollapsingHeader("System")) {
+    ImGui::Text("Device Name: %s", device_properties.properties.deviceName);
   }
+}
 
+void ApplicationWindow::OnImGui() {
+  ImGui::Begin("Application");
+  DrawMemoryStatistics();
+  DrawSystemStatistics();
   ImGui::End();
 }
 

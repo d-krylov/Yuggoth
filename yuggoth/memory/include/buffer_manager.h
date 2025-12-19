@@ -6,22 +6,19 @@
 
 namespace Yuggoth {
 
-struct BufferRangeInformation {
-  uint32_t stride_;
-  uint32_t offset_;
-  uint32_t size_;
-  uint64_t uuid_;
-};
-
 class BufferManager {
 public:
   BufferManager();
+
+  BufferAllocator &GetVertexAllocator();
+  BufferAllocator &GetIndexAllocator();
 
 protected:
   void Create();
 
 private:
-  BufferAllocator staging_allocator_;
+  BufferAllocator vertex_allocator_;
+  BufferAllocator index_allocator_;
 };
 
 } // namespace Yuggoth

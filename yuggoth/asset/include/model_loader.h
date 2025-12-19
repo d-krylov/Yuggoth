@@ -23,6 +23,7 @@ protected:
 private:
   std::vector<Vertex> vertices_;
   std::vector<uint32_t> indices_;
+  std::vector<std::filesystem::path> textures_;
 };
 
 } // namespace Yuggoth

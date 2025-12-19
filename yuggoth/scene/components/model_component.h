@@ -8,6 +8,10 @@
 namespace Yuggoth {
 
 struct ModelComponent {
+  std::shared_ptr<Model> model_;
+};
+
+struct BufferOwningModelComponent {
   std::shared_ptr<BufferOwningModel> model_;
 };
 

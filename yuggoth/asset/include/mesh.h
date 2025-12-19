@@ -12,6 +12,8 @@ struct Vertex {
   Vector2f uv_;
 };
 
+static_assert(std::popcount(sizeof(Vertex)) == 1, "Size of Vertex should be power of 2");
+
 struct Mesh {};
 
 } // namespace Yuggoth

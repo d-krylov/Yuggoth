@@ -10,9 +10,11 @@ public:
   Transform(const Vector3f &translation = Vector3f(0.0f), const Vector3f &scale = Vector3f(1.0f));
 
   void SetTranslation(const Vector3f &translation);
+  void SetOrientation(const Vector3f &orientation);
   void SetScale(const Vector3f &scale);
 
   const Vector3f &GetTranslation() const;
+  const Vector3f &GetRotation() const;
   const Vector3f &GetScale() const;
 
   Matrix4f GetMatrix() const;
@@ -20,6 +22,7 @@ public:
 private:
   Vector3f translation_;
   Vector3f scale_;
+  Vector3f euler_;
   Quaternion orientation_;
 };
 

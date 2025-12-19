@@ -1,6 +1,7 @@
 #ifndef YUGGOTH_IMAGE_H
 #define YUGGOTH_IMAGE_H
 
+#include "yuggoth/asset/include/asset.h"
 #include "sampler.h"
 #include <optional>
 #include <span>
@@ -17,7 +18,7 @@ struct ImageSpecification {
   ImageUsageMask usage_;
 };
 
-class Image {
+class Image : public Asset {
 public:
   Image() = default;
 
@@ -32,18 +33,17 @@ public:
   Image(Image &&other) noexcept;
   Image &operator=(Image &&other) noexcept;
 
+  void Destroy();
+
   static VkImageView CreateImageView(VkImage image, Format format, ImageViewType image_view_type, const ImageSubresourceRange &subresource);
   static VkImage CreateImage(ImageType image_type, const ImageSpecification &image_specification, VmaAllocation &out_allocation);
 
   // API
-  Format GetFormat() const;
   VkImage GetImage() const;
   VkSampler GetSampler() const;
   VkImageView GetImageView() const;
-  const Extent3D &GetExtent() const;
-  uint32_t GetLevelCount() const;
-  uint32_t GetLayerCount() const;
-  ImageUsageMask GetUsage() const;
+
+  const ImageSpecification &GetSpecification() const;
 
   void SetImageData(std::span<const std::byte> data);
 

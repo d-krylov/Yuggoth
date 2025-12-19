@@ -14,6 +14,8 @@ struct AllocationInformation {
 struct GraphicsAllocatorStatistics {
   std::size_t allocated_buffers_count_ = 0;
   std::size_t allocated_images_count_ = 0;
+  std::size_t allocated_buffer_memory_ = 0;
+  std::size_t allocated_image_memory_ = 0;
 };
 
 class GraphicsAllocator {
@@ -34,6 +36,8 @@ public:
   void UnmapMemory(VmaAllocation allocation);
 
   void CopyMemoryToAllocation(std::span<const std::byte> source, VmaAllocation destination, std::size_t offset);
+
+  const GraphicsAllocatorStatistics &GetStatistics() const;
 
 protected:
   void CreateAllocator();

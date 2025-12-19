@@ -9,7 +9,9 @@ class ApplicationWindow : public EditorWindow {
 public:
   void OnImGui();
 
-private:
+protected:
+  void DrawMemoryStatistics();
+  void DrawSystemStatistics();
 };
 
 } // namespace Yuggoth

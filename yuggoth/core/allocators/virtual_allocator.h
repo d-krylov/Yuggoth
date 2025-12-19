@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_VIRTUAL_ALLOCATOR_H
 #define YUGGOTH_VIRTUAL_ALLOCATOR_H
 
-#include <vma/vk_mem_alloc.h>
+#include "virtual_allocator_types.h"
 #include <unordered_map>
 #include <cstdint>
 
@@ -23,7 +23,7 @@ public:
 
   void Destroy();
 
-  std::size_t Allocate(std::size_t size, std::size_t alignment);
+  std::size_t Allocate(std::size_t size, std::size_t alignment, VirtualAllocationCreateMask mask);
 
   void Free(std::size_t offset);
 

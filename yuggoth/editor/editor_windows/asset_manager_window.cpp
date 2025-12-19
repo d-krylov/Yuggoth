@@ -4,6 +4,8 @@
 namespace Yuggoth {
 
 void AssetManagerWindow::OnImGui() {
+  auto editor_context = GetEditorContext();
+  auto asset_manager = editor_context->asset_manager_;
   ImGui::Begin("Asset Manager");
 
   ImGui::End();

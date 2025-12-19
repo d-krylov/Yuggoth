@@ -156,8 +156,25 @@ void GraphicsContext::CreateDevice() {
   physical_device_features_13.dynamicRendering = true;
   physical_device_features_13.pNext = &physical_device_features_14;
 
+  PhysicalDeviceVulkan12Features physical_device_features_12;
+  physical_device_features_12.bufferDeviceAddress = true;
+  physical_device_features_12.descriptorIndexing = true;
+  physical_device_features_12.shaderSampledImageArrayNonUniformIndexing = true;
+  physical_device_features_12.descriptorBindingSampledImageUpdateAfterBind = true;
+  physical_device_features_12.descriptorBindingUpdateUnusedWhilePending = true;
+  physical_device_features_12.descriptorBindingPartiallyBound = true;
+  physical_device_features_12.descriptorBindingVariableDescriptorCount = true;
+  physical_device_features_12.runtimeDescriptorArray = true;
+  physical_device_features_12.drawIndirectCount = true;
+  physical_device_features_12.pNext = &physical_device_features_13;
+
+  PhysicalDeviceVulkan11Features physical_device_features_11;
+  physical_device_features_11.shaderDrawParameters = true;
+  physical_device_features_11.pNext = &physical_device_features_12;
+
   PhysicalDeviceFeatures2 physical_device_features_2;
-  physical_device_features_2.pNext = &physical_device_features_13;
+  physical_device_features_2.features.multiDrawIndirect = true;
+  physical_device_features_2.pNext = &physical_device_features_11;
 
   auto required_device_extensions = GetRequiredDeviceExtensions();
 

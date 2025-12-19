@@ -110,39 +110,33 @@ void CommandBuffer::CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> 
 
 void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set_number, uint32_t binding, VkBuffer buffer) {
   DescriptorBufferInfo descriptor_bi;
-  {
-    descriptor_bi.buffer = buffer;
-    descriptor_bi.offset = 0;
-    descriptor_bi.range = VK_WHOLE_SIZE;
-  }
+  descriptor_bi.buffer = buffer;
+  descriptor_bi.offset = 0;
+  descriptor_bi.range = VK_WHOLE_SIZE;
 
   WriteDescriptorSet write_descriptor_set;
-  {
-    write_descriptor_set.dstBinding = binding;
-    write_descriptor_set.dstArrayElement = 0;
-    write_descriptor_set.descriptorType = DescriptorType::E_STORAGE_BUFFER;
-    write_descriptor_set.descriptorCount = 1;
-    write_descriptor_set.pBufferInfo = &descriptor_bi;
-  }
+  write_descriptor_set.dstBinding = binding;
+  write_descriptor_set.dstArrayElement = 0;
+  write_descriptor_set.descriptorType = DescriptorType::E_STORAGE_BUFFER;
+  write_descriptor_set.descriptorCount = 1;
+  write_descriptor_set.pBufferInfo = &descriptor_bi;
+
   vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set_number, 1, write_descriptor_set);
 }
 
 void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkImageView image_view, VkSampler sampler) {
   DescriptorImageInfo descriptor_ii;
-  {
-    descriptor_ii.sampler = sampler;
-    descriptor_ii.imageView = image_view;
-    descriptor_ii.imageLayout = ImageLayout::E_SHADER_READ_ONLY_OPTIMAL;
-  }
+  descriptor_ii.sampler = sampler;
+  descriptor_ii.imageView = image_view;
+  descriptor_ii.imageLayout = ImageLayout::E_SHADER_READ_ONLY_OPTIMAL;
 
   WriteDescriptorSet write_descriptor_set;
-  {
-    write_descriptor_set.dstBinding = binding;
-    write_descriptor_set.dstArrayElement = 0;
-    write_descriptor_set.descriptorType = DescriptorType::E_COMBINED_IMAGE_SAMPLER;
-    write_descriptor_set.descriptorCount = 1;
-    write_descriptor_set.pImageInfo = &descriptor_ii;
-  }
+  write_descriptor_set.dstBinding = binding;
+  write_descriptor_set.dstArrayElement = 0;
+  write_descriptor_set.descriptorType = DescriptorType::E_COMBINED_IMAGE_SAMPLER;
+  write_descriptor_set.descriptorCount = 1;
+  write_descriptor_set.pImageInfo = &descriptor_ii;
+
   vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set, 1, write_descriptor_set);
 }
 
@@ -179,6 +173,10 @@ void CommandBuffer::CommandEnableStencilTest(bool enabled) {
 // DRAW
 void CommandBuffer::CommandDrawIndexed(uint32_t indices, uint32_t instances, uint32_t first_index, int32_t vertex_offset, uint32_t first_instance) {
   vkCmdDrawIndexed(command_buffer_, indices, instances, first_index, vertex_offset, first_instance);
+}
+
+void CommandBuffer::CommandDrawIndexedIndirect(VkBuffer buffer, std::size_t byte_offset, uint32_t draw_count, uint32_t stride) {
+  vkCmdDrawIndexedIndirect(command_buffer_, buffer, byte_offset, draw_count, stride);
 }
 
 // BIND

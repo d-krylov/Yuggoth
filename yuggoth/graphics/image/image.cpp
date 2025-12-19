@@ -38,10 +38,10 @@ VkImage Image::CreateImage(ImageType image_type, const ImageSpecification &image
 void Image::Initialize(ImageType image_type, ImageViewType view_type, const ImageSpecification &image_specification,
                        const std::optional<SamplerSpecification> &sampler_specification) {
   image_specification_ = image_specification;
-  auto aspect_mask = GetAspectMask(GetFormat());
-  auto subresource = GetImageSubresourceRange(aspect_mask, 0, GetLevelCount(), 0, GetLayerCount());
+  auto aspect_mask = GetAspectMask(image_specification_.format_);
+  auto subresource = GetImageSubresourceRange(aspect_mask, 0, image_specification_.levels_, 0, image_specification_.layers_);
   image_ = CreateImage(image_type, image_specification_, allocation_);
-  image_view_ = CreateImageView(GetImage(), GetFormat(), view_type, subresource);
+  image_view_ = CreateImageView(GetImage(), image_specification_.format_, view_type, subresource);
   image_sampler_ = sampler_specification.has_value() ? Sampler::CreateSampler(sampler_specification.value()) : nullptr;
 }
 
@@ -68,13 +68,13 @@ Image &Image::operator=(Image &&other) noexcept {
 }
 
 Image::~Image() {
+  Destroy();
+}
+
+void Image::Destroy() {
   vkDestroyImageView(GraphicsContext::Get()->GetDevice(), image_view_, nullptr);
   vkDestroySampler(GraphicsContext::Get()->GetDevice(), image_sampler_, nullptr);
   GraphicsAllocator::Get()->DestroyImage(image_, allocation_);
-}
-
-const Extent3D &Image::GetExtent() const {
-  return image_specification_.extent_;
 }
 
 VkImage Image::GetImage() const {
@@ -87,22 +87,6 @@ VkImageView Image::GetImageView() const {
 
 VkSampler Image::GetSampler() const {
   return image_sampler_;
-}
-
-Format Image::GetFormat() const {
-  return image_specification_.format_;
-}
-
-uint32_t Image::GetLevelCount() const {
-  return image_specification_.levels_;
-}
-
-uint32_t Image::GetLayerCount() const {
-  return image_specification_.layers_;
-}
-
-ImageUsageMask Image::GetUsage() const {
-  return image_specification_.usage_;
 }
 
 void Image::SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer) {
@@ -122,10 +106,14 @@ void Image::SetImageData(std::span<const std::byte> data) {
   CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   SetImageLayout(ImageLayout::E_TRANSFER_DST_OPTIMAL, &command_buffer);
-  command_buffer.CommandCopyBufferToImage(buffer.GetHandle(), GetImage(), GetExtent());
+  command_buffer.CommandCopyBufferToImage(buffer.GetHandle(), GetImage(), image_specification_.extent_);
   SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer);
   command_buffer.End();
   command_buffer.Submit();
+}
+
+const ImageSpecification &Image::GetSpecification() const {
+  return image_specification_;
 }
 
 } // namespace Yuggoth
