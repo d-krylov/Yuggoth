@@ -19,7 +19,11 @@ public:
   BufferAllocator(Buffer &&buffer, std::size_t element_size);
 
   Buffer *GetBuffer();
+  VirtualAllocator *GetAllocator();
+
   BufferRangeInformation Allocate(uint32_t count, uint32_t alignment);
+
+  void Free(uint32_t offset);
 
 private:
   Buffer buffer_;

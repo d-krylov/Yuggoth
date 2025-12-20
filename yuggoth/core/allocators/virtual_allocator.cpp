@@ -53,4 +53,18 @@ void VirtualAllocator::Free(std::size_t offset) {
   allocations_.erase(offset);
 }
 
+std::size_t VirtualAllocator::GetSize() const {
+  return size_;
+}
+
+std::vector<MemoryBlock> VirtualAllocator::GetAllocatorMap() const {
+  std::vector<MemoryBlock> out;
+  VmaVirtualAllocationInfo allocation_info{};
+  for (const auto &allocation : allocations_) {
+    vmaGetVirtualAllocationInfo(virtual_block_, allocation.second, &allocation_info);
+    out.emplace_back(allocation_info.offset, allocation_info.size);
+  }
+  return out;
+}
+
 } // namespace Yuggoth

@@ -3,16 +3,17 @@
 
 #include "yuggoth/asset/include/model.h"
 #include "yuggoth/asset/include/buffer_owning_model.h"
+#include "yuggoth/core/intrusive/intrusive_pointer.h"
 #include <memory>
 
 namespace Yuggoth {
 
 struct ModelComponent {
-  std::shared_ptr<Model> model_;
+  IntrusivePointer<Model> model_;
 };
 
 struct BufferOwningModelComponent {
-  std::shared_ptr<BufferOwningModel> model_;
+  IntrusivePointer<BufferOwningModel> model_;
 };
 
 } // namespace Yuggoth

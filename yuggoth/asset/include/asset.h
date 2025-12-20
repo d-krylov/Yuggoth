@@ -2,6 +2,7 @@
 #define YUGGOTH_ASSET_H
 
 #include "yuggoth/core/tools/include/uuid.h"
+#include "yuggoth/core/intrusive/intrusive_reference_counter.h"
 #include <filesystem>
 
 namespace Yuggoth {
@@ -12,7 +13,7 @@ enum class AssetKind {
   IMAGE
 };
 
-class Asset {
+class Asset : public IntrusiveReferenceCounter<Asset> {
 public:
   virtual ~Asset() {
   }

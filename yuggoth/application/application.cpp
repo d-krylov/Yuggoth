@@ -40,6 +40,7 @@ void Application::OnStart() {
   editor_context.scene_manager_ = &scene_manager_;
   editor_context.scene_renderer_ = &scene_renderer_;
   editor_context.asset_manager_ = &asset_manager_;
+  editor_context.buffer_manager_ = &buffer_manager_;
   editor_.SetEditorContext(editor_context);
 }
 

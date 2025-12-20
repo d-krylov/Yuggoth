@@ -80,17 +80,6 @@ void SceneRenderer::Draw(Scene *scene) {
 }
 
 void SceneRenderer::Begin(Scene *scene) {
-
-  auto &registry = scene->GetRegistry();
-
-  auto model_group = registry.group<ModelComponent>();
-
-  for (auto model_entity : model_group) {
-
-    const auto &model_component = model_group.get<ModelComponent>(model_entity);
-
-    if (!model_component.model_) continue;
-  }
 }
 
 void SceneRenderer::DirectDraw(Scene *scene) {

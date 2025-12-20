@@ -3,9 +3,14 @@
 
 #include "virtual_allocator_types.h"
 #include <unordered_map>
-#include <cstdint>
+#include <vector>
 
 namespace Yuggoth {
+
+struct MemoryBlock {
+  uint32_t offset_;
+  uint32_t size_;
+};
 
 class VirtualAllocator {
 public:
@@ -24,6 +29,10 @@ public:
   void Destroy();
 
   std::size_t Allocate(std::size_t size, std::size_t alignment, VirtualAllocationCreateMask mask);
+
+  std::size_t GetSize() const;
+
+  std::vector<MemoryBlock> GetAllocatorMap() const;
 
   void Free(std::size_t offset);
 

@@ -2,6 +2,7 @@
 #define YUGGOTH_ASSET_MANAGER_H
 
 #include "asset.h"
+#include "yuggoth/core/intrusive/intrusive_pointer.h"
 #include <memory>
 #include <unordered_map>
 
@@ -16,15 +17,15 @@ class AssetManager {
 public:
   AssetManager(BufferManager *buffer_manager);
 
-  std::shared_ptr<BufferOwningModel> RegisterBufferOwningModel(const std::filesystem::path &path);
+  IntrusivePointer<BufferOwningModel> RegisterBufferOwningModel(const std::filesystem::path &path);
 
-  std::shared_ptr<Model> RegisterModel(const std::filesystem::path &path);
+  IntrusivePointer<Model> RegisterModel(const std::filesystem::path &path);
 
   void Update();
 
 private:
   BufferManager *buffer_manager_ = nullptr;
-  std::unordered_map<UUID, std::weak_ptr<Asset>> assets_;
+  std::unordered_map<UUID, IntrusivePointer<Asset>> assets_;
   std::unordered_map<std::filesystem::path, UUID> uuids_;
 };
 

@@ -10,6 +10,7 @@ namespace Yuggoth {
 struct EditorContext {
   SceneManager *scene_manager_ = nullptr;
   AssetManager *asset_manager_ = nullptr;
+  BufferManager *buffer_manager_ = nullptr;
   SceneRenderer *scene_renderer_ = nullptr;
 };
 
