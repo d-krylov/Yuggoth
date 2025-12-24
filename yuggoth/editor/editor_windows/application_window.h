@@ -12,6 +12,7 @@ public:
 protected:
   void DrawMemoryStatistics();
   void DrawSystemStatistics();
+  void DrawBufferAllocator();
 };
 
 } // namespace Yuggoth

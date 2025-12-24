@@ -22,6 +22,7 @@ FetchContent_MakeAvailable(
   ImGuiFileDialog
   fastgltf
   tinyobjloader
+  meshoptimizer
   entt
   stb
 )
@@ -37,5 +38,11 @@ file(GLOB_RECURSE SHADER_FILES
 )
 
 compile_shaders("${SHADER_FILES}" "${PROJECT_BINARY_DIR}/spirv")
+
+file(GLOB_RECURSE SHADER_SLANG_FILES
+  "${PROJECT_SOURCE_DIR}/assets/shaders_slang/base/*"
+)
+
+compile_slang_shaders("${SHADER_SLANG_FILES}" "${PROJECT_BINARY_DIR}/spirv_slang")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

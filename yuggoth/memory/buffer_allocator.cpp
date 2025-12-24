@@ -10,10 +10,10 @@ VirtualAllocator *BufferAllocator::GetAllocator() {
   return &allocator_;
 }
 
-BufferRangeInformation BufferAllocator::Allocate(uint32_t count, uint32_t alignment) {
+BufferRange BufferAllocator::Allocate(uint32_t count, uint32_t alignment) {
   auto size = count * element_size_;
   auto offset = allocator_.Allocate(size, alignment, VirtualAllocationCreateMaskBits::E_STRATEGY_MIN_OFFSET_BIT);
-  BufferRangeInformation buffer_range_information;
+  BufferRange buffer_range_information;
   buffer_range_information.offset_ = offset / element_size_;
   buffer_range_information.count_ = count;
   buffer_range_information.stride_ = element_size_;

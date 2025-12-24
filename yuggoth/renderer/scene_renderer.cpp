@@ -32,6 +32,8 @@ void SceneRenderer::Initialize() {
   graphics_pipeline_ = GraphicsPipeline(specification);
   specification.shader_paths_ = {shaders / "base" / "mesh_indirect.vert.spv", shaders / "base" / "mesh_indirect.frag.spv"};
   indirect_pipeline_ = GraphicsPipeline(specification);
+  specification.shader_paths_ = {shaders / "mesh" / "mesh.mesh.spv", shaders / "mesh" / "mesh.frag.spv"};
+  mesh_pipeline_ = GraphicsPipeline(specification);
   indirect_buffer_ = Buffer(2_MiB, BufferUsageMaskBits::E_INDIRECT_BUFFER_BIT, AllocationCreateMaskBits::E_HOST_ACCESS_SEQUENTIAL_WRITE_BIT);
   transform_buffer_ = Buffer(2_MiB, BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, AllocationCreateMaskBits::E_HOST_ACCESS_SEQUENTIAL_WRITE_BIT);
 }
@@ -70,6 +72,7 @@ void SceneRenderer::Draw(Scene *scene) {
   command_buffer_.CommandSetViewport(0.0f, extent.height, extent.width, -float(extent.height));
   command_buffer_.CommandSetScissor(0, 0, extent.width, extent.height);
 
+  DirectDraw(scene);
   IndirectDraw(scene);
 
   command_buffer_.CommandEndRendering();
@@ -101,13 +104,13 @@ void SceneRenderer::DirectDraw(Scene *scene) {
 
   auto &registry = scene->GetRegistry();
 
-  auto model_group = registry.group<BufferOwningModelComponent>();
+  auto model_group = registry.group<ResourceOwningModelComponent>();
 
   for (auto model_entity : model_group) {
 
     auto model = Entity(model_entity, scene);
 
-    const auto &model_component = model_group.get<BufferOwningModelComponent>(model_entity);
+    const auto &model_component = model_group.get<ResourceOwningModelComponent>(model_entity);
     const auto &transform_component = model.GetComponent<Transform>();
 
     push_constants.model_ = transform_component.GetMatrix();
@@ -117,7 +120,20 @@ void SceneRenderer::DirectDraw(Scene *scene) {
 
     command_buffer_.CommandBindVertexBuffer(model_component.model_->GetVertexBuffer().GetHandle(), 0);
     command_buffer_.CommandBindIndexBuffer(model_component.model_->GetIndexBuffer().GetHandle(), 0, IndexType::E_UINT32);
-    command_buffer_.CommandDrawIndexed(model_component.model_->GetIndexBuffer().GetSize() / sizeof(uint32_t), 1, 0, 0, 0);
+
+    DrawResourceOwningModel(*model_component.model_);
+
+    // command_buffer_.CommandDrawIndexed(model_component.model_->GetIndexBuffer().GetSize() / sizeof(uint32_t), 1, 0, 0, 0);
+  }
+}
+
+void SceneRenderer::DrawResourceOwningModel(const ResourceOwningModel &model) {
+  auto meshes = model.GetMeshes();
+  auto images = model.GetImages();
+  for (const auto mesh : meshes) {
+    const auto &color_image = images[mesh.color_texture_index];
+    command_buffer_.CommandPushDescriptorSet(graphics_pipeline_.GetPipelineLayout(), 0, 0, color_image.GetImageView(), color_image.GetSampler());
+    command_buffer_.CommandDrawIndexed(mesh.indices_size, 1, mesh.indices_offset, 0, 0);
   }
 }
 

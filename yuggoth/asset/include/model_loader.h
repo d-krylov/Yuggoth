@@ -3,6 +3,7 @@
 
 #include "mesh.h"
 #include <filesystem>
+#include <vector>
 
 namespace Yuggoth {
 
@@ -10,8 +11,11 @@ class ModelLoader {
 public:
   void Load(const std::filesystem::path &path);
 
+  std::span<const Mesh> GetMeshes() const;
   std::span<const Vertex> GetVertices() const;
   std::span<const uint32_t> GetIndices() const;
+  std::span<const Meshlet> GetMeshlets() const;
+  std::span<const std::filesystem::path> GetTextures() const;
 
   std::size_t GetNumberOfVertices();
   std::size_t GetNumberOfIndices();
@@ -20,9 +24,13 @@ protected:
   void LoadKhronos(const std::filesystem::path &path);
   void LoadWavefront(const std::filesystem::path &path);
 
+  void BuildMeshlets();
+
 private:
   std::vector<Vertex> vertices_;
   std::vector<uint32_t> indices_;
+  std::vector<Meshlet> meshlets_;
+  std::vector<Mesh> meshes_;
   std::vector<std::filesystem::path> textures_;
 };
 

@@ -61,6 +61,8 @@ void ImGuiHost::UpdateMouseData() {
 
 ImGuiHost::ImGuiHost(const Window *window) : window_(window) {
   ImGui::CreateContext();
+  auto settings = GetYuggothRoot() / "assets" / "settings" / "window_settings.ini";
+  ImGui::LoadIniSettingsFromDisk(settings.c_str());
   ImGuiIO &io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 

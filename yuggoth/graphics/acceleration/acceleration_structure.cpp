@@ -1,20 +1,34 @@
 #include "acceleration_structure.h"
+#include "yuggoth/graphics/graphics_context/graphics_allocator.h"
 
 namespace Yuggoth {
 
-AccelerationStructureBuildSizesInfoKHR GetAccelerationStructureSize(uint32_t instances) {
-  auto device = GraphicsContext::Get()->GetDevice();
-  AccelerationStructureBuildSizesInfoKHR out_size;
-  AccelerationStructureGeometryKHR geometry;
-  geometry.geometryType = GeometryTypeKHR::E_INSTANCES_KHR;
-  geometry.geometry.instances.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR;
-  AccelerationStructureBuildGeometryInfoKHR geometry_bi;
-  geometry_bi.flags = BuildAccelerationStructureMaskBitsKHR::E_PREFER_FAST_TRACE_BIT_KHR;
-  geometry_bi.type = AccelerationStructureTypeKHR::E_TOP_LEVEL_KHR;
-  geometry_bi.geometryCount = 1;
-  geometry_bi.pGeometries = &geometry;
-  vkGetAccelerationStructureBuildSizesKHR(device, VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR, geometry_bi, &instances, out_size);
-  return out_size;
+AccelerationStructure::AccelerationStructure(AccelerationStructure &&other) noexcept {
+  acceleration_structure_ = std::exchange(other.acceleration_structure_, VK_NULL_HANDLE);
+  acceleration_buffer_ = std::exchange(other.acceleration_buffer_, VK_NULL_HANDLE);
+  buffer_allocation_ = std::exchange(other.buffer_allocation_, VK_NULL_HANDLE);
+}
+
+AccelerationStructure::~AccelerationStructure() {
+  vkDestroyAccelerationStructureKHR(GraphicsContext::Get()->GetDevice(), acceleration_structure_, nullptr);
+  GraphicsAllocator::Get()->DestroyBuffer(acceleration_buffer_, buffer_allocation_);
+}
+
+AccelerationStructure &AccelerationStructure::operator=(AccelerationStructure &&other) noexcept {
+  std::swap(acceleration_structure_, other.acceleration_structure_);
+  std::swap(acceleration_buffer_, other.acceleration_buffer_);
+  std::swap(buffer_allocation_, other.buffer_allocation_);
+  return *this;
+}
+
+AccelerationStructure::AccelerationStructure(const BottomLevelGeometry &bottom_geometry) {
+}
+
+AccelerationStructure::AccelerationStructure(std::span<const BLASInstances> blas_instances) {
+}
+
+VkAccelerationStructureKHR AccelerationStructure::GetHandle() const {
+  return acceleration_structure_;
 }
 
 } // namespace Yuggoth

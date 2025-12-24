@@ -21,6 +21,7 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
     PipelineShaderStageCreateInfo shader_stage_ci;
     shader_stages_cis[i].stage = shader_modules[i].GetStage();
     shader_stages_cis[i].pNext = &shader_modules_cis[i];
+    // shader_stages_cis[i].pSpecializationInfo =
     shader_stages_cis[i].pName = "main";
   }
 

@@ -18,9 +18,12 @@ public:
 
   void SetEditorContext(const EditorContext &editor_context);
 
+  bool InDebugMode() const;
+
 protected:
   void DrawMainMenu();
-  void ImportFile();
+  void DrawToolBar();
+  void HanldeDialog();
 
 private:
   EditorContext editor_context_;
@@ -30,6 +33,8 @@ private:
   ApplicationWindow application_window_;
   AssetManagerWindow asset_manager_window_;
   SelectionManager selection_manager_;
+  std::string dialog_name_;
+  bool debug_mode_ = false;
 };
 
 } // namespace Yuggoth

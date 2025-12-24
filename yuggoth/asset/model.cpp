@@ -1,5 +1,6 @@
 #include "yuggoth/asset/include/model.h"
 #include "yuggoth/graphics/core/graphics_structures.h"
+#include "yuggoth/graphics/acceleration/bottom_level_geometry.h"
 
 namespace Yuggoth {
 
@@ -10,24 +11,27 @@ const std::filesystem::path &Model::GetModelPath() const {
   return model_path_;
 }
 
-const BufferRangeInformation &Model::GetVerticesInformation() const {
+const BufferRange &Model::GetVerticesInformation() const {
   return vertices_;
 }
 
-const BufferRangeInformation &Model::GetIndicesInformation() const {
+const BufferRange &Model::GetIndicesInformation() const {
   return indices_;
 }
 
-void Model::SetVerticesInformation(const BufferRangeInformation &vertices) {
+void Model::SetVerticesInformation(const BufferRange &vertices) {
   vertices_ = vertices;
 }
 
-void Model::SetIndicesInformation(const BufferRangeInformation &indices) {
+void Model::SetIndicesInformation(const BufferRange &indices) {
   indices_ = indices;
 }
 
 AssetKind Model::GetAssetKind() const {
   return AssetKind::MODEL;
+}
+
+BottomLevelGeometry Model::GetBottomLevelGeometry() const {
 }
 
 } // namespace Yuggoth

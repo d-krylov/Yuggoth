@@ -8,7 +8,7 @@ namespace Yuggoth {
 
 namespace fgf = fastgltf;
 
-void GetModelProperties(const fgf::Asset &asset, uint32_t &vertices_count, uint32_t &indices_count) {
+void GetModelProperties(const fgf::Asset &asset, uint32_t &vertices_count, uint32_t &indices_count, uint32_t &primitives_count) {
   for (const auto &mesh : asset.meshes) {
     for (const auto &primitive : mesh.primitives) {
       const auto position_attribute = primitive.findAttribute("POSITION");
@@ -16,6 +16,7 @@ void GetModelProperties(const fgf::Asset &asset, uint32_t &vertices_count, uint3
       const auto &indices_accessor = asset.accessors[primitive.indicesAccessor.value()];
       vertices_count += position_accessor.count;
       indices_count += indices_accessor.count;
+      primitives_count++;
     }
   }
 }
@@ -36,6 +37,16 @@ void LoadVertexData(const fgf::Asset &asset, const fgf::Primitive &primitive, st
   }
 }
 
+template <typename T>
+concept TextureInformationT = std::derived_from<T, fgf::TextureInfo>;
+
+template <TextureInformationT T> int32_t LoadTexture(const fgf::Optional<T> &texture_information) {
+  if (texture_information.has_value() == false) {
+    return -1;
+  }
+  return texture_information->textureIndex;
+}
+
 auto LoadVertices(const fgf::Asset &asset, const fgf::Primitive &primitive, std::size_t vertices_offset, std::span<Vertex> out_vertices) {
   auto position_attribute = primitive.findAttribute("POSITION");
   const auto &position_accessor = asset.accessors[position_attribute->accessorIndex];
@@ -48,11 +59,15 @@ auto LoadVertices(const fgf::Asset &asset, const fgf::Primitive &primitive, std:
   return vertices_offset + position_accessor.count;
 }
 
-void LoadPrimitives(const fgf::Asset &asset, std::span<Vertex> out_vertices, std::span<uint32_t> out_indices) {
-  std::size_t vertices_offset = 0, indices_offset = 0;
+void LoadPrimitives(const fgf::Asset &asset, std::span<Vertex> out_vertices, std::span<uint32_t> out_indices, std::span<Mesh> out_meshes) {
+  std::size_t vertices_offset = 0, indices_offset = 0, primitive_index = 0;
   for (const auto &mesh : asset.meshes) {
     for (auto &primitive : mesh.primitives) {
-      auto indices_accessor_index = primitive.indicesAccessor;
+      const auto &indices_accessor = asset.accessors[primitive.indicesAccessor.value()];
+      auto &material = asset.materials[primitive.materialIndex.value_or(0)];
+      auto color_texture_index = LoadTexture<fgf::TextureInfo>(material.pbrData.baseColorTexture);
+      auto normal_texture_index = LoadTexture<fgf::NormalTextureInfo>(material.normalTexture);
+      out_meshes[primitive_index++] = Mesh(color_texture_index, normal_texture_index, vertices_offset, indices_offset, indices_accessor.count);
       indices_offset = LoadIndices(asset, primitive.indicesAccessor.value(), indices_offset, vertices_offset, out_indices);
       vertices_offset = LoadVertices(asset, primitive, vertices_offset, out_vertices);
     }
@@ -77,13 +92,19 @@ void ModelLoader::LoadKhronos(const std::filesystem::path &path) {
 
   auto asset = parser.loadGltf(gltf_file.get(), path.parent_path(), options);
 
-  uint32_t vertices_count = 0, indices_count = 0;
-  GetModelProperties(asset.get(), vertices_count, indices_count);
+  uint32_t vertices_count = 0, indices_count = 0, primitives_count = 0;
+  GetModelProperties(asset.get(), vertices_count, indices_count, primitives_count);
 
   vertices_.resize(vertices_count);
   indices_.resize(indices_count);
+  meshes_.resize(primitives_count);
 
-  LoadPrimitives(asset.get(), vertices_, indices_);
+  LoadPrimitives(asset.get(), vertices_, indices_, meshes_);
+
+  for (auto &image : asset->images) {
+    auto image_name = std::get<fastgltf::sources::URI>(image.data).uri.path();
+    textures_.emplace_back(path.parent_path() / image_name);
+  }
 }
 
 } // namespace Yuggoth

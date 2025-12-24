@@ -2,7 +2,7 @@
 #define YUGGOTH_MESH_H
 
 #include "yuggoth/mathematics/include/mathematics_types.h"
-#include "yuggoth/memory/include/buffer_manager.h"
+#include "yuggoth/core/tools/include/core_types.h"
 
 namespace Yuggoth {
 
@@ -12,9 +12,18 @@ struct Vertex {
   Vector2f uv_;
 };
 
-static_assert(std::popcount(sizeof(Vertex)) == 1, "Size of Vertex should be power of 2");
+struct Mesh {
+  int32_t color_texture_index = 0;
+  int32_t normal_texture_index = 0;
+  int32_t vertices_offset = 0;
+  int32_t indices_offset = 0;
+  int32_t indices_size = 0;
+};
 
-struct Mesh {};
+struct Meshlet {
+  uint32_t index_offset_;
+  uint32_t index_count_;
+};
 
 } // namespace Yuggoth
 

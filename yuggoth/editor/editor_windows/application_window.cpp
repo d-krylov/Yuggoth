@@ -1,5 +1,7 @@
 #include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/memory/include/buffer_manager.h"
 #include "application_window.h"
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include <print>
 
@@ -28,32 +30,50 @@ void ApplicationWindow::DrawSystemStatistics() {
   }
 }
 
-void DrawAllocatorVisualization(size_t all_size, const std::span<MemoryBlock> &allocated_chunks) {
-  auto size = ImVec2(800, 20);
-  auto draw_list = ImGui::GetWindowDrawList();
+void DrawBufferAllocatorBar(ImVec2 bar_size, std::size_t buffer_size, const std::span<MemoryBlock> &used_chunks) {
+  auto draw = ImGui::GetWindowDrawList();
   auto cursor = ImGui::GetCursorScreenPos();
 
-  draw_list->AddRectFilled(cursor, ImVec2(cursor.x + size.x, cursor.y + size.y), IM_COL32(0, 255, 0, 255));
+  auto free_color = IM_COL32(0, 255, 0, 255);
+  auto used_color = IM_COL32(255, 0, 0, 255);
 
-  for (auto &chunk : allocated_chunks) {
-    float x0 = cursor.x + (chunk.offset_ / (float)all_size) * size.x;
-    float x1 = cursor.x + ((chunk.offset_ + chunk.size_) / (float)all_size) * size.x;
-    draw_list->AddRectFilled(ImVec2(x0, cursor.y), ImVec2(x1, cursor.y + size.y), IM_COL32(255, 0, 0, 255));
+  draw->AddRectFilled(cursor, cursor + bar_size, free_color);
+
+  for (auto &chunk : used_chunks) {
+    auto chunk_begin = chunk.offset_;
+    auto chunk_right = chunk.offset_ + chunk.size_;
+
+    float x0 = cursor.x + (chunk_begin / static_cast<float>(buffer_size)) * bar_size.x;
+    float x1 = cursor.x + (chunk_right / static_cast<float>(buffer_size)) * bar_size.x;
+
+    draw->AddRectFilled(ImVec2(x0, cursor.y), ImVec2(x1, cursor.y + bar_size.y), used_color);
   }
 
-  ImGui::Dummy(size);
+  ImGui::Dummy(bar_size);
+}
+
+void ApplicationWindow::DrawBufferAllocator() {
+  auto vertex_allocator = GetEditorContext()->buffer_manager_->GetVertexAllocator().GetAllocator();
+  auto index_allocator = GetEditorContext()->buffer_manager_->GetIndexAllocator().GetAllocator();
+  if (ImGui::CollapsingHeader("Buffer Allocator")) {
+    auto vertices = vertex_allocator->GetAllocatorMap();
+    auto indices = index_allocator->GetAllocatorMap();
+
+    ImGui::Text("Vertex Buffer");
+    ImGui::SameLine();
+    DrawBufferAllocatorBar(ImVec2(200, 20), vertex_allocator->GetSize(), vertices);
+
+    ImGui::Text("Index Buffer ");
+    ImGui::SameLine();
+    DrawBufferAllocatorBar(ImVec2(200, 20), index_allocator->GetSize(), indices);
+  }
 }
 
 void ApplicationWindow::OnImGui() {
   ImGui::Begin("Application");
   DrawMemoryStatistics();
   DrawSystemStatistics();
-
-  auto vertex_allocator = GetEditorContext()->buffer_manager_->GetVertexAllocator().GetAllocator();
-
-  auto vertex_blocks = vertex_allocator->GetAllocatorMap();
-
-  DrawAllocatorVisualization(vertex_allocator->GetSize(), vertex_blocks);
+  DrawBufferAllocator();
 
   ImGui::End();
 }

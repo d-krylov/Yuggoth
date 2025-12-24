@@ -7,9 +7,15 @@ namespace Yuggoth {
 
 class AssetManagerWindow : public EditorWindow {
 public:
+  AssetManagerWindow();
+
   void OnImGui();
 
+protected:
+  void DrawAssets();
+
 private:
+  Image2D folder_image_;
 };
 
 } // namespace Yuggoth

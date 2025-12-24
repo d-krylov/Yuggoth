@@ -6,7 +6,7 @@
 namespace Yuggoth {
 
 template <typename T> uint32_t IntrusivePointer<T>::use_count() const {
-  return object_pointer_->UseCount();
+  return static_cast<ReferenceBase *>(object_pointer_)->UseCount();
 }
 
 template <typename T> T &IntrusivePointer<T>::operator*() {
@@ -75,6 +75,12 @@ template <typename T> T *IntrusivePointer<T>::release() {
 
 template <typename T, typename... ARGUMENTS> IntrusivePointer<T> MakeIntrusivePointer(ARGUMENTS &&...arguments) {
   return IntrusivePointer<T>(new T(std::forward<ARGUMENTS>(arguments)...));
+}
+
+template <typename T, typename DELETER, CounterConcept COUNTER>
+IntrusivePointer<T> IntrusiveReferenceCounter<T, DELETER, COUNTER>::ReferenceFromThis() {
+  AddReference();
+  return IntrusivePointer<T>(static_cast<T *>(this));
 }
 
 } // namespace Yuggoth

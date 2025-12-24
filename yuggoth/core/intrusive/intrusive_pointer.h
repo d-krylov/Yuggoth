@@ -2,6 +2,7 @@
 #define YUGGOTH_INTRUSIVE_POINTER_H
 
 #include "intrusive_reference_counter.h"
+#include <print>
 
 namespace Yuggoth {
 
@@ -13,7 +14,14 @@ public:
 
   IntrusivePointer() = default;
 
-  explicit IntrusivePointer(T *object_pointer) : object_pointer_(object_pointer) {
+  explicit IntrusivePointer(T *object_pointer, bool add_reference = true) : object_pointer_(object_pointer) {
+    if (object_pointer != nullptr && add_reference) static_cast<ReferenceBase *>(object_pointer_)->AddReference();
+  }
+
+  template <typename U>
+    requires std::derived_from<U, T>
+  IntrusivePointer(const IntrusivePointer<U> &other) {
+    *this = other;
   }
 
   template <typename U>

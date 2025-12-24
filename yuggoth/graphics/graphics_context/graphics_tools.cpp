@@ -9,6 +9,7 @@ namespace Yuggoth {
 void VK_CHECK(VkResult result, std::source_location source_location) {
   if (result != VK_SUCCESS) {
     std::println("VULKAN ERROR: {0} in {1}:{2}", string_VkResult(result), source_location.file_name(), source_location.line());
+    std::abort();
   }
 }
 

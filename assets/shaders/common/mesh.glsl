@@ -21,4 +21,9 @@ struct Primitive {
   uint indices_size;
 };
 
+struct Meshlet {
+  uint index_offset;
+  uint index_count;
+};
+
 #endif // STRUCTURES_GLSL

@@ -7,7 +7,7 @@ namespace Yuggoth {
 
 class Transform {
 public:
-  Transform(const Vector3f &translation = Vector3f(0.0f), const Vector3f &scale = Vector3f(1.0f));
+  Transform(const Vector3f &translation = Vector3f(0.0f), const Vector3f &euler = Vector3f(0.0f), const Vector3f &scale = Vector3f(1.0f));
 
   void SetTranslation(const Vector3f &translation);
   void SetOrientation(const Vector3f &orientation);

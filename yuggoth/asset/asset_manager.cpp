@@ -1,8 +1,9 @@
 #include "yuggoth/asset/include/asset_manager.h"
 #include "yuggoth/asset/include/model_loader.h"
 #include "yuggoth/asset/include/model.h"
-#include "yuggoth/asset/include/buffer_owning_model.h"
+#include "yuggoth/asset/include/resource_owning_model.h"
 #include "yuggoth/memory/include/buffer_manager.h"
+#include "yuggoth/core/tools/include/image_wrapper.h"
 #include <print>
 
 namespace Yuggoth {
@@ -10,16 +11,19 @@ namespace Yuggoth {
 AssetManager::AssetManager(BufferManager *buffer_manager) : buffer_manager_(buffer_manager) {
 }
 
-IntrusivePointer<BufferOwningModel> AssetManager::RegisterBufferOwningModel(const std::filesystem::path &path) {
+IntrusivePointer<ResourceOwningModel> AssetManager::RegisterResourceOwningModel(const std::filesystem::path &path) {
   if (uuids_.contains(path)) {
     auto uuid = uuids_[path];
-    return IntrusivePointer<BufferOwningModel>(static_cast<BufferOwningModel *>(assets_[uuid].get()));
+    return IntrusivePointer<ResourceOwningModel>(static_cast<ResourceOwningModel *>(assets_[uuid].get()));
   }
   ModelLoader model_loader;
   model_loader.Load(path);
-  auto model = MakeIntrusivePointer<BufferOwningModel>();
+  auto model = MakeIntrusivePointer<ResourceOwningModel>();
   model->SetVertices(model_loader.GetVertices());
   model->SetIndices(model_loader.GetIndices());
+  model->SetMeshlets(model_loader.GetMeshlets());
+  model->SetMeshes(model_loader.GetMeshes());
+  model->SetImages(model_loader.GetTextures());
   assets_[model->uuid_] = model;
   uuids_[path] = model->uuid_;
   return model;
@@ -28,13 +32,14 @@ IntrusivePointer<BufferOwningModel> AssetManager::RegisterBufferOwningModel(cons
 void AssetManager::Update() {
   for (auto it = uuids_.begin(); it != uuids_.end();) {
     auto asset_it = assets_.find(it->second);
-    if (asset_it != assets_.end() && asset_it->second.use_count() == 1) {
-      std::println("Try delete");
-      auto *model = static_cast<Model *>(asset_it->second.get());
-      auto &vertices = model->GetVerticesInformation();
-      auto &indices = model->GetIndicesInformation();
-      buffer_manager_->GetVertexAllocator().Free(vertices.offset_ * vertices.stride_);
-      buffer_manager_->GetIndexAllocator().Free(indices.offset_ * indices.stride_);
+    if (asset_it != assets_.end() && asset_it->second.use_count() == 2) {
+      if (asset_it->second->GetAssetKind() == AssetKind::MODEL) {
+        auto *model = static_cast<Model *>(asset_it->second.get());
+        auto &vertices = model->GetVerticesInformation();
+        auto &indices = model->GetIndicesInformation();
+        buffer_manager_->GetVertexAllocator().Free(vertices.offset_ * vertices.stride_);
+        buffer_manager_->GetIndexAllocator().Free(indices.offset_ * indices.stride_);
+      }
       assets_.erase(asset_it);
       it = uuids_.erase(it);
     } else {
@@ -69,6 +74,16 @@ IntrusivePointer<Model> AssetManager::RegisterModel(const std::filesystem::path 
   uuids_[path] = model->uuid_;
 
   return model;
+}
+
+IntrusivePointer<Image2D> AssetManager::RegisterTexture(const std::filesystem::path &path) {
+  if (uuids_.contains(path)) {
+    auto uuid = uuids_[path];
+    return IntrusivePointer<Image2D>(static_cast<Image2D *>(assets_[uuid].get()));
+  }
+
+  ImageWrapper image(path);
+  auto texture = MakeIntrusivePointer<Image2D>(image.GetWidth(), image.GetHeight(), image.GetData(), SamplerSpecification());
 }
 
 } // namespace Yuggoth

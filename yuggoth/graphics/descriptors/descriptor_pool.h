@@ -22,6 +22,8 @@ public:
 
   VkDescriptorPool GetHandle() const;
 
+  static VkDescriptorPool CreateDescriptorPool(std::span<const DescriptorPoolSize> sizes, DescriptorPoolCreateMask mask, uint32_t max_sets);
+
 private:
   VkDescriptorPool descriptor_pool_{VK_NULL_HANDLE};
 };

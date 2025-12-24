@@ -32,6 +32,8 @@ public:
     return reference_counter_.GetCounter();
   }
 
+  IntrusivePointer<T> ReferenceFromThis();
+
 private:
   COUNTER reference_counter_;
 };

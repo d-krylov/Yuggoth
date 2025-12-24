@@ -16,6 +16,12 @@ struct CursorPosition {
   double y;
 };
 
+struct BufferRange {
+  uint32_t stride_ = 0; // element size
+  uint32_t offset_ = 0; // base element index
+  uint32_t count_ = 0;  // number of elements
+};
+
 } // namespace Yuggoth
 
 #endif // YUGGOTH_CORE_TYPES_H

@@ -3,6 +3,7 @@
 
 #include "asset.h"
 #include "yuggoth/core/intrusive/intrusive_pointer.h"
+#include "yuggoth/graphics/image/image2D.h"
 #include <memory>
 #include <unordered_map>
 
@@ -11,15 +12,17 @@ namespace Yuggoth {
 class BufferManager;
 
 class Model;
-class BufferOwningModel;
+class ResourceOwningModel;
 
 class AssetManager {
 public:
   AssetManager(BufferManager *buffer_manager);
 
-  IntrusivePointer<BufferOwningModel> RegisterBufferOwningModel(const std::filesystem::path &path);
+  IntrusivePointer<ResourceOwningModel> RegisterResourceOwningModel(const std::filesystem::path &path);
 
   IntrusivePointer<Model> RegisterModel(const std::filesystem::path &path);
+
+  IntrusivePointer<Image2D> RegisterTexture(const std::filesystem::path &path);
 
   void Update();
 

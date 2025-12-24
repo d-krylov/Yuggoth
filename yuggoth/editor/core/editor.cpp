@@ -1,7 +1,7 @@
 #include "editor.h"
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
-#include "yuggoth/application/application.h"
+#include "editor_tools.h"
 #include "yuggoth/scene/core/entity.h"
 #include "yuggoth/scene/components/components.h"
 #include "external/fonts/IconsFontAwesome6.h"
@@ -34,7 +34,7 @@ SelectionManager *Editor::GetSelectionManager() {
 
 void Editor::OnImGui() {
 
-  DrawMainMenu();
+  DrawToolBar();
 
   viewport_window_.OnImGui();
   hierarchy_window_.OnImGui();
@@ -42,69 +42,104 @@ void Editor::OnImGui() {
   application_window_.OnImGui();
   asset_manager_window_.OnImGui();
 
-  ImportFile();
+  HanldeDialog();
 }
 
-void Editor::ImportFile() {
-  auto scene_manager = editor_context_.scene_manager_;
-  auto asset_manager = editor_context_.asset_manager_;
+void Editor::HanldeDialog() {
+  auto path = DrawFileDialog(dialog_name_);
 
-  if (ImGuiFileDialog::Instance()->Display("ChooseFile")) {
-    if (ImGuiFileDialog::Instance()->IsOk()) {
-      if (scene_manager->HasValidScenes() == false) {
-        scene_manager->EnqueueScene();
-      }
-      auto current_scene = scene_manager->GetCurrentScene();
-      std::filesystem::path path = ImGuiFileDialog::Instance()->GetFilePathName();
-      auto model_entity = current_scene->CreateEntityWithName(path.filename().c_str());
+  if (path.has_value()) {
 
-      auto &model_component = model_entity.AddComponent<ModelComponent>();
-      model_entity.AddComponent<Transform>();
+    auto scene_manager = editor_context_.scene_manager_;
+    auto asset_manager = editor_context_.asset_manager_;
 
-      model_component.model_ = asset_manager->RegisterModel(path);
+    if (scene_manager->HasValidScenes() == false) {
+      scene_manager->EnqueueScene();
     }
 
-    ImGuiFileDialog::Instance()->Close();
+    auto current_scene = scene_manager->GetCurrentScene();
+    auto model_entity = current_scene->CreateEntityWithName(path.value().filename().c_str());
+
+    model_entity.AddComponent<Transform>();
+
+    if (dialog_name_ == "ImportModel") {
+      auto &model_component = model_entity.AddComponent<ModelComponent>();
+      model_component.model_ = asset_manager->RegisterModel(path.value());
+    } else if (dialog_name_ == "ImportResourceOwningModel") {
+      auto &model_component = model_entity.AddComponent<ResourceOwningModelComponent>();
+      model_component.model_ = asset_manager->RegisterResourceOwningModel(path.value());
+    }
   }
 }
 
 void Editor::DrawMainMenu() {
-  if (ImGui::BeginMainMenuBar()) {
+  if (ImGui::BeginMenu("File")) {
 
-    if (ImGui::BeginMenu("File")) {
+    if (ImGui::MenuItem(ICON_FA_FILE " New", "Ctrl+N")) {
+    }
 
-      if (ImGui::MenuItem(ICON_FA_FILE " New", "Ctrl+N")) {
-      }
+    if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " Open", "Ctrl+O")) {
+    }
 
-      if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " Open", "Ctrl+O")) {
-      }
+    ImGui::Separator();
 
-      ImGui::Separator();
+    if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save", "Ctrl+S")) {
+    }
 
-      if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save", "Ctrl+S")) {
-      }
+    ImGui::Separator();
 
-      ImGui::Separator();
-
-      if (ImGui::MenuItem(ICON_FA_FILE_IMPORT " Import")) {
+    if (ImGui::BeginMenu(ICON_FA_FILE_IMPORT "Import")) {
+      if (ImGui::MenuItem("Model")) {
         IGFD::FileDialogConfig config;
-        ImGuiFileDialog::Instance()->OpenDialog("ChooseFile", "Choose File", ".gltf,.glb", config);
+        dialog_name_ = "ImportModel";
+        ImGuiFileDialog::Instance()->OpenDialog(dialog_name_, "Import Model", ".gltf,.glb", config);
       }
 
-      ImGui::Separator();
-
-      if (ImGui::MenuItem("Exit")) {
+      if (InDebugMode() && ImGui::MenuItem("Resource Owning Model")) {
+        IGFD::FileDialogConfig config;
+        dialog_name_ = "ImportResourceOwningModel";
+        ImGuiFileDialog::Instance()->OpenDialog(dialog_name_, "Import Resource Owning Model", ".gltf,.glb", config);
       }
 
       ImGui::EndMenu();
     }
 
-    if (ImGui::BeginMenu("Help")) {
-      ImGui::EndMenu();
+    ImGui::Separator();
+
+    if (ImGui::MenuItem(ICON_FA_POWER_OFF "Exit")) {
     }
 
+    ImGui::EndMenu();
+  }
+
+  if (ImGui::BeginMenu("Editor")) {
+    ImGui::EndMenu();
+  }
+
+  if (ImGui::BeginMenu("Window")) {
+    if (ImGui::MenuItem("Save GUI Settings")) {
+      ImGui::SaveIniSettingsToDisk("setting.ini");
+    }
+
+    ImGui::EndMenu();
+  }
+
+  if (ImGui::BeginMenu("Help")) {
+    ImGui::EndMenu();
+  }
+}
+
+void Editor::DrawToolBar() {
+  if (ImGui::BeginMainMenuBar()) {
+    DrawMainMenu();
+    ImGui::Separator();
+    ImGui::Checkbox("Debug Mode", &debug_mode_);
     ImGui::EndMainMenuBar();
   }
+}
+
+bool Editor::InDebugMode() const {
+  return debug_mode_;
 }
 
 } // namespace Yuggoth

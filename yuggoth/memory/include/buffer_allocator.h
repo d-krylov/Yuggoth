@@ -3,14 +3,9 @@
 
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/core/allocators/virtual_allocator.h"
+#include "yuggoth/core/tools/include/core_types.h"
 
 namespace Yuggoth {
-
-struct BufferRangeInformation {
-  uint32_t stride_; // element size
-  uint32_t offset_; // base element index
-  uint32_t count_;  // number of elements
-};
 
 class BufferAllocator {
 public:
@@ -21,7 +16,7 @@ public:
   Buffer *GetBuffer();
   VirtualAllocator *GetAllocator();
 
-  BufferRangeInformation Allocate(uint32_t count, uint32_t alignment);
+  BufferRange Allocate(uint32_t count, uint32_t alignment);
 
   void Free(uint32_t offset);
 

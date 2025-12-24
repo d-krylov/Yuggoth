@@ -10,11 +10,13 @@ namespace Yuggoth {
 void DrawCameramWidget(Camera &camera) {
   auto position = camera.GetPosition();
   auto orientation = camera.GetEulerAngles();
+  auto far = camera.GetFar();
   ImGui::DragFloat3("Position", glm::value_ptr(position));
   ImGui::SliderAngle("Yaw", &orientation.x);
   ImGui::SliderAngle("Pitch", &orientation.y);
   ImGui::SliderAngle("Roll", &orientation.z);
-
+  ImGui::DragFloat("Far", &far);
+  camera.SetFar(far);
   camera.SetPosition(position);
   camera.SetOrientation(orientation);
 }

@@ -179,6 +179,10 @@ void CommandBuffer::CommandDrawIndexedIndirect(VkBuffer buffer, std::size_t byte
   vkCmdDrawIndexedIndirect(command_buffer_, buffer, byte_offset, draw_count, stride);
 }
 
+void CommandBuffer::CommandDrawMeshTasks(uint32_t group_count_x, uint32_t group_count_y, uint32_t group_count_z) {
+  vkCmdDrawMeshTasksEXT(command_buffer_, group_count_x, group_count_y, group_count_z);
+}
+
 // BIND
 
 void CommandBuffer::CommandBindPipeline(const VkPipeline pipeline, PipelineBindPoint bind_point) {

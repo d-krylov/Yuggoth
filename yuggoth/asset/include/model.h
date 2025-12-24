@@ -3,10 +3,12 @@
 
 #include "asset.h"
 #include "mesh.h"
+#include <filesystem>
+#include "yuggoth/core/tools/include/core_types.h"
 
 namespace Yuggoth {
 
-struct DrawIndexedIndirectCommand;
+class BottomLevelGeometry;
 
 class Model : public Asset {
 public:
@@ -14,17 +16,19 @@ public:
 
   const std::filesystem::path &GetModelPath() const;
 
-  const BufferRangeInformation &GetVerticesInformation() const;
-  const BufferRangeInformation &GetIndicesInformation() const;
+  const BufferRange &GetVerticesInformation() const;
+  const BufferRange &GetIndicesInformation() const;
 
-  void SetVerticesInformation(const BufferRangeInformation &vertices);
-  void SetIndicesInformation(const BufferRangeInformation &indices);
+  void SetVerticesInformation(const BufferRange &vertices);
+  void SetIndicesInformation(const BufferRange &indices);
+
+  BottomLevelGeometry GetBottomLevelGeometry() const;
 
   AssetKind GetAssetKind() const override;
 
 private:
-  BufferRangeInformation vertices_;
-  BufferRangeInformation indices_;
+  BufferRange vertices_;
+  BufferRange indices_;
   std::filesystem::path model_path_;
 };
 

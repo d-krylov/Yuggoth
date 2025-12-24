@@ -13,6 +13,7 @@ public:
   void SetOrientation(const Vector3f &orientation);
   void SetAspect(float aspect);
   void SetFOV(float fov);
+  void SetFar(float far);
 
   Matrix4f GetLookAt() const;
   Matrix4f GetProjection() const;
@@ -22,6 +23,7 @@ public:
   const Vector3f &GetPosition() const;
   float GetAspect() const;
   float GetFOV() const;
+  float GetFar() const;
 
 protected:
   void UpdateCameraVectors();

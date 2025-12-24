@@ -29,6 +29,14 @@ float Camera::GetFOV() const {
   return fov_;
 }
 
+float Camera::GetFar() const {
+  return far_;
+}
+
+void Camera::SetFar(float far) {
+  far_ = far;
+}
+
 Matrix4f Camera::GetLookAt() const {
   return glm::lookAt(position_, position_ + front_, up_);
 }

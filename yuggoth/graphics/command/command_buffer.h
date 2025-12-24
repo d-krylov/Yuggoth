@@ -70,6 +70,7 @@ public:
   // DRAW
   void CommandDrawIndexed(uint32_t index_count, uint32_t instance_count, uint32_t first_index, int32_t vertex_offset, uint32_t first_instance);
   void CommandDrawIndexedIndirect(VkBuffer buffer, std::size_t byte_offset, uint32_t draw_count, uint32_t stride);
+  void CommandDrawMeshTasks(uint32_t group_count_x, uint32_t group_count_y, uint32_t group_count_z);
 
   // COPY
   void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent);

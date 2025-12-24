@@ -1,4 +1,7 @@
 #include "acceleration_structure.h"
+#include "yuggoth/graphics/buffer/buffer.h"
+#include "yuggoth/graphics/command/command_buffer.h"
+#include <algorithm>
 #include <ranges>
 
 namespace Yuggoth {
@@ -27,7 +30,7 @@ auto GetBottomLevelAccelerationStructuresAddress(VkAccelerationStructureKHR acce
   return address;
 }
 
-auto GetInstanceVector(std::span<const BottomLevelAccelerationStructureInstances> bottom_instances) {
+auto GetInstanceVector(std::span<const BLASInstances> bottom_instances) {
   std::vector<AccelerationStructureInstanceKHR> instance_vector;
   for (const auto &[bottom_instance_index, bottom_instance] : std::views::enumerate(bottom_instances)) {
     auto buffer_device_address = GetBottomLevelAccelerationStructuresAddress(bottom_instance.acceleration_structure_);
@@ -41,6 +44,48 @@ auto GetInstanceVector(std::span<const BottomLevelAccelerationStructureInstances
     }
   }
   return instance_vector;
+}
+
+void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instances, VkBuffer main_buffer, std::size_t main_offset) {
+  uint32_t primitive_count = 0;
+  std::ranges::for_each(blas_instances, [&](const auto &instances) { primitive_count += instances.size(); }, &BLASInstances::instances_);
+
+  auto usage = BufferUsageMaskBits::E_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT;
+  auto size = sizeof(AccelerationStructureInstanceKHR) * primitive_count;
+
+  Buffer instance_buffer(size, usage, Buffer::CPU);
+
+  auto instance_vector = GetInstanceVector(blas_instances);
+  instance_buffer.SetData<AccelerationStructureInstanceKHR>(instance_vector);
+
+  std::array<AccelerationStructureGeometryKHR, 1> geometries;
+  geometries[0].geometryType = GeometryTypeKHR::E_INSTANCES_KHR;
+  geometries[0].geometry.instances.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR;
+  geometries[0].geometry.instances.data.deviceAddress = instance_buffer.GetBufferDeviceAddress();
+
+  auto sizes = GetAccelerationStructureSize(primitive_count);
+
+  VkAccelerationStructureKHR acceleration_structure = VK_NULL_HANDLE;
+  auto type = AccelerationStructureTypeKHR::E_TOP_LEVEL_KHR;
+
+  BufferUsageMask scratch_usage = BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT;
+  Buffer scrath_buffer(sizes.buildScratchSize, scratch_usage, AllocationCreateMaskBits::E_DEDICATED_MEMORY_BIT);
+
+  acceleration_structure = CreateAccelerationStructure(main_buffer, type, main_offset, sizes.accelerationStructureSize);
+  auto geometry_info = GetBuildGeometryInformation(geometries, scrath_buffer.GetBufferDeviceAddress(), acceleration_structure, type);
+
+  AccelerationStructureBuildRangeInfoKHR build_range;
+  build_range.firstVertex = 0;
+  build_range.primitiveOffset = 0;
+  build_range.primitiveCount = primitive_count;
+
+  const VkAccelerationStructureBuildRangeInfoKHR *build_range_pointer = build_range;
+
+  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
+  vkCmdBuildAccelerationStructuresKHR(command_buffer.GetHandle(), 1, geometry_info, &build_range_pointer);
+  command_buffer.End();
+  command_buffer.Submit();
 }
 
 } // namespace Yuggoth

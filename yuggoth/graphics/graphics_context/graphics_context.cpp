@@ -150,10 +150,12 @@ void GraphicsContext::CreateDevice() {
   physical_device_features_14.maintenance5 = true;
   physical_device_features_14.maintenance6 = true;
   physical_device_features_14.pushDescriptor = true;
+  physical_device_features_14.pNext = &mesh_shader_features;
 
   PhysicalDeviceVulkan13Features physical_device_features_13;
   physical_device_features_13.synchronization2 = true;
   physical_device_features_13.dynamicRendering = true;
+  physical_device_features_13.maintenance4 = true;
   physical_device_features_13.pNext = &physical_device_features_14;
 
   PhysicalDeviceVulkan12Features physical_device_features_12;

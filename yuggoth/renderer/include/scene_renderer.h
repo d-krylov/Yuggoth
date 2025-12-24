@@ -7,6 +7,7 @@ namespace Yuggoth {
 
 class Scene;
 class BufferManager;
+class ResourceOwningModel;
 
 class SceneRenderer {
 public:
@@ -27,12 +28,15 @@ public:
 protected:
   void Initialize();
 
+  void DrawResourceOwningModel(const ResourceOwningModel &model);
+
 private:
   Image2D target_image_;
   ImageDepth depth_image_;
   CommandBuffer command_buffer_;
   GraphicsPipeline graphics_pipeline_;
   GraphicsPipeline indirect_pipeline_;
+  GraphicsPipeline mesh_pipeline_;
   std::vector<DrawIndexedIndirectCommand> commands_;
   Buffer indirect_buffer_;
   Buffer transform_buffer_;

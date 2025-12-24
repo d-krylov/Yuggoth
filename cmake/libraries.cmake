@@ -37,6 +37,12 @@ FetchContent_Declare(
 )
 
 FetchContent_Declare(
+	meshoptimizer
+	GIT_REPOSITORY https://github.com/zeux/meshoptimizer
+	GIT_TAG master
+)
+
+FetchContent_Declare(
 	ImGuiFileDialog
 	GIT_REPOSITORY https://github.com/aiekick/ImGuiFileDialog
 	GIT_TAG master
@@ -45,5 +51,11 @@ FetchContent_Declare(
 FetchContent_Declare(
 	pugixml
 	GIT_REPOSITORY https://github.com/zeux/pugixml
+	GIT_TAG master
+)
+
+FetchContent_Declare(
+	jolt
+	GIT_REPOSITORY https://github.com/jrouwe/JoltPhysics
 	GIT_TAG master
 )

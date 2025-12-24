@@ -3,13 +3,13 @@
 
 #include "yuggoth/core/tools/include/uuid.h"
 #include "yuggoth/core/intrusive/intrusive_reference_counter.h"
-#include <filesystem>
 
 namespace Yuggoth {
 
 enum class AssetKind {
   UNKNOWN,
   MODEL,
+  RESOURCE_OWNING_MODEL,
   IMAGE
 };
 
