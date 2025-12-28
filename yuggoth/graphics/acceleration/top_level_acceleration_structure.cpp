@@ -53,7 +53,7 @@ void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instan
   auto usage = BufferUsageMaskBits::E_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT;
   auto size = sizeof(AccelerationStructureInstanceKHR) * primitive_count;
 
-  Buffer instance_buffer(size, usage, Buffer::CPU);
+  Buffer instance_buffer(size, usage, CommonMasks::BUFFER_CPU);
 
   auto instance_vector = GetInstanceVector(blas_instances);
   instance_buffer.SetData<AccelerationStructureInstanceKHR>(instance_vector);

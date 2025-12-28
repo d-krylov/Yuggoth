@@ -7,17 +7,10 @@
 
 namespace Yuggoth {
 
-struct BufferInformation {
-  VkBuffer buffer_{VK_NULL_HANDLE};
-  VmaAllocation allocation_{VK_NULL_HANDLE};
-  std::byte *mapped_memory_{nullptr};
-};
+using BufferInformation = std::pair<VkBuffer, AllocationInformation>;
 
 class Buffer {
 public:
-  static constexpr AllocationCreateMask CPU = AllocationCreateMaskBits::E_HOST_ACCESS_SEQUENTIAL_WRITE_BIT;
-  static constexpr AllocationCreateMask MAPPED = CPU | AllocationCreateMaskBits::E_MAPPED_BIT;
-
   Buffer() = default;
 
   Buffer(std::size_t buffer_size, BufferUsageMask buffer_usage, AllocationCreateMask allocation_mask);
@@ -35,6 +28,8 @@ public:
   template <typename T> std::span<T> GetMappedAs();
   template <typename T> void SetData(std::span<const T> data, std::size_t byte_offset = 0);
 
+  void MemoryCopy(std::span<const std::byte> data, std::size_t byte_offset = 0);
+
   void Map();
   void Unmap();
   void Destroy();
@@ -42,13 +37,25 @@ public:
   VkBuffer GetHandle() const;
   VkDeviceAddress GetBufferDeviceAddress() const;
 
+  BufferUsageMask GetUsage() const;
+  MemoryPropertyMask GetMemoryPropertyMask() const;
+
+  bool IsAccessWithCPU() const;
+  bool IsGPU() const;
+
   static BufferInformation CreateBuffer(std::size_t size, BufferUsageMask usage, AllocationCreateMask allocation_mask);
 
+protected:
+  void Swap(Buffer &other) noexcept;
+
 private:
-  VkBuffer buffer_{VK_NULL_HANDLE};
   VmaAllocation allocation_{VK_NULL_HANDLE};
-  std::size_t buffer_size_{0};
-  std::byte *mapped_memory_{nullptr};
+  VkBuffer buffer_{VK_NULL_HANDLE};
+  uint64_t buffer_size_{0};
+  uint32_t memory_type_{0};
+  uint8_t *mapped_memory_{nullptr};
+  BufferUsageMask buffer_usage_;
+  MemoryPropertyMask memory_property_;
 };
 
 } // namespace Yuggoth

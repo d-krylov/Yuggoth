@@ -30,4 +30,10 @@ void Image2D::Create(uint32_t width, uint32_t height, Format format, ImageUsageM
   Initialize(ImageType::E_2D, ImageViewType::E_2D, image_specification, sampler_specification);
 }
 
+Extent2D Image2D::GetExtent() const {
+  auto specification = GetSpecification();
+  auto extent = specification.extent_;
+  return Extent2D(extent.width, extent.height);
+}
+
 } // namespace Yuggoth

@@ -100,21 +100,21 @@ Window::Window(int32_t width, int32_t height, std::string_view name) {
   SetCallbacks(GetNativeWindow());
 }
 
-ViewportSize Window::GetWindowSize() const {
-  ViewportSize size;
-  glfwGetWindowSize(native_window_, &size.width, &size.height);
+vector2i Window::GetWindowSize() const {
+  vector2i size;
+  glfwGetWindowSize(native_window_, &size.first, &size.second);
   return size;
 }
 
-ViewportSize Window::GetFramebufferSize() const {
-  ViewportSize size;
-  glfwGetFramebufferSize(native_window_, &size.width, &size.height);
+vector2i Window::GetFramebufferSize() const {
+  vector2i size;
+  glfwGetFramebufferSize(native_window_, &size.first, &size.second);
   return size;
 }
 
-CursorPosition Window::GetCursorPosition() const {
-  CursorPosition cursor_position;
-  glfwGetCursorPos(native_window_, &cursor_position.x, &cursor_position.y);
+vector2d Window::GetCursorPosition() const {
+  vector2d cursor_position;
+  glfwGetCursorPos(native_window_, &cursor_position.first, &cursor_position.second);
   return cursor_position;
 }
 

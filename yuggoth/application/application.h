@@ -25,15 +25,15 @@ protected:
 private:
   WindowManager window_manager_;
   BufferManager buffer_manager_;
+  ShaderLibrary shader_library_;
+  PipelineLibrary pipeline_library_;
   ImGuiHost imgui_host_;
   ImGuiRenderer imgui_renderer_;
   AssetManager asset_manager_;
   SceneManager scene_manager_;
-  SceneRenderer scene_renderer_;
+  Renderer renderer_;
   Editor editor_;
   bool running_ = false;
-
-  static Application *application_instance_;
 };
 
 } // namespace Yuggoth

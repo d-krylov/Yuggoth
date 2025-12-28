@@ -52,13 +52,13 @@ void MergeDescriptorSets(DescriptorSetLayoutBindingMap &destination, const Descr
   }
 }
 
-std::vector<VkDescriptorSetLayout> CreateDescriptorSetLayouts(std::span<const ShaderModule> shader_modules) {
+std::vector<VkDescriptorSetLayout> CreateDescriptorSetLayouts(std::span<const ShaderModule *const> shader_modules) {
   std::vector<VkDescriptorSetLayout> descriptor_sets;
   DescriptorSetLayoutBindingMap push_descriptor_sets;
   DescriptorSetLayoutBindingMap pool_descriptor_sets;
   for (const auto &shader_module : shader_modules) {
-    MergeDescriptorSets(push_descriptor_sets, shader_module.GetPushDescriptorSetLayoutBindings());
-    MergeDescriptorSets(pool_descriptor_sets, shader_module.GetPoolDescriptorSetLayoutBindings());
+    MergeDescriptorSets(push_descriptor_sets, shader_module->GetPushDescriptorSetLayoutBindings());
+    MergeDescriptorSets(pool_descriptor_sets, shader_module->GetPoolDescriptorSetLayoutBindings());
   }
 
   descriptor_sets.resize(push_descriptor_sets.size() + pool_descriptor_sets.size());

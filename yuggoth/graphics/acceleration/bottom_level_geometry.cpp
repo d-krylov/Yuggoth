@@ -3,8 +3,8 @@
 
 namespace Yuggoth {
 
-void BottomLevelGeometry::AddTriangleGeometry(VkDeviceAddress vbo_device_address, const BufferRange &vbo_range, //
-                                              VkDeviceAddress ibo_device_address, const BufferRange &ibo_range, //
+void BottomLevelGeometry::AddTriangleGeometry(VkDeviceAddress vbo_device_address, const ElementRange &vbo_range, //
+                                              VkDeviceAddress ibo_device_address, const ElementRange &ibo_range, //
                                               GeometryMaskKHR mask) {
   AccelerationStructureGeometryKHR geometry;
   AccelerationStructureBuildRangeInfoKHR range;

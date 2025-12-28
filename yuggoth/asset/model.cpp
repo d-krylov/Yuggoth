@@ -11,19 +11,19 @@ const std::filesystem::path &Model::GetModelPath() const {
   return model_path_;
 }
 
-const BufferRange &Model::GetVerticesInformation() const {
+BufferRange Model::GetVertexBufferRange() const {
   return vertices_;
 }
 
-const BufferRange &Model::GetIndicesInformation() const {
+BufferRange Model::GetIndexBufferRange() const {
   return indices_;
 }
 
-void Model::SetVerticesInformation(const BufferRange &vertices) {
+void Model::SetVertexBufferRange(const BufferRange &vertices) {
   vertices_ = vertices;
 }
 
-void Model::SetIndicesInformation(const BufferRange &indices) {
+void Model::SetIndexBufferRange(const BufferRange &indices) {
   indices_ = indices;
 }
 

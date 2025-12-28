@@ -6,8 +6,9 @@
 namespace Yuggoth {
 
 struct Light {
-  Vector3f color_;
-  Vector3f position_;
+  Vector3f color_ = Vector3f(0.0f);
+  Vector3f position_ = Vector3f(0.0f);
+  Vector3f direction_ = Vector3f(0.0f);
 };
 
 } // namespace Yuggoth

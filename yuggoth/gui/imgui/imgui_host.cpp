@@ -56,7 +56,7 @@ bool ImGuiHost::OnCharEvent(const CharEvent &event) {
 void ImGuiHost::UpdateMouseData() {
   ImGuiIO &io = ImGui::GetIO();
   auto cursor_position = window_->GetCursorPosition();
-  io.AddMousePosEvent((float)cursor_position.x, (float)cursor_position.y);
+  io.AddMousePosEvent((float)cursor_position.first, (float)cursor_position.second);
 }
 
 ImGuiHost::ImGuiHost(const Window *window) : window_(window) {
@@ -124,12 +124,12 @@ void ImGuiHost::NewFrame() {
   auto window_size = window_->GetWindowSize();
   auto framebuffer_size = window_->GetFramebufferSize();
 
-  io.DisplaySize.x = window_size.width;
-  io.DisplaySize.y = window_size.height;
+  io.DisplaySize.x = window_size.first;
+  io.DisplaySize.y = window_size.second;
 
-  if (window_size.width > 0 && window_size.height > 0) {
-    io.DisplayFramebufferScale.x = static_cast<float>(framebuffer_size.width) / static_cast<float>(window_size.width);
-    io.DisplayFramebufferScale.y = static_cast<float>(framebuffer_size.height) / static_cast<float>(window_size.height);
+  if (window_size.first > 0 && window_size.second > 0) {
+    io.DisplayFramebufferScale.x = static_cast<float>(framebuffer_size.first) / static_cast<float>(window_size.first);
+    io.DisplayFramebufferScale.y = static_cast<float>(framebuffer_size.second) / static_cast<float>(window_size.second);
   }
 
   UpdateTime();

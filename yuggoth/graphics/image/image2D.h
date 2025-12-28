@@ -21,6 +21,8 @@ public:
 
   Image2D &operator=(Image2D &&other) noexcept = default;
 
+  Extent2D GetExtent() const;
+
 protected:
   void Create(uint32_t width, uint32_t height, Format format, ImageUsageMask usage_mask,
               const std::optional<SamplerSpecification> &sampler_specification);

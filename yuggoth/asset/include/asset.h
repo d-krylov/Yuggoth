@@ -15,9 +15,6 @@ enum class AssetKind {
 
 class Asset : public IntrusiveReferenceCounter<Asset> {
 public:
-  virtual ~Asset() {
-  }
-
   virtual AssetKind GetAssetKind() const {
     return AssetKind::UNKNOWN;
   }

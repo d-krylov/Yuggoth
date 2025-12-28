@@ -1,26 +1,24 @@
 #ifndef YUGGOTH_MODEL_H
 #define YUGGOTH_MODEL_H
 
-#include "asset.h"
-#include "mesh.h"
+#include "model_base.h"
 #include <filesystem>
-#include "yuggoth/core/tools/include/core_types.h"
 
 namespace Yuggoth {
 
 class BottomLevelGeometry;
 
-class Model : public Asset {
+class Model : public ModelBase {
 public:
   Model(const std::filesystem::path &model_path);
 
   const std::filesystem::path &GetModelPath() const;
 
-  const BufferRange &GetVerticesInformation() const;
-  const BufferRange &GetIndicesInformation() const;
+  BufferRange GetVertexBufferRange() const override;
+  BufferRange GetIndexBufferRange() const override;
 
-  void SetVerticesInformation(const BufferRange &vertices);
-  void SetIndicesInformation(const BufferRange &indices);
+  void SetVertexBufferRange(const BufferRange &vertices);
+  void SetIndexBufferRange(const BufferRange &indices);
 
   BottomLevelGeometry GetBottomLevelGeometry() const;
 

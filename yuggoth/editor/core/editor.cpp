@@ -34,7 +34,7 @@ SelectionManager *Editor::GetSelectionManager() {
 
 void Editor::OnImGui() {
 
-  DrawToolBar();
+  DrawMainMenu();
 
   viewport_window_.OnImGui();
   hierarchy_window_.OnImGui();
@@ -61,79 +61,77 @@ void Editor::HanldeDialog() {
     auto model_entity = current_scene->CreateEntityWithName(path.value().filename().c_str());
 
     model_entity.AddComponent<Transform>();
+    auto &model_component = model_entity.AddComponent<ModelComponent>();
 
     if (dialog_name_ == "ImportModel") {
-      auto &model_component = model_entity.AddComponent<ModelComponent>();
       model_component.model_ = asset_manager->RegisterModel(path.value());
     } else if (dialog_name_ == "ImportResourceOwningModel") {
-      auto &model_component = model_entity.AddComponent<ResourceOwningModelComponent>();
       model_component.model_ = asset_manager->RegisterResourceOwningModel(path.value());
     }
   }
 }
 
 void Editor::DrawMainMenu() {
-  if (ImGui::BeginMenu("File")) {
 
-    if (ImGui::MenuItem(ICON_FA_FILE " New", "Ctrl+N")) {
-    }
+  if (ImGui::BeginMainMenuBar()) {
 
-    if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " Open", "Ctrl+O")) {
-    }
+    if (ImGui::BeginMenu("File")) {
 
-    ImGui::Separator();
-
-    if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save", "Ctrl+S")) {
-    }
-
-    ImGui::Separator();
-
-    if (ImGui::BeginMenu(ICON_FA_FILE_IMPORT "Import")) {
-      if (ImGui::MenuItem("Model")) {
-        IGFD::FileDialogConfig config;
-        dialog_name_ = "ImportModel";
-        ImGuiFileDialog::Instance()->OpenDialog(dialog_name_, "Import Model", ".gltf,.glb", config);
+      if (ImGui::MenuItem(ICON_FA_FILE " New", "Ctrl+N")) {
       }
 
-      if (InDebugMode() && ImGui::MenuItem("Resource Owning Model")) {
-        IGFD::FileDialogConfig config;
-        dialog_name_ = "ImportResourceOwningModel";
-        ImGuiFileDialog::Instance()->OpenDialog(dialog_name_, "Import Resource Owning Model", ".gltf,.glb", config);
+      if (ImGui::MenuItem(ICON_FA_FOLDER_OPEN " Open", "Ctrl+O")) {
+      }
+
+      ImGui::Separator();
+
+      if (ImGui::MenuItem(ICON_FA_FLOPPY_DISK " Save", "Ctrl+S")) {
+      }
+
+      ImGui::Separator();
+
+      if (ImGui::BeginMenu(ICON_FA_FILE_IMPORT "Import")) {
+        if (ImGui::MenuItem("Model")) {
+          IGFD::FileDialogConfig config;
+          dialog_name_ = "ImportModel";
+          ImGuiFileDialog::Instance()->OpenDialog(dialog_name_, "Import Model", ".gltf,.glb", config);
+        }
+
+        if (InDebugMode() && ImGui::MenuItem("Resource Owning Model")) {
+          IGFD::FileDialogConfig config;
+          dialog_name_ = "ImportResourceOwningModel";
+          ImGuiFileDialog::Instance()->OpenDialog(dialog_name_, "Import Resource Owning Model", ".gltf,.glb", config);
+        }
+
+        ImGui::EndMenu();
+      }
+
+      ImGui::Separator();
+
+      if (ImGui::MenuItem(ICON_FA_POWER_OFF "Exit")) {
       }
 
       ImGui::EndMenu();
     }
 
-    ImGui::Separator();
-
-    if (ImGui::MenuItem(ICON_FA_POWER_OFF "Exit")) {
+    if (ImGui::BeginMenu("Editor")) {
+      ImGui::EndMenu();
     }
 
-    ImGui::EndMenu();
-  }
+    if (ImGui::BeginMenu("Window")) {
+      if (ImGui::MenuItem("Save GUI Settings")) {
+        ImGui::SaveIniSettingsToDisk("setting.ini");
+      }
 
-  if (ImGui::BeginMenu("Editor")) {
-    ImGui::EndMenu();
-  }
-
-  if (ImGui::BeginMenu("Window")) {
-    if (ImGui::MenuItem("Save GUI Settings")) {
-      ImGui::SaveIniSettingsToDisk("setting.ini");
+      ImGui::EndMenu();
     }
 
-    ImGui::EndMenu();
-  }
+    if (ImGui::BeginMenu("Help")) {
+      ImGui::EndMenu();
+    }
 
-  if (ImGui::BeginMenu("Help")) {
-    ImGui::EndMenu();
-  }
-}
-
-void Editor::DrawToolBar() {
-  if (ImGui::BeginMainMenuBar()) {
-    DrawMainMenu();
-    ImGui::Separator();
     ImGui::Checkbox("Debug Mode", &debug_mode_);
+
     ImGui::EndMainMenuBar();
   }
 }

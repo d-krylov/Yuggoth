@@ -1,4 +1,5 @@
 #include "yuggoth/asset/include/model_loader.h"
+#include <print>
 
 namespace Yuggoth {
 
@@ -40,7 +41,7 @@ std::span<const std::filesystem::path> ModelLoader::GetTextures() const {
 }
 
 void ModelLoader::BuildMeshlets() {
-  uint32_t max_triangles = 42;
+  uint32_t max_triangles = 21;
   uint32_t max_indices = max_triangles * 3;
 
   uint32_t offset = 0;

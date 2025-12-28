@@ -3,7 +3,7 @@
 
 #include "yuggoth/scene/core/scene_manager.h"
 #include "yuggoth/asset/include/asset_manager.h"
-#include "yuggoth/renderer/include/scene_renderer.h"
+#include "yuggoth/renderer/core/renderer.h"
 
 namespace Yuggoth {
 
@@ -11,7 +11,7 @@ struct EditorContext {
   SceneManager *scene_manager_ = nullptr;
   AssetManager *asset_manager_ = nullptr;
   BufferManager *buffer_manager_ = nullptr;
-  SceneRenderer *scene_renderer_ = nullptr;
+  Renderer *renderer_ = nullptr;
 };
 
 } // namespace Yuggoth

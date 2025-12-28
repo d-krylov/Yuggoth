@@ -10,10 +10,10 @@ class ViewportWindow : public EditorWindow {
 public:
   void OnImGui();
 
-  ViewportSize GetViewportSize() const;
+  vector2i GetViewportSize() const;
 
 private:
-  ViewportSize viewport_size_;
+  vector2i viewport_size_;
 };
 
 } // namespace Yuggoth

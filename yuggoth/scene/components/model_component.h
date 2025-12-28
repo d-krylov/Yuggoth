@@ -9,11 +9,7 @@
 namespace Yuggoth {
 
 struct ModelComponent {
-  IntrusivePointer<Model> model_;
-};
-
-struct ResourceOwningModelComponent {
-  IntrusivePointer<ResourceOwningModel> model_;
+  IntrusivePointer<ModelBase> model_;
 };
 
 } // namespace Yuggoth

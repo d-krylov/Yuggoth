@@ -9,8 +9,8 @@ namespace Yuggoth {
 
 class BottomLevelGeometry {
 public:
-  void AddTriangleGeometry(VkDeviceAddress vbo_device_address, const BufferRange &vbo_range, //
-                           VkDeviceAddress ibo_device_address, const BufferRange &ibo_range, //
+  void AddTriangleGeometry(VkDeviceAddress vbo_device_address, const ElementRange &vbo_range, //
+                           VkDeviceAddress ibo_device_address, const ElementRange &ibo_range, //
                            GeometryMaskKHR mask);
 
   std::span<const AccelerationStructureGeometryKHR> GetGeometries() const;

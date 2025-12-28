@@ -30,9 +30,12 @@ void ApplicationWindow::DrawSystemStatistics() {
   }
 }
 
-void DrawBufferAllocatorBar(ImVec2 bar_size, std::size_t buffer_size, const std::span<MemoryBlock> &used_chunks) {
+void DrawBufferAllocatorBar(std::size_t buffer_size, const std::span<MemoryBlock> &used_chunks) {
   auto draw = ImGui::GetWindowDrawList();
   auto cursor = ImGui::GetCursorScreenPos();
+  auto region = ImGui::GetContentRegionAvail();
+
+  ImVec2 bar_size(region.x, 20.0f);
 
   auto free_color = IM_COL32(0, 255, 0, 255);
   auto used_color = IM_COL32(255, 0, 0, 255);
@@ -53,19 +56,19 @@ void DrawBufferAllocatorBar(ImVec2 bar_size, std::size_t buffer_size, const std:
 }
 
 void ApplicationWindow::DrawBufferAllocator() {
-  auto vertex_allocator = GetEditorContext()->buffer_manager_->GetVertexAllocator().GetAllocator();
-  auto index_allocator = GetEditorContext()->buffer_manager_->GetIndexAllocator().GetAllocator();
+  auto vertex_allocator = GetEditorContext()->buffer_manager_->GetBufferAllocator(Vertex::type_id).allocator();
+  auto index_allocator = GetEditorContext()->buffer_manager_->GetBufferAllocator(Index32::type_id).allocator();
   if (ImGui::CollapsingHeader("Buffer Allocator")) {
     auto vertices = vertex_allocator->GetAllocatorMap();
     auto indices = index_allocator->GetAllocatorMap();
 
     ImGui::Text("Vertex Buffer");
     ImGui::SameLine();
-    DrawBufferAllocatorBar(ImVec2(200, 20), vertex_allocator->GetSize(), vertices);
+    DrawBufferAllocatorBar(vertex_allocator->GetSize(), vertices);
 
     ImGui::Text("Index Buffer ");
     ImGui::SameLine();
-    DrawBufferAllocatorBar(ImVec2(200, 20), index_allocator->GetSize(), indices);
+    DrawBufferAllocatorBar(index_allocator->GetSize(), indices);
   }
 }
 

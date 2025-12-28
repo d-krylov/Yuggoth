@@ -3,20 +3,33 @@
 
 namespace Yuggoth {
 
-const Buffer &ResourceOwningModel::GetVertexBuffer() const {
-  return vertex_buffer_;
+using BufferMember = Buffer ResourceOwningModel::*;
+
+BufferRange MakeRange(const ResourceOwningModel &model, BufferMember buffer_pointer, uint32_t stride) {
+  BufferRange buffer_range;
+  const auto &buffer = model.*buffer_pointer;
+  const auto buffer_size = buffer.GetSize();
+  buffer_range.buffer_ = buffer.GetHandle();
+  buffer_range.offset_ = 0;
+  buffer_range.stride_ = stride;
+  buffer_range.count_ = buffer_size / stride;
+  return buffer_range;
 }
 
-const Buffer &ResourceOwningModel::GetIndexBuffer() const {
-  return index_buffer_;
+BufferRange ResourceOwningModel::GetVertexBufferRange() const {
+  return MakeRange(*this, &ResourceOwningModel::vertex_buffer_, sizeof(Vertex));
 }
 
-const Buffer &ResourceOwningModel::GetMeshletBuffer() const {
-  return meshlet_buffer_;
+BufferRange ResourceOwningModel::GetIndexBufferRange() const {
+  return MakeRange(*this, &ResourceOwningModel::index_buffer_, sizeof(uint32_t));
 }
 
-const Buffer &ResourceOwningModel::GetMeshBuffer() const {
-  return mesh_buffer_;
+BufferRange ResourceOwningModel::GetMeshletBufferRange() const {
+  return MakeRange(*this, &ResourceOwningModel::meshlet_buffer_, sizeof(Meshlet));
+}
+
+BufferRange ResourceOwningModel::GetMeshBufferRange() const {
+  return MakeRange(*this, &ResourceOwningModel::mesh_buffer_, sizeof(Mesh));
 }
 
 std::span<const Mesh> ResourceOwningModel::GetMeshes() const {
@@ -28,22 +41,24 @@ std::span<const Image2D> ResourceOwningModel::GetImages() const {
 }
 
 void ResourceOwningModel::SetVertices(std::span<const Vertex> vertices) {
-  vertex_buffer_ = Buffer(vertices.size_bytes(), BufferUsageMaskBits::E_VERTEX_BUFFER_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, Buffer::CPU);
+  vertex_buffer_ =
+    Buffer(vertices.size_bytes(), BufferUsageMaskBits::E_VERTEX_BUFFER_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, CommonMasks::BUFFER_CPU);
   vertex_buffer_.SetData(vertices);
 }
 
 void ResourceOwningModel::SetIndices(std::span<const uint32_t> indices) {
-  index_buffer_ = Buffer(indices.size_bytes(), BufferUsageMaskBits::E_INDEX_BUFFER_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, Buffer::CPU);
+  index_buffer_ =
+    Buffer(indices.size_bytes(), BufferUsageMaskBits::E_INDEX_BUFFER_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, CommonMasks::BUFFER_MAPPED);
   index_buffer_.SetData(indices);
 }
 
 void ResourceOwningModel::SetMeshlets(std::span<const Meshlet> meshlets) {
-  meshlet_buffer_ = Buffer(meshlets.size_bytes(), BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, Buffer::CPU);
+  meshlet_buffer_ = Buffer(meshlets.size_bytes(), BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, CommonMasks::BUFFER_CPU);
   meshlet_buffer_.SetData(meshlets);
 }
 
 void ResourceOwningModel::SetMeshes(std::span<const Mesh> meshes) {
-  mesh_buffer_ = Buffer(meshes.size_bytes(), BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, Buffer::CPU);
+  mesh_buffer_ = Buffer(meshes.size_bytes(), BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, CommonMasks::BUFFER_CPU);
   mesh_buffer_.SetData(meshes);
   meshes_ = std::vector(meshes.begin(), meshes.end());
 }
@@ -60,8 +75,8 @@ BottomLevelGeometry ResourceOwningModel::GetBottomLevelGeometry() const {
   BottomLevelGeometry bottom_geometry;
   auto vbo_size_bytes = vertex_buffer_.GetSize();
   auto ibo_size_bytes = index_buffer_.GetSize();
-  BufferRange vbo_range(sizeof(Vertex), 0, vbo_size_bytes / sizeof(Vertex));
-  BufferRange ibo_range(sizeof(uint32_t), 0, ibo_size_bytes / sizeof(uint32_t));
+  ElementRange vbo_range(sizeof(Vertex), 0, vbo_size_bytes / sizeof(Vertex));
+  ElementRange ibo_range(sizeof(uint32_t), 0, ibo_size_bytes / sizeof(uint32_t));
   GeometryMaskKHR mask = GeometryMaskBitsKHR::E_OPAQUE_BIT_KHR;
   bottom_geometry.AddTriangleGeometry(vertex_buffer_.GetBufferDeviceAddress(), vbo_range, index_buffer_.GetBufferDeviceAddress(), ibo_range, mask);
   return bottom_geometry;

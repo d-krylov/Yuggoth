@@ -1,8 +1,7 @@
 #ifndef YUGGOTH_RESOURCE_OWNING_MODEL_H
 #define YUGGOTH_RESOURCE_OWNING_MODEL_H
 
-#include "asset.h"
-#include "mesh.h"
+#include "model_base.h"
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/graphics/image/image2D.h"
 
@@ -10,12 +9,12 @@ namespace Yuggoth {
 
 class BottomLevelGeometry;
 
-class ResourceOwningModel : public Asset {
+class ResourceOwningModel : public ModelBase {
 public:
-  const Buffer &GetVertexBuffer() const;
-  const Buffer &GetIndexBuffer() const;
-  const Buffer &GetMeshBuffer() const;
-  const Buffer &GetMeshletBuffer() const;
+  BufferRange GetVertexBufferRange() const override;
+  BufferRange GetIndexBufferRange() const override;
+  BufferRange GetMeshBufferRange() const override;
+  BufferRange GetMeshletBufferRange() const override;
 
   std::span<const Mesh> GetMeshes() const;
   std::span<const Image2D> GetImages() const;

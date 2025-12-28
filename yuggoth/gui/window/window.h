@@ -19,9 +19,9 @@ public:
 
   GLFWwindow *GetNativeWindow() const;
 
-  ViewportSize GetWindowSize() const;
-  ViewportSize GetFramebufferSize() const;
-  CursorPosition GetCursorPosition() const;
+  vector2i GetWindowSize() const;
+  vector2i GetFramebufferSize() const;
+  vector2d GetCursorPosition() const;
 
   bool ShouldClose() const;
 

@@ -7,8 +7,11 @@
 namespace Yuggoth {
 
 struct AllocationInformation {
-  VmaAllocation allocation_{nullptr};
-  std::byte *mapped_memory_{nullptr};
+  MemoryPropertyMask memory_property_;
+  VmaAllocation allocation_ = nullptr;
+  uint8_t *mapped_memory_ = nullptr;
+  uint32_t memory_type_ = 0;
+  uint64_t memory_size_ = 0;
 };
 
 struct GraphicsAllocatorStatistics {
@@ -32,7 +35,7 @@ public:
   void DestroyImage(VkImage image, VmaAllocation vma_allocation);
   void DestroyBuffer(VkBuffer buffer, VmaAllocation vma_allocation);
 
-  void MapMemory(VmaAllocation allocation, std::byte **memory);
+  void MapMemory(VmaAllocation allocation, uint8_t **memory);
   void UnmapMemory(VmaAllocation allocation);
 
   void CopyMemoryToAllocation(std::span<const std::byte> source, VmaAllocation destination, std::size_t offset);

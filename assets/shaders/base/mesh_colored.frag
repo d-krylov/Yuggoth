@@ -6,15 +6,17 @@
 // IN
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
-layout (location = 2) in vec3 in_color;
-layout (location = 3) in vec2 in_uv;
+layout (location = 2) in vec2 in_uv;
 
 // OUT
 layout (location = 0) out vec4 out_color;
 
+// UNIFORM
+layout (set = 0, binding = 0) uniform sampler2D u_ambient;
+
 void main() {
 
-  vec3 ambient = in_color; // vec3(0.5, 0.5, 0.5); 
+  vec3 ambient = vec3(0.5, 0.5, 0.5); 
 
   vec3 light_direction = normalize(vec3(1.0));
   vec3 light_color = vec3(1.0, 1.0, 1.0);

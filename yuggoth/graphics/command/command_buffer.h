@@ -41,8 +41,13 @@ public:
 
   void CommandEndRendering();
 
-  void CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> image_barriers, std::span<const MemoryBarrier2> memory_barriers = {},
-                              std::span<const BufferMemoryBarrier2> buffer_barriers = {});
+  // BARRIERS
+  void CommandMemoryBarrier(PipelineStageMask2 source_stage, AccessMask2 source_access, //
+                            PipelineStageMask2 destination_stage, AccessMask2 destination_access);
+
+  void CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> image_barriers, //
+                              std::span<const MemoryBarrier2> memory_barriers,     //
+                              std::span<const BufferMemoryBarrier2> buffer_barriers);
 
   // DEBUG
   void CommandBeginDebugUtilsLabel(std::string_view label_name);
@@ -71,6 +76,7 @@ public:
   void CommandDrawIndexed(uint32_t index_count, uint32_t instance_count, uint32_t first_index, int32_t vertex_offset, uint32_t first_instance);
   void CommandDrawIndexedIndirect(VkBuffer buffer, std::size_t byte_offset, uint32_t draw_count, uint32_t stride);
   void CommandDrawMeshTasks(uint32_t group_count_x, uint32_t group_count_y, uint32_t group_count_z);
+  void CommandDrawMeshTasksIndirect(VkBuffer buffer, std::size_t byte_offset, uint32_t draw_count, uint32_t stride);
 
   // COPY
   void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent);

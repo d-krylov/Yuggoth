@@ -12,13 +12,16 @@ namespace Yuggoth {
 
 ImGuiRenderer::ImGuiRenderer(Format color_format) {
   auto shaders_root = GetShadersRoot();
+
+  ShaderModule gui_vert(shaders_root / "gui" / "gui.vert.spv");
+  ShaderModule gui_frag(shaders_root / "gui" / "gui.frag.spv");
   GraphicsPipelineSpecification specification;
   specification.color_formats_ = {color_format};
-  specification.shader_paths_ = {shaders_root / "gui" / "gui.vert.spv", shaders_root / "gui" / "gui.frag.spv"};
+  specification.shader_modules_ = {&gui_vert, &gui_frag};
   graphics_pipeline_ = GraphicsPipeline(specification);
 
-  vertex_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_VERTEX_BUFFER_BIT, Buffer::MAPPED);
-  index_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_INDEX_BUFFER_BIT, Buffer::MAPPED);
+  vertex_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_VERTEX_BUFFER_BIT, CommonMasks::BUFFER_MAPPED);
+  index_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_INDEX_BUFFER_BIT, CommonMasks::BUFFER_MAPPED);
 
   CreateTexture();
 }

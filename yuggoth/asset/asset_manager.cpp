@@ -4,6 +4,8 @@
 #include "yuggoth/asset/include/resource_owning_model.h"
 #include "yuggoth/memory/include/buffer_manager.h"
 #include "yuggoth/core/tools/include/image_wrapper.h"
+#include "yuggoth/graphics/command/command_buffer.h"
+
 #include <print>
 
 namespace Yuggoth {
@@ -34,12 +36,13 @@ void AssetManager::Update() {
     auto asset_it = assets_.find(it->second);
     if (asset_it != assets_.end() && asset_it->second.use_count() == 2) {
       if (asset_it->second->GetAssetKind() == AssetKind::MODEL) {
-        auto *model = static_cast<Model *>(asset_it->second.get());
-        auto &vertices = model->GetVerticesInformation();
-        auto &indices = model->GetIndicesInformation();
-        buffer_manager_->GetVertexAllocator().Free(vertices.offset_ * vertices.stride_);
-        buffer_manager_->GetIndexAllocator().Free(indices.offset_ * indices.stride_);
+        auto *model = static_cast<ModelBase *>(asset_it->second.get());
+        auto vertices = model->GetVertexBufferRange();
+        auto indices = model->GetIndexBufferRange();
+        buffer_manager_->GetBufferAllocator(Vertex::type_id).free(vertices.offset_ * vertices.stride_);
+        buffer_manager_->GetBufferAllocator(Index32::type_id).free(indices.offset_ * indices.stride_);
       }
+
       assets_.erase(asset_it);
       it = uuids_.erase(it);
     } else {
@@ -56,19 +59,23 @@ IntrusivePointer<Model> AssetManager::RegisterModel(const std::filesystem::path 
   ModelLoader model_loader;
   model_loader.Load(path);
 
-  auto &vertex_allocator = buffer_manager_->GetVertexAllocator();
-  auto &index_allocator = buffer_manager_->GetIndexAllocator();
+  auto &vertex_allocator = buffer_manager_->GetBufferAllocator(Vertex::type_id);
+  auto &index_allocator = buffer_manager_->GetBufferAllocator(Index32::type_id);
 
-  auto vertex_information = vertex_allocator.Allocate(model_loader.GetNumberOfVertices(), 0);
-  auto index_information = index_allocator.Allocate(model_loader.GetNumberOfIndices(), 0);
+  auto vertices_range = vertex_allocator.allocate(model_loader.GetNumberOfVertices(), 0);
+  auto indices_range = index_allocator.allocate(model_loader.GetNumberOfIndices(), 0);
 
-  vertex_allocator.GetBuffer()->SetData(model_loader.GetVertices(), vertex_information.offset_ * vertex_information.stride_);
-  index_allocator.GetBuffer()->SetData(model_loader.GetIndices(), index_information.offset_ * index_information.stride_);
+  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
+  buffer_manager_->UploadBuffer(&command_buffer, vertices_range, std::as_bytes(model_loader.GetVertices()));
+  buffer_manager_->UploadBuffer(&command_buffer, indices_range, std::as_bytes(model_loader.GetIndices()));
+  command_buffer.End();
+  command_buffer.Submit();
 
   auto model = MakeIntrusivePointer<Model>(path);
 
-  model->SetVerticesInformation(vertex_information);
-  model->SetIndicesInformation(index_information);
+  model->SetVertexBufferRange(vertices_range);
+  model->SetIndexBufferRange(indices_range);
 
   assets_[model->uuid_] = model;
   uuids_[path] = model->uuid_;

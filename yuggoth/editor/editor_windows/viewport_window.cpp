@@ -5,12 +5,9 @@
 
 namespace Yuggoth {
 
-ViewportSize ViewportWindow::GetViewportSize() const {
+vector2i ViewportWindow::GetViewportSize() const {
   auto region_size = ImGui::GetContentRegionAvail();
-  auto viewport_size = ViewportSize();
-  viewport_size.width = region_size.x;
-  viewport_size.height = region_size.y;
-  return viewport_size;
+  return vector2i(region_size.x, region_size.y);
 }
 
 void ViewportWindow::OnImGui() {
@@ -33,17 +30,17 @@ void ViewportWindow::OnImGui() {
   auto size = ImGui::GetContentRegionAvail();
   auto position = ImGui::GetWindowPos();
 
-  auto renderer = GetEditorContext()->scene_renderer_;
+  auto renderer = GetEditorContext()->renderer_;
 
   auto current_viewport_size = GetViewportSize();
   if (current_viewport_size != viewport_size_) {
-    renderer->OnViewportResize(current_viewport_size.width, current_viewport_size.height);
+    renderer->OnViewportResize(current_viewport_size.first, current_viewport_size.second);
     viewport_size_ = current_viewport_size;
   }
 
   auto &image = renderer->GetImage();
 
-  ImGui::Image((ImTextureID)(intptr_t)&image, ImVec2(viewport_size_.width, viewport_size_.height));
+  ImGui::Image((ImTextureID)(intptr_t)&image, ImVec2(viewport_size_.first, viewport_size_.second));
 
   ImGui::End();
 }

@@ -22,7 +22,6 @@ public:
 
 protected:
   void DrawMainMenu();
-  void DrawToolBar();
   void HanldeDialog();
 
 private:

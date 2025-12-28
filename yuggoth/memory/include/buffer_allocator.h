@@ -3,27 +3,35 @@
 
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/core/allocators/virtual_allocator.h"
-#include "yuggoth/core/tools/include/core_types.h"
+#include "common_types.h"
+#include <memory>
 
 namespace Yuggoth {
 
+struct BufferAllocatorSpecification {
+  uint64_t buffer_size_;
+  uint64_t buffer_stride_;
+  uint64_t buffer_typeid_;
+  BufferUsageMask buffer_usage_;
+  AllocationCreateMask allocation_mask_;
+};
+
 class BufferAllocator {
 public:
-  BufferAllocator() = default;
+  BufferAllocator(const BufferAllocatorSpecification &specification);
 
-  BufferAllocator(Buffer &&buffer, std::size_t element_size);
+  Buffer *buffer();
+  VirtualAllocator *allocator();
 
-  Buffer *GetBuffer();
-  VirtualAllocator *GetAllocator();
+  BufferRange allocate(uint32_t count, uint32_t alignment);
 
-  BufferRange Allocate(uint32_t count, uint32_t alignment);
-
-  void Free(uint32_t offset);
+  void free(uint32_t offset);
 
 private:
-  Buffer buffer_;
-  VirtualAllocator allocator_;
-  std::size_t element_size_;
+  uint64_t stride_;
+  uint64_t typeid_;
+  std::unique_ptr<Buffer> buffer_;
+  std::unique_ptr<VirtualAllocator> allocator_;
 };
 
 } // namespace Yuggoth

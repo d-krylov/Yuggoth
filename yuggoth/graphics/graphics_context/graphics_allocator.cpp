@@ -70,13 +70,14 @@ AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &
 
   auto has_cpu = allocation_mask.HasAnyBits(cpu_bit);
 
+  MemoryPropertyMask preferred_memory = has_cpu ? MemoryPropertyMaskBits::E_HOST_VISIBLE_BIT : MemoryPropertyMaskBits::E_DEVICE_LOCAL_BIT;
   VmaMemoryUsage memory_usage = has_cpu ? VMA_MEMORY_USAGE_AUTO_PREFER_HOST : VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
 
   VmaAllocationCreateInfo vma_allocation_ci{};
   vma_allocation_ci.flags = allocation_mask.GetValue();
   vma_allocation_ci.usage = memory_usage;
   vma_allocation_ci.requiredFlags = 0;
-  vma_allocation_ci.preferredFlags = 0;
+  vma_allocation_ci.preferredFlags = preferred_memory.GetValue();
   vma_allocation_ci.memoryTypeBits = 0;
   vma_allocation_ci.pool = nullptr;
   vma_allocation_ci.pUserData = nullptr;
@@ -86,17 +87,21 @@ AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &
 
   VK_CHECK(vmaCreateBuffer(allocator_, buffer_ci, &vma_allocation_ci, &out_buffer, &allocation, &allocation_info));
 
-  statistics_.allocated_buffers_count_++;
-  statistics_.allocated_buffer_memory_ += allocation_info.size;
+  VkMemoryPropertyFlags memory_property;
+  vmaGetAllocationMemoryProperties(allocator_, allocation, &memory_property);
+  MemoryPropertyMask memory_property_mask(memory_property);
 
   AllocationInformation allocation_information;
   allocation_information.allocation_ = allocation;
-  allocation_information.mapped_memory_ = static_cast<std::byte *>(allocation_info.pMappedData);
+  allocation_information.mapped_memory_ = static_cast<uint8_t *>(allocation_info.pMappedData);
+  allocation_information.memory_type_ = allocation_info.memoryType;
+  allocation_information.memory_property_ = memory_property_mask;
+  allocation_information.memory_size_ = allocation_info.size;
 
   return allocation_information;
 }
 
-void GraphicsAllocator::MapMemory(VmaAllocation allocation, std::byte **memory) {
+void GraphicsAllocator::MapMemory(VmaAllocation allocation, uint8_t **memory) {
   VK_CHECK(vmaMapMemory(allocator_, allocation, (void **)memory));
 }
 

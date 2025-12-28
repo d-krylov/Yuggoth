@@ -4,16 +4,15 @@
 
 namespace Yuggoth {
 
-BufferUsageMask scratch_usage = BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT;
 BufferUsageMask blas_usage = BufferUsageMaskBits::E_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR | BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT;
 
 void AccelerationStructure::BuildBLAS(const BottomLevelGeometry &bottom_geometry, VkBuffer main_buffer, std::size_t offset) {
   auto acceleration_structure_sizes = GetAccelerationStructureSize(bottom_geometry);
   auto main_size = acceleration_structure_sizes.accelerationStructureSize;
   auto main_buffer_information = Buffer::CreateBuffer(main_size, blas_usage, AllocationCreateMaskBits::E_DEDICATED_MEMORY_BIT);
-  acceleration_buffer_ = main_buffer_information.buffer_;
-  buffer_allocation_ = main_buffer_information.allocation_;
-  Buffer scrath_buffer(acceleration_structure_sizes.buildScratchSize, scratch_usage, AllocationCreateMaskBits::E_DEDICATED_MEMORY_BIT);
+  acceleration_buffer_ = main_buffer_information.first;
+  buffer_allocation_ = main_buffer_information.second.allocation_;
+  Buffer scrath_buffer(acceleration_structure_sizes.buildScratchSize, CommonMasks::BUFFER_USAGE_SCRATCH_AS, AllocationCreateMask());
 
   auto sizes = GetAccelerationStructureSize(bottom_geometry);
   auto type = AccelerationStructureTypeKHR::E_BOTTOM_LEVEL_KHR;

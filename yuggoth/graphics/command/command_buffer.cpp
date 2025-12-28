@@ -91,19 +91,30 @@ void CommandBuffer::CommandEndRendering() {
   vkCmdEndRendering(command_buffer_);
 }
 
+// BARRIERS
 void CommandBuffer::CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> image_barriers, std::span<const MemoryBarrier2> memory_barriers,
                                            std::span<const BufferMemoryBarrier2> buffer_barriers) {
   DependencyInfo dependency_info;
-  {
-    dependency_info.dependencyFlags = DependencyMaskBits::E_BY_REGION_BIT;
-    dependency_info.bufferMemoryBarrierCount = buffer_barriers.size();
-    dependency_info.pBufferMemoryBarriers = buffer_barriers.data();
-    dependency_info.imageMemoryBarrierCount = image_barriers.size();
-    dependency_info.pImageMemoryBarriers = image_barriers.data();
-    dependency_info.memoryBarrierCount = memory_barriers.size();
-    dependency_info.pMemoryBarriers = memory_barriers.data();
-  }
+  dependency_info.dependencyFlags = DependencyMaskBits::E_BY_REGION_BIT;
+  dependency_info.bufferMemoryBarrierCount = buffer_barriers.size();
+  dependency_info.pBufferMemoryBarriers = buffer_barriers.data();
+  dependency_info.imageMemoryBarrierCount = image_barriers.size();
+  dependency_info.pImageMemoryBarriers = image_barriers.data();
+  dependency_info.memoryBarrierCount = memory_barriers.size();
+  dependency_info.pMemoryBarriers = memory_barriers.data();
+
   vkCmdPipelineBarrier2(command_buffer_, dependency_info);
+}
+
+void CommandBuffer::CommandMemoryBarrier(PipelineStageMask2 source_stage, AccessMask2 source_access, //
+                                         PipelineStageMask2 destination_stage, AccessMask2 destination_access) {
+  std::array<MemoryBarrier2, 1> memory_barrier;
+  memory_barrier[0].srcStageMask = source_stage;
+  memory_barrier[0].srcAccessMask = source_access;
+  memory_barrier[0].dstStageMask = destination_stage;
+  memory_barrier[0].dstAccessMask = destination_access;
+
+  CommandPipelineBarrier({}, memory_barrier, {});
 }
 
 // PUSH
@@ -183,6 +194,10 @@ void CommandBuffer::CommandDrawMeshTasks(uint32_t group_count_x, uint32_t group_
   vkCmdDrawMeshTasksEXT(command_buffer_, group_count_x, group_count_y, group_count_z);
 }
 
+void CommandBuffer::CommandDrawMeshTasksIndirect(VkBuffer buffer, std::size_t byte_offset, uint32_t draw_count, uint32_t stride) {
+  vkCmdDrawMeshTasksIndirectEXT(command_buffer_, buffer, byte_offset, draw_count, stride);
+}
+
 // BIND
 
 void CommandBuffer::CommandBindPipeline(const VkPipeline pipeline, PipelineBindPoint bind_point) {
@@ -249,7 +264,7 @@ void CommandBuffer::TransitionImageLayout(VkImage image, ImageLayout source_layo
   image_memory_barriers[0].image = image;
   image_memory_barriers[0].subresourceRange = subresource;
 
-  CommandPipelineBarrier(image_memory_barriers);
+  CommandPipelineBarrier(image_memory_barriers, {}, {});
 }
 
 } // namespace Yuggoth

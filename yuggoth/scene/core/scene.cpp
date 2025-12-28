@@ -42,7 +42,7 @@ void Scene::SetCurrentCamera(Camera *camera) {
   current_camera_ = camera;
 }
 
-Camera *Scene::GetCurrentCamera() {
+Camera *Scene::GetCurrentCamera() const {
   return current_camera_;
 }
 

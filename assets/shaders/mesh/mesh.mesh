@@ -24,7 +24,8 @@ layout (triangles, max_vertices = 64, max_primitives = 42) out;
 
 layout (location = 0) out vec3 out_position[];
 layout (location = 1) out vec3 out_normal[];
-layout (location = 2) out vec2 out_uv[];
+layout (location = 2) out vec3 out_color[];
+layout (location = 3) out vec2 out_uv[];
 
 
 void main() {
@@ -45,11 +46,12 @@ void main() {
     vec3 normal = vec3(vertex.nx, vertex.ny, vertex.nz);
     vec2 uv = vec2(vertex.uvx, vertex.uvy);
 
-    out_position[index] = vec3(pc.model * vec4(position, 1.0));
-	  out_normal[index] = mat3(transpose(inverse(pc.model))) * normal;
-	  out_uv[index] = uv;
+    out_position[k] = vec3(pc.model * vec4(position, 1.0));
+	  out_normal[k] = mat3(transpose(inverse(pc.model))) * normal;
+    out_color[k] = vec3(float(meshlet_index % 2), float(meshlet_index % 3) / 2.0, float(meshlet_index % 5) / 4.0);
+	  out_uv[k] = uv;
 
-    gl_MeshVerticesEXT[k].gl_Position = vec4(position, 1.0);
+    gl_MeshVerticesEXT[k].gl_Position = pc.projection * pc.view * pc.model * vec4(position, 1.0);
   }
 
   for (uint t = 0; t < triangle_count; ++t) {

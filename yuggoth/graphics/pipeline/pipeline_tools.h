@@ -7,7 +7,7 @@
 namespace Yuggoth {
 
 VkPipelineLayout CreatePipelineLayout(std::span<const VkDescriptorSetLayout> set_layouts, std::span<const PushConstantRange> push_constants);
-std::vector<VkDescriptorSetLayout> CreateDescriptorSetLayouts(std::span<const ShaderModule> shader_modules);
+std::vector<VkDescriptorSetLayout> CreateDescriptorSetLayouts(std::span<const ShaderModule *const> shader_modules);
 
 } // namespace Yuggoth
 

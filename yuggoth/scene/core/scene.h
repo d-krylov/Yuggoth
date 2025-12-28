@@ -30,7 +30,7 @@ public:
 
   std::string_view GetName() const;
 
-  Camera *GetCurrentCamera();
+  Camera *GetCurrentCamera() const;
 
 private:
   entt::registry registry_;

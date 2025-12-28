@@ -6,26 +6,27 @@
 
 namespace Yuggoth {
 
-VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specification, std::span<const ShaderModule> shader_modules,
-                                  VkPipelineLayout pipeline_layout) {
+VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specification, VkPipelineLayout pipeline_layout) {
   VkPipeline graphics_pipleine = VK_NULL_HANDLE;
+
+  const auto &shader_modules = specification.shader_modules_;
 
   std::vector<ShaderModuleCreateInfo> shader_modules_cis(shader_modules.size());
   std::vector<PipelineShaderStageCreateInfo> shader_stages_cis(shader_modules.size());
 
-  for (auto i = 0; i < shader_modules.size(); i++) {
+  for (auto i = 0; i < specification.shader_modules_.size(); i++) {
     ShaderModuleCreateInfo shader_module_ci;
-    shader_modules_cis[i].codeSize = shader_modules[i].GetSize();
-    shader_modules_cis[i].pCode = shader_modules[i].GetBinaryData().data();
+    shader_modules_cis[i].codeSize = shader_modules[i]->GetSize();
+    shader_modules_cis[i].pCode = shader_modules[i]->GetBinaryData().data();
 
     PipelineShaderStageCreateInfo shader_stage_ci;
-    shader_stages_cis[i].stage = shader_modules[i].GetStage();
+    shader_stages_cis[i].stage = shader_modules[i]->GetStage();
     shader_stages_cis[i].pNext = &shader_modules_cis[i];
     // shader_stages_cis[i].pSpecializationInfo =
     shader_stages_cis[i].pName = "main";
   }
 
-  auto vertex_input_attributes = shader_modules[0].GetInputDescriptions();
+  auto vertex_input_attributes = shader_modules[0]->GetInputDescriptions();
 
   VertexInputBindingDescription vertex_binding_description;
   PipelineVertexInputStateCreateInfo vertex_input_state_ci;
@@ -117,14 +118,9 @@ VkPipelineLayout GraphicsPipeline::GetPipelineLayout() const {
 // CONSTRUCTORS
 
 GraphicsPipeline::GraphicsPipeline(const GraphicsPipelineSpecification &specification) {
-  std::vector<ShaderModule> shader_modules;
-  for (const auto &shader_path : specification.shader_paths_) {
-    shader_modules.emplace_back(shader_path);
-  }
-
-  descriptor_set_layouts_ = CreateDescriptorSetLayouts(shader_modules);
-  pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts_, shader_modules[0].GetPushConstants());
-  pipeline_ = CreateGraphicsPipeline(specification, shader_modules, pipeline_layout_);
+  descriptor_set_layouts_ = CreateDescriptorSetLayouts(specification.shader_modules_);
+  pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts_, specification.shader_modules_[0]->GetPushConstants());
+  pipeline_ = CreateGraphicsPipeline(specification, pipeline_layout_);
 }
 
 GraphicsPipeline::~GraphicsPipeline() {

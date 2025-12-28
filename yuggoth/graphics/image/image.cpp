@@ -101,7 +101,7 @@ void Image::SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer
 }
 
 void Image::SetImageData(std::span<const std::byte> data) {
-  Buffer buffer(data.size(), BufferUsageMaskBits::E_TRANSFER_SRC_BIT, Buffer::CPU);
+  Buffer buffer(data.size(), BufferUsageMaskBits::E_TRANSFER_SRC_BIT, CommonMasks::BUFFER_CPU);
   buffer.SetData<std::byte>(data);
   CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);

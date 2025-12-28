@@ -19,8 +19,10 @@ layout (push_constant) uniform PushConstants {
 } pc;
 
 void main() {
+	mat3 normal_matrix = transpose(inverse(mat3(pc.model)));
+
 	out_position = vec3(pc.model * vec4(in_position, 1.0));
-	out_normal = mat3(transpose(inverse(pc.model))) * in_normal;
+	out_normal = normalize(normal_matrix * in_normal);
 	out_uv = in_uv;
   
   gl_Position = pc.projection * pc.view * pc.model * vec4(in_position, 1.0);

@@ -6,12 +6,14 @@
 namespace Yuggoth {
 
 Application::Application()
-  : window_manager_(),                                            //
-    buffer_manager_(), imgui_host_(window_manager_.GetWindow()),  //
-    imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()), //
-    asset_manager_(&buffer_manager_),                             //
-    scene_manager_(&asset_manager_),                              //
-    scene_renderer_(&buffer_manager_),                            //
+  : window_manager_(),                                                //
+    buffer_manager_(), imgui_host_(window_manager_.GetWindow()),      //
+    shader_library_(),                                                //
+    pipeline_library_(&shader_library_),                              //
+    imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()),     //
+    asset_manager_(&buffer_manager_),                                 //
+    scene_manager_(&asset_manager_),                                  //
+    renderer_(RendererContext(&pipeline_library_, &buffer_manager_)), //
     editor_() {
 
   OnStart();
@@ -38,7 +40,7 @@ void Application::OnStart() {
 
   EditorContext editor_context;
   editor_context.scene_manager_ = &scene_manager_;
-  editor_context.scene_renderer_ = &scene_renderer_;
+  editor_context.renderer_ = &renderer_;
   editor_context.asset_manager_ = &asset_manager_;
   editor_context.buffer_manager_ = &buffer_manager_;
   editor_.SetEditorContext(editor_context);
@@ -67,7 +69,9 @@ void Application::Run() {
 
     OnImGui();
 
-    scene_renderer_.Draw(scene_manager_.GetCurrentScene());
+    renderer_.Begin(scene_manager_.GetCurrentScene());
+    renderer_.Draw(scene_manager_.GetCurrentScene());
+    renderer_.End();
 
     imgui_renderer_.End(*command_buffer, *swapchain);
 
