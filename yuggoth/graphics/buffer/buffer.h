@@ -35,7 +35,7 @@ public:
   void Destroy();
 
   VkBuffer GetHandle() const;
-  VkDeviceAddress GetBufferDeviceAddress() const;
+  VkDeviceAddress GetDeviceAddress() const;
 
   BufferUsageMask GetUsage() const;
   MemoryPropertyMask GetMemoryPropertyMask() const;
@@ -43,6 +43,7 @@ public:
   bool IsAccessWithCPU() const;
   bool IsGPU() const;
 
+  static VkDeviceAddress GetBufferDeviceAddress(VkBuffer buffer);
   static BufferInformation CreateBuffer(std::size_t size, BufferUsageMask usage, AllocationCreateMask allocation_mask);
 
 protected:

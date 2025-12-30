@@ -4,7 +4,7 @@
 
 namespace Yuggoth {
 
-void ModelLoader::LoadWavefront(const std::filesystem::path &path) {
+MeshData ModelLoader::LoadWavefront(const std::filesystem::path &path) {
   tinyobj::ObjReader reader;
   tinyobj::ObjReaderConfig reader_config;
 

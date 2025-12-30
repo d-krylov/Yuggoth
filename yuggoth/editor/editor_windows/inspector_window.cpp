@@ -37,7 +37,8 @@ void DrawTransformWidget(Transform &transform) {
 
 void DrawLightWidget(Light &light) {
   ImGui::DragFloat3("Position", glm::value_ptr(light.position_));
-  ImGui::DragFloat3("Color", glm::value_ptr(light.color_));
+  ImGui::DragFloat3("Color", glm::value_ptr(light.color_), 0.001f, 0.0f, 1.0f);
+  ImGui::DragFloat3("Attenuation", glm::value_ptr(light.attenuation), 0.001f, 0.0f, 1.0f);
 }
 
 void InspectorWindow::OnImGui() {

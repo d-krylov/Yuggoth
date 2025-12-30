@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_STRUCTURE_TOOLS_H
 #define YUGGOTH_STRUCTURE_TOOLS_H
 
-#include "graphics_structures.h"
+#include "yuggoth/graphics/wrappers/graphics_structures.h"
 
 namespace Yuggoth {
 

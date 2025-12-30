@@ -46,14 +46,13 @@ auto GetInstanceVector(std::span<const BLASInstances> bottom_instances) {
   return instance_vector;
 }
 
-void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instances, VkBuffer main_buffer, std::size_t main_offset) {
+void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instances, const AccelerationSpecification &specification) {
   uint32_t primitive_count = 0;
   std::ranges::for_each(blas_instances, [&](const auto &instances) { primitive_count += instances.size(); }, &BLASInstances::instances_);
 
-  auto usage = BufferUsageMaskBits::E_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR | BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT;
   auto size = sizeof(AccelerationStructureInstanceKHR) * primitive_count;
 
-  Buffer instance_buffer(size, usage, CommonMasks::BUFFER_CPU);
+  Buffer instance_buffer(size, CommonMasks::BUFFER_USAGE_SOURCES_AS, CommonMasks::BUFFER_CPU);
 
   auto instance_vector = GetInstanceVector(blas_instances);
   instance_buffer.SetData<AccelerationStructureInstanceKHR>(instance_vector);
@@ -61,18 +60,17 @@ void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instan
   std::array<AccelerationStructureGeometryKHR, 1> geometries;
   geometries[0].geometryType = GeometryTypeKHR::E_INSTANCES_KHR;
   geometries[0].geometry.instances.sType = VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR;
-  geometries[0].geometry.instances.data.deviceAddress = instance_buffer.GetBufferDeviceAddress();
+  geometries[0].geometry.instances.data.deviceAddress = instance_buffer.GetDeviceAddress();
 
   auto sizes = GetAccelerationStructureSize(primitive_count);
 
-  VkAccelerationStructureKHR acceleration_structure = VK_NULL_HANDLE;
   auto type = AccelerationStructureTypeKHR::E_TOP_LEVEL_KHR;
 
   BufferUsageMask scratch_usage = BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT;
   Buffer scrath_buffer(sizes.buildScratchSize, scratch_usage, AllocationCreateMaskBits::E_DEDICATED_MEMORY_BIT);
 
-  acceleration_structure = CreateAccelerationStructure(main_buffer, type, main_offset, sizes.accelerationStructureSize);
-  auto geometry_info = GetBuildGeometryInformation(geometries, scrath_buffer.GetBufferDeviceAddress(), acceleration_structure, type);
+  acceleration_structure_ = CreateAccelerationStructure(specification.buffer_, type, specification.buffer_offset_, specification.structure_size_);
+  auto geometry_info = GetBuildGeometryInformation(geometries, scrath_buffer.GetDeviceAddress(), acceleration_structure_, type);
 
   AccelerationStructureBuildRangeInfoKHR build_range;
   build_range.firstVertex = 0;

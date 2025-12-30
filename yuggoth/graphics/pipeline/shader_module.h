@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_SHADER_MODULE_H
 #define YUGGOTH_SHADER_MODULE_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics/core/graphics_specifications.h"
 #include <filesystem>
 #include <map>
 

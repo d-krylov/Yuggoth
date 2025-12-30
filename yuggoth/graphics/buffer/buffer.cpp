@@ -70,14 +70,20 @@ void Buffer::MemoryCopy(std::span<const std::byte> data, std::size_t byte_offset
   std::ranges::copy(data, destination_offset.begin());
 }
 
-VkDeviceAddress Buffer::GetBufferDeviceAddress() const {
+// GETTERS
+
+VkDeviceAddress Buffer::GetDeviceAddress() const {
+  auto handle = GetHandle();
+  return GetBufferDeviceAddress(handle);
+}
+
+VkDeviceAddress Buffer::GetBufferDeviceAddress(VkBuffer buffer) {
   BufferDeviceAddressInfo buffer_device_ai;
-  buffer_device_ai.buffer = GetHandle();
+  buffer_device_ai.buffer = buffer;
   auto address = vkGetBufferDeviceAddress(GraphicsContext::Get()->GetDevice(), buffer_device_ai);
   return address;
 }
 
-// GETTERS
 std::size_t Buffer::GetSize() const {
   return buffer_size_;
 }

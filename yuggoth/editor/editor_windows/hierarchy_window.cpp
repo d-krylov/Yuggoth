@@ -2,6 +2,8 @@
 #include "yuggoth/scene/core/entity.h"
 #include "yuggoth/scene/components/components.h"
 #include "yuggoth/editor/core/editor.h"
+#include "yuggoth/asset/include/asset_manager.h"
+#include "yuggoth/scene/core/scene_manager.h"
 #include "external/fonts/IconsFontAwesome6.h"
 #include "imgui.h"
 
@@ -9,6 +11,7 @@ namespace Yuggoth {
 
 void HierarchyWindow::AddEntity() {
   auto scene = GetEditorContext()->scene_manager_->GetCurrentScene();
+  auto asset_manager = GetEditorContext()->asset_manager_;
 
   if (ImGui::Selectable("Camera")) {
     auto camera_entity = scene->CreateEntityWithName("Camera");
@@ -28,11 +31,21 @@ void HierarchyWindow::AddEntity() {
   if (ImGui::BeginMenu("Primitive")) {
 
     if (ImGui::Selectable("Box")) {
-      scene->CreateEntityWithName("Box");
+      auto hexahedron_entity = scene->CreateEntityWithName("Box");
+      hexahedron_entity.AddComponent<Transform>();
+      auto &model_component = hexahedron_entity.AddComponent<ModelComponent>();
+      model_component.model_ = asset_manager->RegisterModel(PrimitiveKind::HEXAHEDRON);
     }
 
     if (ImGui::Selectable("Sphere")) {
       scene->CreateEntityWithName("Sphere");
+    }
+
+    if (ImGui::Selectable("Octahedron")) {
+      auto octahedron_entity = scene->CreateEntityWithName("Octahedron");
+      octahedron_entity.AddComponent<Transform>();
+      auto &model_component = octahedron_entity.AddComponent<ModelComponent>();
+      model_component.model_ = asset_manager->RegisterModel(PrimitiveKind::OCTAHEDRON);
     }
 
     if (ImGui::Selectable("Torus")) {

@@ -2,22 +2,19 @@
 #define YUGGOTH_RENDERER_CONTEXT_H
 
 #include "yuggoth/mathematics/include/mathematics_types.h"
-#include "yuggoth/graphics/core/graphics_structures.h"
+#include "yuggoth/graphics/wrappers/graphics_structures.h"
+#include "yuggoth/application/application_context.h"
 #include <vector>
 
 namespace Yuggoth {
 
 class BufferManager;
 class PipelineLibrary;
+class AssetManager;
 
 enum class ObjectMode {
   COLORED,
   TEXTURED
-};
-
-struct RendererContext {
-  PipelineLibrary *pipeline_library_ = nullptr;
-  BufferManager *buffer_manager_ = nullptr;
 };
 
 struct PushConstantMatrices {

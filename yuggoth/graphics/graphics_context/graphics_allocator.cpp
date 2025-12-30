@@ -33,7 +33,7 @@ void GraphicsAllocator::CreateAllocator() {
   allocator_ci.device = GraphicsContext::Get()->GetDevice();
   allocator_ci.vulkanApiVersion = VK_API_VERSION_1_3;
   allocator_ci.pVulkanFunctions = &vulkan_functions;
-  allocator_ci.flags = 0;
+  allocator_ci.flags = VMA_ALLOCATOR_CREATE_BUFFER_DEVICE_ADDRESS_BIT;
 
   VK_CHECK(vmaCreateAllocator(&allocator_ci, &allocator_));
 }

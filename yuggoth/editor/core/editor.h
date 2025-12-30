@@ -31,6 +31,7 @@ private:
   InspectorWindow inspector_window_;
   ApplicationWindow application_window_;
   AssetManagerWindow asset_manager_window_;
+  RendererWindow renderer_window_;
   SelectionManager selection_manager_;
   std::string dialog_name_;
   bool debug_mode_ = false;

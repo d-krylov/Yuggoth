@@ -1,20 +1,13 @@
 #ifndef YUGGOTH_SAMPLER_H
 #define YUGGOTH_SAMPLER_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics/core/graphics_specifications.h"
 
 namespace Yuggoth {
 
-struct SamplerSpecification {
-  Filter min_filter_ = Filter::E_LINEAR;
-  Filter mag_filter_ = Filter::E_LINEAR;
-  SamplerMipmapMode mipmap_mode_ = SamplerMipmapMode::E_LINEAR;
-  SamplerAddressMode address_mode_ = SamplerAddressMode::E_CLAMP_TO_EDGE;
-};
-
 class Sampler {
 public:
-  Sampler();
+  Sampler(const SamplerSpecification &specification);
 
   ~Sampler();
 

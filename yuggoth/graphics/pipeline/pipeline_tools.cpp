@@ -1,5 +1,6 @@
 
 #include "pipeline_tools.h"
+#include "yuggoth/graphics/graphics_context/graphics_context.h"
 
 namespace Yuggoth {
 

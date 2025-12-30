@@ -1,5 +1,4 @@
 #include "yuggoth/memory/include/buffer_allocator.h"
-#include "yuggoth/asset/include/model_base.h"
 
 namespace Yuggoth {
 

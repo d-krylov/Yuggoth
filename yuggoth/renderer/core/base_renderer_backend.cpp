@@ -3,6 +3,7 @@
 #include "yuggoth/scene/core/entity.h"
 #include "yuggoth/renderer/shaders/pipeline_library.h"
 #include "yuggoth/memory/include/buffer_manager.h"
+#include "yuggoth/asset/include/asset_manager.h"
 #include "renderer.h"
 
 namespace Yuggoth {
@@ -10,67 +11,14 @@ namespace Yuggoth {
 struct DrawIndirectContext {
   std::vector<IndexedIndirectCommand> commands_;
   std::vector<TransformMatrix> transforms_;
+  std::vector<Light> lights_;
 };
 
-BaseRendererBackend::BaseRendererBackend(Renderer *renderer) : renderer_(renderer) {
-}
-
-void BaseRendererBackend::DrawDirect(CommandBuffer *command_buffer, Scene *scene, const Camera *camera, ObjectMode object_mode) {
-  auto pipeline_name = (object_mode == ObjectMode::COLORED) ? "base_colored" : "base_textured";
-  auto draw_function = (object_mode == ObjectMode::COLORED) ? &BaseRendererBackend::DrawDirectColored : &BaseRendererBackend::DrawDirectTextured;
-
-  const auto &renderer_context = renderer_->GetRendererConstext();
-  const auto &pipeline = renderer_context.pipeline_library_->GetPipeline(pipeline_name);
-
-  command_buffer->CommandBindPipeline(pipeline.GetHandle(), PipelineBindPoint::E_GRAPHICS);
-
-  command_buffer->CommandEnableDepthTest(true);
-  command_buffer->CommandEnableDepthWrite(true);
-
-  auto &registry = scene->GetRegistry();
-  auto model_group = registry.group<ModelComponent>();
-
-  PushConstantMatrices push_constants;
-
-  for (auto entity : model_group) {
-    auto model_entity = Entity(entity, scene);
-    const auto &model_component = model_entity.GetComponent<ModelComponent>();
-    const auto &transform_component = model_entity.GetComponent<Transform>();
-
-    push_constants.projection_ = camera->GetProjection();
-    push_constants.view_ = camera->GetLookAt();
-    push_constants.transform_ = transform_component.GetMatrix();
-
-    command_buffer->CommandPushConstants(pipeline.GetPipelineLayout(), ShaderStageMaskBits::E_VERTEX_BIT, push_constants, 0);
-
-    if (model_component.model_->GetAssetKind() == AssetKind::RESOURCE_OWNING_MODEL) {
-      auto model = static_cast<const ResourceOwningModel *>(model_component.model_.get());
-      auto vertices = model->GetVertexBufferRange();
-      auto indices = model->GetIndexBufferRange();
-      command_buffer->CommandBindVertexBuffer(vertices.buffer_, 0);
-      command_buffer->CommandBindIndexBuffer(indices.buffer_, 0, IndexType::E_UINT32);
-      (this->*draw_function)(command_buffer, &pipeline, model);
-    }
-  }
-}
-
-void BaseRendererBackend::DrawDirectColored(CommandBuffer *command_buffer, const GraphicsPipeline *pipeline, const ResourceOwningModel *model) {
-  auto indices = model->GetIndexBufferRange();
-  command_buffer->CommandDrawIndexed(indices.count_, 1, 0, 0, 0);
-}
-
-void BaseRendererBackend::DrawDirectTextured(CommandBuffer *command_buffer, const GraphicsPipeline *pipeline, const ResourceOwningModel *model) {
-  auto meshes = model->GetMeshes();
-  auto images = model->GetImages();
-  for (const auto mesh : meshes) {
-    const auto &color_image = images[mesh.color_texture_index];
-    command_buffer->CommandPushDescriptorSet(pipeline->GetPipelineLayout(), 0, 0, color_image.GetImageView(), color_image.GetSampler());
-    command_buffer->CommandDrawIndexed(mesh.indices_size, 1, mesh.indices_offset, 0, 0);
-  }
-}
-
-DrawIndirectContext CollectIndexedIndirectCommands(Scene *scene) {
+DrawIndirectContext CollectSceneEntities(Scene *scene, const RendererContext &renderer_context) {
   DrawIndirectContext draw_indirect_context;
+
+  auto asset_manager = renderer_context.asset_manager_;
+  auto &asset_storage = asset_manager->GetAssetStorage();
 
   auto &registry = scene->GetRegistry();
   auto model_group = registry.group<ModelComponent>();
@@ -79,12 +27,32 @@ DrawIndirectContext CollectIndexedIndirectCommands(Scene *scene) {
 
     auto model = Entity(model_entity, scene);
 
-    const auto &model_component = model_group.get<ModelComponent>(model_entity);
+    const auto &model_component = model.GetComponent<ModelComponent>();
 
     if (!model_component.model_) continue;
 
+    auto &model_loader = asset_storage.GetModelLoader(model_component.model_->GetPath());
+
+    auto meshes = model_loader.GetMeshes();
+
     auto vertices = model_component.model_->GetVertexBufferRange();
     auto indices = model_component.model_->GetIndexBufferRange();
+
+    /*
+        const auto &transform_component = model.GetComponent<Transform>();
+
+        for (const auto &mesh : meshes) {
+          IndexedIndirectCommand command;
+          command.first_index_ = indices.offset_ + mesh.indices_offset_;
+          command.first_instance_ = 0;
+          command.index_count_ = mesh.indices_count_;
+          command.instance_count_ = 1;
+          command.vertex_offset_ = vertices.offset_;
+
+          draw_indirect_context.transforms_.emplace_back(transform_component.GetMatrix());
+          draw_indirect_context.commands_.emplace_back(command);
+        }
+    */
 
     IndexedIndirectCommand command;
     command.first_index_ = indices.offset_;
@@ -99,7 +67,21 @@ DrawIndirectContext CollectIndexedIndirectCommands(Scene *scene) {
     draw_indirect_context.commands_.emplace_back(command);
   }
 
+  auto light_group = registry.group<Light>();
+
+  for (auto light_entity : light_group) {
+
+    auto light = Entity(light_entity, scene);
+
+    const auto &light_component = light.GetComponent<Light>();
+
+    draw_indirect_context.lights_.emplace_back(light_component);
+  }
+
   return draw_indirect_context;
+}
+
+BaseRendererBackend::BaseRendererBackend(Renderer *renderer) : renderer_(renderer) {
 }
 
 void BaseRendererBackend::DrawIndirect(CommandBuffer *command_buffer, Scene *scene, const Camera *camera, ObjectMode object_mode) {
@@ -122,7 +104,7 @@ void BaseRendererBackend::DrawIndirect(CommandBuffer *command_buffer, Scene *sce
 
   command_buffer->CommandPushConstants(pipeline.GetPipelineLayout(), ShaderStageMaskBits::E_VERTEX_BIT, push_constants, 0);
 
-  auto draw_indirect_context = CollectIndexedIndirectCommands(scene);
+  auto draw_indirect_context = CollectSceneEntities(scene, renderer_context);
 
   auto command_range = buffer_manager->GetBufferAllocator(IndexedIndirectCommand::type_id).allocate(draw_indirect_context.commands_.size(), 0);
   buffer_manager->UploadBuffer(command_buffer, command_range, std::as_bytes(std::span(draw_indirect_context.commands_)));
@@ -130,14 +112,21 @@ void BaseRendererBackend::DrawIndirect(CommandBuffer *command_buffer, Scene *sce
   auto matrix_range = buffer_manager->GetBufferAllocator(TransformMatrix::type_id).allocate(draw_indirect_context.transforms_.size(), 0);
   buffer_manager->UploadBuffer(command_buffer, matrix_range, std::as_bytes(std::span(draw_indirect_context.transforms_)));
 
+  auto light_range = buffer_manager->GetBufferAllocator(Light::type_id).allocate(draw_indirect_context.lights_.size(), 0);
+  buffer_manager->UploadBuffer(command_buffer, light_range, std::as_bytes(std::span(draw_indirect_context.lights_)));
+
   command_buffer->CommandBindIndexBuffer(ibo->GetHandle(), 0, IndexType::E_UINT32);
-  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 0, vbo->GetHandle());
-  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 1, transform->GetHandle());
+  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 0, vbo->GetHandle(), DescriptorType::E_STORAGE_BUFFER);
+  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 1, matrix_range.buffer_, DescriptorType::E_STORAGE_BUFFER);
+  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 3, light_range.buffer_, DescriptorType::E_UNIFORM_BUFFER);
+  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 4, renderer_->GetTopAccelerationStructure().GetHandle(),
+                                           PipelineBindPoint::E_GRAPHICS);
 
   command_buffer->CommandDrawIndexedIndirect(command_range.buffer_, 0, draw_indirect_context.commands_.size(), sizeof(IndexedIndirectCommand));
 
-  buffer_manager->GetBufferAllocator(IndexedIndirectCommand::type_id).free(command_range.offset_);
-  buffer_manager->GetBufferAllocator(TransformMatrix::type_id).free(matrix_range.offset_);
+  buffer_manager->GetBufferAllocator(IndexedIndirectCommand::type_id).free(command_range.offset_ * command_range.stride_);
+  buffer_manager->GetBufferAllocator(TransformMatrix::type_id).free(matrix_range.offset_ * matrix_range.stride_);
+  buffer_manager->GetBufferAllocator(Light::type_id).free(light_range.offset_ * light_range.stride_);
 }
 
 } // namespace Yuggoth

@@ -26,8 +26,10 @@ void main() {
 	vec3 normal = vec3(vertex.nx, vertex.ny, vertex.nz);
 	mat4 model = models[gl_DrawID];
 
+	mat3 normal_matrix = transpose(inverse(mat3(model)));
+
 	out_position = vec3(model * vec4(position, 1.0));
-	out_normal = mat3(transpose(inverse(model))) * normal;
+	out_normal = normalize(normal_matrix * normal);
 	out_uv = vec2(vertex.uvx, vertex.uvy);
 	out_drawid = gl_DrawID;
   

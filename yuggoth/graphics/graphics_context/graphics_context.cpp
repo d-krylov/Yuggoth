@@ -137,20 +137,24 @@ void GraphicsContext::CreateDevice() {
     device_queue_cis.emplace_back(queue_ci);
   }
 
-  PhysicalDeviceRayQueryFeaturesKHR ray_query_features{};
+  PhysicalDeviceRayQueryFeaturesKHR ray_query_features;
   ray_query_features.rayQuery = true;
 
   PhysicalDeviceMeshShaderFeaturesEXT mesh_shader_features;
   mesh_shader_features.meshShader = true;
   mesh_shader_features.taskShader = true;
   mesh_shader_features.meshShaderQueries = true;
-  mesh_shader_features.pNext = nullptr;
+  mesh_shader_features.pNext = &ray_query_features;
+
+  PhysicalDeviceAccelerationStructureFeaturesKHR physical_device_acceleration_structure_features;
+  physical_device_acceleration_structure_features.accelerationStructure = true;
+  physical_device_acceleration_structure_features.pNext = &mesh_shader_features;
 
   PhysicalDeviceVulkan14Features physical_device_features_14;
   physical_device_features_14.maintenance5 = true;
   physical_device_features_14.maintenance6 = true;
   physical_device_features_14.pushDescriptor = true;
-  physical_device_features_14.pNext = &mesh_shader_features;
+  physical_device_features_14.pNext = &physical_device_acceleration_structure_features;
 
   PhysicalDeviceVulkan13Features physical_device_features_13;
   physical_device_features_13.synchronization2 = true;

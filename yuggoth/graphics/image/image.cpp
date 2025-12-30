@@ -1,7 +1,7 @@
 #include "image.h"
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/graphics/graphics_context/graphics_allocator.h"
+#include "yuggoth/graphics/graphics_context/graphics_context.h"
 #include <algorithm>
 
 namespace Yuggoth {

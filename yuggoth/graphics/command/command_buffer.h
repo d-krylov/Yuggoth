@@ -55,8 +55,9 @@ public:
 
   // PUSH
   template <typename T> void CommandPushConstants(VkPipelineLayout layout, ShaderStageMask stage, const T &data, uint32_t offset);
-  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set_number, uint32_t binding, VkBuffer buffer);
-  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set_number, uint32_t binding, VkImageView image_view, VkSampler sampler);
+  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkBuffer buffer, DescriptorType descriptor_type);
+  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkImageView image_view, VkSampler sampler);
+  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkAccelerationStructureKHR tlas, PipelineBindPoint point);
 
   // OPTIONS
   void CommandSetViewport(float x, float y, float width, float height);

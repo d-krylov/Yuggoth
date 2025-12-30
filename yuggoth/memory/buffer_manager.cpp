@@ -11,12 +11,13 @@ BufferManager::BufferManager() {
 }
 
 void BufferManager::Create() {
-  BufferUsageMask VERTEX_AND_STORAGE = BufferUsageMaskBits::E_VERTEX_BUFFER_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT;
+  BufferUsageMask USAGE = BufferUsageMaskBits::E_STORAGE_BUFFER_BIT | CommonMasks::BUFFER_USAGE_SOURCES_AS;
   AddBufferAllocator<Staging>(100_MiB, BufferUsageMaskBits::E_TRANSFER_SRC_BIT, CommonMasks::BUFFER_CPU);
-  AddBufferAllocator<Index32>(100_MiB, BufferUsageMaskBits::E_INDEX_BUFFER_BIT | CommonMasks::BUFFER_USAGE_GPU, CommonMasks::BUFFER_CPU);
-  AddBufferAllocator<Vertex>(100_MiB, VERTEX_AND_STORAGE | CommonMasks::BUFFER_USAGE_GPU, CommonMasks::BUFFER_CPU);
+  AddBufferAllocator<Index32>(100_MiB, USAGE | BufferUsageMaskBits::E_INDEX_BUFFER_BIT | CommonMasks::BUFFER_USAGE_GPU, CommonMasks::BUFFER_GPU);
+  AddBufferAllocator<Vertex>(100_MiB, USAGE | BufferUsageMaskBits::E_VERTEX_BUFFER_BIT | CommonMasks::BUFFER_USAGE_GPU, CommonMasks::BUFFER_GPU);
   AddBufferAllocator<IndexedIndirectCommand>(10_MiB, BufferUsageMaskBits::E_INDIRECT_BUFFER_BIT, CommonMasks::BUFFER_CPU);
   AddBufferAllocator<TransformMatrix>(10_MiB, BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, CommonMasks::BUFFER_CPU);
+  AddBufferAllocator<Light>(32_KiB, BufferUsageMaskBits::E_UNIFORM_BUFFER_BIT, CommonMasks::BUFFER_CPU);
 }
 
 BufferAllocator &BufferManager::GetBufferAllocator(std::size_t type_id) {

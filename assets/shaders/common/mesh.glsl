@@ -2,9 +2,10 @@
 #define STRUCTURES_GLSL
 
 struct Light {
-  float px, py, pz;
-  float cr, cg, cb;
-  
+  float color_x, color_y, color_z;
+  float position_x, position_y, position_z;
+  float direction_x, direction_Y, direction_z;
+  float attenuation_x, attenuation_y, attenuation_z;
 };
 
 struct Vertex {

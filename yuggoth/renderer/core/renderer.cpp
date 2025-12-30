@@ -21,6 +21,10 @@ void Renderer::OnViewportResize(uint32_t width, uint32_t height) {
   depth_image_ = ImageDepth(width, height);
 }
 
+void Renderer::CreateDescriptorSets() {
+  std::vector<DescriptorPoolSize> descriptor_pool_sizes{{DescriptorType::E_SAMPLED_IMAGE, 1000}};
+}
+
 const RendererContext &Renderer::GetRendererConstext() const {
   return renderer_context_;
 }
@@ -66,6 +70,9 @@ void Renderer::Draw(Scene *scene) {
     return;
   }
 
+  BuildBottomAccelerationStructures(scene);
+  BuildTopAccelerationStructure();
+
   auto extent = target_image_.GetExtent();
   auto camera = scene->GetCurrentCamera();
   auto aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
@@ -83,6 +90,47 @@ void Renderer::End() {
   target_image_.SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer_);
   command_buffer_.End();
   command_buffer_.Submit();
+}
+
+void Renderer::BuildBottomAccelerationStructures(Scene *scene) {
+  auto &registry = scene->GetRegistry();
+  auto model_group = registry.group<ModelComponent>();
+
+  bottom_transforms_.clear();
+
+  for (auto model_entity : model_group) {
+
+    auto model = Entity(model_entity, scene);
+
+    const auto &model_component = model.GetComponent<ModelComponent>();
+    const auto &transform_component = model.GetComponent<Transform>();
+
+    if (!model_component.model_) continue;
+
+    auto bottom_geometry = model_component.model_->GetBottomLevelGeometry();
+    auto uuid = model_component.model_->uuid_;
+
+    if (bottom_acceleration_structures_.contains(uuid) == false) {
+      bottom_acceleration_structures_.emplace(uuid, bottom_geometry);
+    }
+
+    bottom_transforms_[uuid].emplace_back(transform_component.GetMatrix());
+  }
+}
+
+void Renderer::BuildTopAccelerationStructure() {
+  std::vector<BLASInstances> bottom_instances_data;
+  for (const auto &bottom_acceleration_structure : bottom_acceleration_structures_) {
+    BLASInstances bottom_instances;
+    bottom_instances.acceleration_structure_ = bottom_acceleration_structure.second.GetHandle();
+    bottom_instances.instances_ = bottom_transforms_[bottom_acceleration_structure.first];
+    bottom_instances_data.emplace_back(bottom_instances);
+  }
+  top_acceleration_structure_ = AccelerationStructure(bottom_instances_data);
+}
+
+const AccelerationStructure &Renderer::GetTopAccelerationStructure() const {
+  return top_acceleration_structure_;
 }
 
 } // namespace Yuggoth

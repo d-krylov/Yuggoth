@@ -9,7 +9,7 @@
 namespace Yuggoth {
 
 struct ModelComponent {
-  IntrusivePointer<ModelBase> model_;
+  IntrusivePointer<Renderable> model_;
 };
 
 } // namespace Yuggoth

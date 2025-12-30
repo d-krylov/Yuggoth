@@ -119,7 +119,8 @@ void CommandBuffer::CommandMemoryBarrier(PipelineStageMask2 source_stage, Access
 
 // PUSH
 
-void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set_number, uint32_t binding, VkBuffer buffer) {
+void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkBuffer buffer,
+                                             DescriptorType descriptor_type) {
   DescriptorBufferInfo descriptor_bi;
   descriptor_bi.buffer = buffer;
   descriptor_bi.offset = 0;
@@ -128,11 +129,11 @@ void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t s
   WriteDescriptorSet write_descriptor_set;
   write_descriptor_set.dstBinding = binding;
   write_descriptor_set.dstArrayElement = 0;
-  write_descriptor_set.descriptorType = DescriptorType::E_STORAGE_BUFFER;
+  write_descriptor_set.descriptorType = descriptor_type;
   write_descriptor_set.descriptorCount = 1;
   write_descriptor_set.pBufferInfo = &descriptor_bi;
 
-  vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set_number, 1, write_descriptor_set);
+  vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set, 1, write_descriptor_set);
 }
 
 void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkImageView image_view, VkSampler sampler) {
@@ -150,6 +151,23 @@ void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t s
 
   vkCmdPushDescriptorSetKHR(command_buffer_, VK_PIPELINE_BIND_POINT_GRAPHICS, layout, set, 1, write_descriptor_set);
 }
+
+void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkAccelerationStructureKHR tlas,
+                                             PipelineBindPoint point) {
+  WriteDescriptorSetAccelerationStructureKHR descriptor_ai{};
+  descriptor_ai.accelerationStructureCount = 1;
+  descriptor_ai.pAccelerationStructures = &tlas;
+
+  WriteDescriptorSet write_descriptor_set;
+  write_descriptor_set.dstBinding = binding;
+  write_descriptor_set.descriptorType = DescriptorType::E_ACCELERATION_STRUCTURE_KHR;
+  write_descriptor_set.descriptorCount = 1;
+  write_descriptor_set.pNext = &descriptor_ai;
+
+  vkCmdPushDescriptorSetKHR(command_buffer_, VkPipelineBindPoint(point), layout, set, 1, write_descriptor_set);
+}
+
+// TOOLS
 
 void CommandBuffer::CommandSetViewport(float x, float y, float width, float height) {
   Viewport viewport{x, y, width, height, 0.0f, 1.0f};

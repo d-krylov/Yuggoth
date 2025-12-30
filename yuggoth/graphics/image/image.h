@@ -1,6 +1,7 @@
 #ifndef YUGGOTH_IMAGE_H
 #define YUGGOTH_IMAGE_H
 
+#include "yuggoth/graphics/graphics_context/graphics_allocator.h"
 #include "yuggoth/asset/include/asset.h"
 #include "sampler.h"
 #include <optional>
@@ -9,14 +10,6 @@
 namespace Yuggoth {
 
 class CommandBuffer;
-
-struct ImageSpecification {
-  Format format_;
-  Extent3D extent_{0, 0, 0};
-  uint32_t levels_{1};
-  uint32_t layers_{1};
-  ImageUsageMask usage_;
-};
 
 class Image : public Asset {
 public:

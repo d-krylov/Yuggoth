@@ -15,7 +15,6 @@ protected:
   void DrawAssets();
 
 private:
-  Image2D folder_image_;
 };
 
 } // namespace Yuggoth

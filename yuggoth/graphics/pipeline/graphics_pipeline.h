@@ -5,15 +5,6 @@
 
 namespace Yuggoth {
 
-struct GraphicsPipelineSpecification {
-  std::vector<const ShaderModule *> shader_modules_;
-  std::vector<DynamicState> dynamic_states_{DynamicState::E_VIEWPORT, DynamicState::E_SCISSOR};
-  std::vector<Format> color_formats_;
-  Format depth_format_ = Format::E_UNDEFINED;
-  Format stencil_format_ = Format::E_UNDEFINED;
-  CullModeMask cull_mode_ = CullModeMaskBits::E_NONE;
-};
-
 class GraphicsPipeline {
 public:
   GraphicsPipeline() = default;

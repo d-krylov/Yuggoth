@@ -2,6 +2,8 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
+#include "yuggoth/scene/core/scene_manager.h"
+#include "yuggoth/renderer/core/renderer.h"
 
 namespace Yuggoth {
 

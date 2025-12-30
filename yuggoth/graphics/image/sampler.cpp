@@ -1,8 +1,9 @@
 #include "sampler.h"
+#include "yuggoth/graphics/graphics_context/graphics_context.h"
 
 namespace Yuggoth {
 
-Sampler::Sampler() {
+Sampler::Sampler(const SamplerSpecification &specification) {
 }
 
 Sampler::~Sampler() {
@@ -26,9 +27,9 @@ VkSampler Sampler::CreateSampler(const SamplerSpecification &specification) {
   sampler_ci.magFilter = specification.min_filter_;
   sampler_ci.minFilter = specification.mag_filter_;
   sampler_ci.mipmapMode = specification.mipmap_mode_;
-  sampler_ci.addressModeU = specification.address_mode_;
-  sampler_ci.addressModeV = specification.address_mode_;
-  sampler_ci.addressModeW = specification.address_mode_;
+  sampler_ci.addressModeU = specification.address_mode_u_;
+  sampler_ci.addressModeV = specification.address_mode_v_;
+  sampler_ci.addressModeW = specification.address_mode_w_;
   sampler_ci.mipLodBias = 0.0f;
   sampler_ci.anisotropyEnable = false;
   sampler_ci.maxAnisotropy = 1.0f;

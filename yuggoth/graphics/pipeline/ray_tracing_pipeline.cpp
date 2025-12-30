@@ -29,4 +29,15 @@ void RayTracingPipeline::Create() {
   }
 }
 
+RayTracingPipeline::RayTracingPipeline(RayTracingPipeline &&other) noexcept {
+  ray_tracing_pipeline_ = std::exchange(other.ray_tracing_pipeline_, VK_NULL_HANDLE);
+  pipeline_layout_ = std::exchange(other.pipeline_layout_, VK_NULL_HANDLE);
+}
+
+RayTracingPipeline &RayTracingPipeline::operator=(RayTracingPipeline &&other) noexcept {
+  std::swap(ray_tracing_pipeline_, other.ray_tracing_pipeline_);
+  std::swap(pipeline_layout_, other.pipeline_layout_);
+  return *this;
+}
+
 } // namespace Yuggoth

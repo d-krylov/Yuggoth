@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_EDITOR_WINDOW_H
 #define YUGGOTH_EDITOR_WINDOW_H
 
-#include "editor_context.h"
+#include "yuggoth/application/application_context.h"
 #include <string>
 #include <string_view>
 

@@ -6,14 +6,14 @@
 namespace Yuggoth {
 
 Application::Application()
-  : window_manager_(),                                                //
-    buffer_manager_(), imgui_host_(window_manager_.GetWindow()),      //
-    shader_library_(),                                                //
-    pipeline_library_(&shader_library_),                              //
-    imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()),     //
-    asset_manager_(&buffer_manager_),                                 //
-    scene_manager_(&asset_manager_),                                  //
-    renderer_(RendererContext(&pipeline_library_, &buffer_manager_)), //
+  : window_manager_(),                                                                 //
+    buffer_manager_(), imgui_host_(window_manager_.GetWindow()),                       //
+    shader_library_(),                                                                 //
+    pipeline_library_(&shader_library_),                                               //
+    imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()),                      //
+    asset_manager_(&buffer_manager_),                                                  //
+    scene_manager_(&asset_manager_),                                                   //
+    renderer_(RendererContext(&pipeline_library_, &buffer_manager_, &asset_manager_)), //
     editor_() {
 
   OnStart();

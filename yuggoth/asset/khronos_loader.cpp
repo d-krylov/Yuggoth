@@ -8,6 +8,36 @@ namespace Yuggoth {
 
 namespace fgf = fastgltf;
 
+Filter GetFilter(fgf::Filter filter) {
+  switch (filter) {
+  case fgf::Filter::Nearest:
+  case fgf::Filter::NearestMipMapNearest:
+  case fgf::Filter::NearestMipMapLinear: return Filter::E_NEAREST;
+  case fgf::Filter::Linear:
+  case fgf::Filter::LinearMipMapNearest:
+  case fgf::Filter::LinearMipMapLinear: return Filter::E_LINEAR;
+  default: std::unreachable();
+  }
+}
+
+SamplerAddressMode GetWrap(fgf::Wrap wrap) {
+  switch (wrap) {
+  case fgf::Wrap::ClampToEdge: return SamplerAddressMode::E_CLAMP_TO_EDGE;
+  case fgf::Wrap::MirroredRepeat: return SamplerAddressMode::E_MIRRORED_REPEAT;
+  case fgf::Wrap::Repeat: return SamplerAddressMode::E_REPEAT;
+  default: std::unreachable();
+  }
+}
+
+SamplerSpecification GetSamplerSpecification(const fgf::Sampler &sampler) {
+  SamplerSpecification specification;
+  specification.min_filter_ = GetFilter(sampler.minFilter.value_or(fgf::Filter::Linear));
+  specification.mag_filter_ = GetFilter(sampler.magFilter.value_or(fgf::Filter::Linear));
+  specification.address_mode_u_ = GetWrap(sampler.wrapS);
+  specification.address_mode_v_ = GetWrap(sampler.wrapT);
+  return specification;
+}
+
 void GetModelProperties(const fgf::Asset &asset, uint32_t &vertices_count, uint32_t &indices_count, uint32_t &primitives_count) {
   for (const auto &mesh : asset.meshes) {
     for (const auto &primitive : mesh.primitives) {
@@ -64,10 +94,8 @@ void LoadPrimitives(const fgf::Asset &asset, std::span<Vertex> out_vertices, std
   for (const auto &mesh : asset.meshes) {
     for (auto &primitive : mesh.primitives) {
       const auto &indices_accessor = asset.accessors[primitive.indicesAccessor.value()];
-      auto &material = asset.materials[primitive.materialIndex.value_or(0)];
-      auto color_texture_index = LoadTexture<fgf::TextureInfo>(material.pbrData.baseColorTexture);
-      auto normal_texture_index = LoadTexture<fgf::NormalTextureInfo>(material.normalTexture);
-      out_meshes[primitive_index++] = Mesh(color_texture_index, normal_texture_index, vertices_offset, indices_offset, indices_accessor.count);
+      auto material_index = primitive.materialIndex.value_or(-1);
+      out_meshes[primitive_index++] = Mesh(material_index, vertices_offset, indices_offset, indices_accessor.count);
       indices_offset = LoadIndices(asset, primitive.indicesAccessor.value(), indices_offset, vertices_offset, out_indices);
       vertices_offset = LoadVertices(asset, primitive, vertices_offset, out_vertices);
     }
@@ -81,7 +109,7 @@ void LoadImages(const fgf::Asset &asset, const std::filesystem::path &path) {
   }
 }
 
-void ModelLoader::LoadKhronos(const std::filesystem::path &path) {
+MeshData ModelLoader::LoadKhronos(const std::filesystem::path &path) {
 
   auto extensions = fgf::Extensions::KHR_mesh_quantization | fgf::Extensions::KHR_texture_transform | fgf::Extensions::KHR_materials_variants;
   auto options = fgf::Options::DontRequireValidAssetMember | fgf::Options::LoadExternalBuffers | fgf::Options::GenerateMeshIndices;
@@ -92,19 +120,44 @@ void ModelLoader::LoadKhronos(const std::filesystem::path &path) {
 
   auto asset = parser.loadGltf(gltf_file.get(), path.parent_path(), options);
 
-  uint32_t vertices_count = 0, indices_count = 0, primitives_count = 0;
-  GetModelProperties(asset.get(), vertices_count, indices_count, primitives_count);
+  uint32_t primitives_count = 0;
+  GetModelProperties(asset.get(), number_of_vertices_, number_of_indices_, primitives_count);
 
-  vertices_.resize(vertices_count);
-  indices_.resize(indices_count);
+  MeshData mesh_data;
+
+  mesh_data.vertices_.resize(number_of_vertices_);
+  mesh_data.indices_.resize(number_of_indices_);
+
   meshes_.resize(primitives_count);
 
-  LoadPrimitives(asset.get(), vertices_, indices_, meshes_);
+  LoadPrimitives(asset.get(), mesh_data.vertices_, mesh_data.indices_, meshes_);
 
-  for (auto &image : asset->images) {
+  for (const auto &image : asset->images) {
     auto image_name = std::get<fastgltf::sources::URI>(image.data).uri.path();
-    textures_.emplace_back(path.parent_path() / image_name);
+    images_.emplace_back(path.parent_path() / image_name);
   }
+
+  for (const auto &material : asset->materials) {
+    Material current_material;
+    auto color = material.pbrData.baseColorFactor;
+    current_material.color_texture_index_ = LoadTexture<fgf::TextureInfo>(material.pbrData.baseColorTexture);
+    current_material.normal_texture_index_ = LoadTexture<fgf::NormalTextureInfo>(material.normalTexture);
+    current_material.emissive_texture_index_ = LoadTexture<fgf::TextureInfo>(material.emissiveTexture);
+    current_material.base_color_ = Vector4f(color.x(), color.y(), color.z(), color.w());
+    materials_.emplace_back(current_material);
+  }
+
+  for (const auto &sampler : asset->samplers) {
+    sampler_specifications_.emplace_back(GetSamplerSpecification(sampler));
+  }
+
+  for (const auto &texture : asset->textures) {
+    Texture current_texture;
+    current_texture.sampler_index_ = texture.samplerIndex.value_or(-1);
+    current_texture.image_index_ = texture.imageIndex.value_or(-1);
+  }
+
+  return mesh_data;
 }
 
 } // namespace Yuggoth

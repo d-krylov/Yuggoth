@@ -3,6 +3,8 @@
 #include "ImGuiFileDialog.h"
 #include "editor_tools.h"
 #include "yuggoth/scene/core/entity.h"
+#include "yuggoth/scene/core/scene_manager.h"
+#include "yuggoth/asset/include/asset_manager.h"
 #include "yuggoth/scene/components/components.h"
 #include "external/fonts/IconsFontAwesome6.h"
 #include <print>
@@ -26,6 +28,7 @@ void Editor::SetEditorContext(const EditorContext &editor_context) {
   inspector_window_.SetEditorContext(&editor_context_);
   application_window_.SetEditorContext(&editor_context_);
   asset_manager_window_.SetEditorContext(&editor_context_);
+  renderer_window_.SetEditorContext(&editor_context_);
 }
 
 SelectionManager *Editor::GetSelectionManager() {
@@ -41,6 +44,7 @@ void Editor::OnImGui() {
   inspector_window_.OnImGui();
   application_window_.OnImGui();
   asset_manager_window_.OnImGui();
+  renderer_window_.OnImGui();
 
   HanldeDialog();
 }
@@ -65,8 +69,6 @@ void Editor::HanldeDialog() {
 
     if (dialog_name_ == "ImportModel") {
       model_component.model_ = asset_manager->RegisterModel(path.value());
-    } else if (dialog_name_ == "ImportResourceOwningModel") {
-      model_component.model_ = asset_manager->RegisterResourceOwningModel(path.value());
     }
   }
 }
@@ -95,12 +97,6 @@ void Editor::DrawMainMenu() {
           IGFD::FileDialogConfig config;
           dialog_name_ = "ImportModel";
           ImGuiFileDialog::Instance()->OpenDialog(dialog_name_, "Import Model", ".gltf,.glb", config);
-        }
-
-        if (InDebugMode() && ImGui::MenuItem("Resource Owning Model")) {
-          IGFD::FileDialogConfig config;
-          dialog_name_ = "ImportResourceOwningModel";
-          ImGuiFileDialog::Instance()->OpenDialog(dialog_name_, "Import Resource Owning Model", ".gltf,.glb", config);
         }
 
         ImGui::EndMenu();

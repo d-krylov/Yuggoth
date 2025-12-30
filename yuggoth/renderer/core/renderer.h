@@ -8,6 +8,7 @@
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/graphics/image/image2D.h"
 #include "yuggoth/graphics/image/image_depth.h"
+#include "yuggoth/graphics/acceleration/acceleration_structure.h"
 
 namespace Yuggoth {
 
@@ -27,8 +28,13 @@ public:
 
   void End();
 
+  const AccelerationStructure &GetTopAccelerationStructure() const;
+
 protected:
   void Create();
+  void CreateDescriptorSets();
+  void BuildBottomAccelerationStructures(Scene *scene);
+  void BuildTopAccelerationStructure();
 
 private:
   RendererContext renderer_context_;
@@ -38,6 +44,9 @@ private:
   Image2D target_image_;
   ImageDepth depth_image_;
   BaseRendererBackend base_renderer_backend_;
+  std::unordered_map<UUID, AccelerationStructure> bottom_acceleration_structures_;
+  std::unordered_map<UUID, std::vector<InstanceData>> bottom_transforms_;
+  AccelerationStructure top_acceleration_structure_;
 };
 
 } // namespace Yuggoth

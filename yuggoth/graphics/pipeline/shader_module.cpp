@@ -1,4 +1,5 @@
 #include "shader_module.h"
+#include "yuggoth/graphics/graphics_context/graphics_tools.h"
 #include "yuggoth/core/tools/include/core.h"
 #include <SPIRV-Reflect/spirv_reflect.h>
 #include <vulkan/utility/vk_format_utils.h>

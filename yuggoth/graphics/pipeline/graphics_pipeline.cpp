@@ -1,4 +1,5 @@
 #include "graphics_pipeline.h"
+#include "yuggoth/graphics/graphics_context/graphics_context.h"
 #include "yuggoth/graphics/core/structure_tools.h"
 #include <vulkan/utility/vk_format_utils.h>
 #include <utility>
