@@ -3,7 +3,7 @@
 
 #include <filesystem>
 #include <unordered_map>
-#include "yuggoth/graphics/pipeline/shader_module.h"
+#include "yuggoth/renderer/shaders/shader_module.h"
 
 namespace Yuggoth {
 
@@ -12,6 +12,8 @@ public:
   ShaderLibrary();
 
   const ShaderModule *GetShaderModule(const std::filesystem::path &relative_path) const;
+
+  const std::unordered_map<std::filesystem::path, std::unique_ptr<ShaderModule>> &GetShaderModules() const;
 
 protected:
   void ScanShaderDirectory();

@@ -39,14 +39,6 @@ VkQueue GraphicsContext::GetGraphicsQueue() const {
   return queues_[0];
 }
 
-std::vector<const char *> GetInstanceLayers() {
-  auto layers = Enumerate<VkLayerProperties>(vkEnumerateInstanceLayerProperties);
-
-  std::vector required_layers = {"VK_LAYER_KHRONOS_validation"};
-
-  return required_layers;
-}
-
 // clang-format off
 static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT severity,
                                                     VkDebugUtilsMessageTypeFlagsEXT type,
@@ -61,7 +53,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityF
 }
 // clang-format on
 
-void GraphicsContext::CreateInstance() {
+void GraphicsContext::CreateInstance(bool enable_debug, DebugUtilsMessageTypeMaskEXT debug_type, DebugUtilsMessageSeverityMaskEXT debug_severity) {
   VK_CHECK(volkInitialize());
 
   ApplicationInfo application_info;
@@ -71,13 +63,16 @@ void GraphicsContext::CreateInstance() {
   application_info.engineVersion = VK_MAKE_VERSION(1, 0, 0);
   application_info.apiVersion = VK_API_VERSION_1_3;
 
-  std::vector<const char *> required_layers = GetInstanceLayers();
-  std::vector<const char *> required_extensions{VK_EXT_DEBUG_UTILS_EXTENSION_NAME};
+  std::vector<const char *> required_layers;
+  std::vector<const char *> required_extensions;
+
+  if (enable_debug) {
+    required_extensions.emplace_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+    required_layers.emplace_back("VK_LAYER_KHRONOS_validation");
+  }
 
   auto swapchain_extensions = Swapchain::GetSwapchainExtensions();
   required_extensions.insert(required_extensions.end(), swapchain_extensions.begin(), swapchain_extensions.end());
-
-  auto severity = DebugUtilsMessageSeverityMaskBitsEXT::E_ERROR_BIT_EXT | DebugUtilsMessageSeverityMaskBitsEXT::E_WARNING_BIT_EXT;
 
   std::array enabled_validation{ValidationFeatureEnableEXT::E_SYNCHRONIZATION_VALIDATION_EXT, ValidationFeatureEnableEXT::E_BEST_PRACTICES_EXT};
 
@@ -86,8 +81,8 @@ void GraphicsContext::CreateInstance() {
   validation_features.pEnabledValidationFeatures = enabled_validation.data();
 
   DebugUtilsMessengerCreateInfoEXT debug_ci;
-  debug_ci.messageType = DebugUtilsMessageTypeMaskBitsEXT::E_VALIDATION_BIT_EXT;
-  debug_ci.messageSeverity = severity;
+  debug_ci.messageType = debug_type;
+  debug_ci.messageSeverity = debug_severity;
   debug_ci.pfnUserCallback = DebugCallback;
   debug_ci.pNext = &validation_features;
 
@@ -98,13 +93,15 @@ void GraphicsContext::CreateInstance() {
   instance_ci.enabledExtensionCount = required_extensions.size();
   instance_ci.ppEnabledExtensionNames = required_extensions.data();
 
-  instance_ci.pNext = &debug_ci;
+  instance_ci.pNext = enable_debug ? &debug_ci : nullptr;
 
   VK_CHECK(vkCreateInstance(instance_ci, nullptr, &instance_));
 
   volkLoadInstanceOnly(instance_);
 
-  VK_CHECK(vkCreateDebugUtilsMessengerEXT(instance_, debug_ci, nullptr, &debug_messenger_));
+  if (enable_debug) {
+    VK_CHECK(vkCreateDebugUtilsMessengerEXT(instance_, debug_ci, nullptr, &debug_messenger_));
+  }
 }
 
 void GraphicsContext::PickPhysicalDevice() {
@@ -137,8 +134,14 @@ void GraphicsContext::CreateDevice() {
     device_queue_cis.emplace_back(queue_ci);
   }
 
+  PhysicalDeviceRayTracingPipelineFeaturesKHR physical_device_ray_tracing_pipeline_features;
+  physical_device_ray_tracing_pipeline_features.rayTracingPipeline = true;
+  physical_device_ray_tracing_pipeline_features.rayTracingPipelineTraceRaysIndirect = true;
+  physical_device_ray_tracing_pipeline_features.pNext = nullptr;
+
   PhysicalDeviceRayQueryFeaturesKHR ray_query_features;
   ray_query_features.rayQuery = true;
+  ray_query_features.pNext = &physical_device_ray_tracing_pipeline_features;
 
   PhysicalDeviceMeshShaderFeaturesEXT mesh_shader_features;
   mesh_shader_features.meshShader = true;
@@ -150,11 +153,17 @@ void GraphicsContext::CreateDevice() {
   physical_device_acceleration_structure_features.accelerationStructure = true;
   physical_device_acceleration_structure_features.pNext = &mesh_shader_features;
 
+  PhysicalDeviceDescriptorBufferFeaturesEXT physical_device_descriptor_buffer_features;
+  physical_device_descriptor_buffer_features.descriptorBuffer = true;
+  physical_device_descriptor_buffer_features.descriptorBufferCaptureReplay = true;
+  physical_device_descriptor_buffer_features.descriptorBufferPushDescriptors = true;
+  physical_device_descriptor_buffer_features.pNext = &physical_device_acceleration_structure_features;
+
   PhysicalDeviceVulkan14Features physical_device_features_14;
   physical_device_features_14.maintenance5 = true;
   physical_device_features_14.maintenance6 = true;
   physical_device_features_14.pushDescriptor = true;
-  physical_device_features_14.pNext = &physical_device_acceleration_structure_features;
+  physical_device_features_14.pNext = &physical_device_descriptor_buffer_features;
 
   PhysicalDeviceVulkan13Features physical_device_features_13;
   physical_device_features_13.synchronization2 = true;
@@ -199,12 +208,13 @@ void GraphicsContext::CreateDevice() {
 }
 
 void GraphicsContext::SetPhysicalDeviceProperties() {
+  physical_device_properties_.pNext = &physical_device_raytracing_pipeline_properties_;
   vkGetPhysicalDeviceProperties2(GetPhysicalDevice(), physical_device_properties_);
   vkGetPhysicalDeviceMemoryProperties2(GetPhysicalDevice(), physical_device_memory_properties_);
 }
 
-GraphicsContext::GraphicsContext() {
-  CreateInstance();
+GraphicsContext::GraphicsContext(const GraphicsContextSpecification &specification) {
+  CreateInstance(specification.enable_debug, specification.debug_messgae_type, specification.debug_message_severity);
   PickPhysicalDevice();
   SetPhysicalDeviceProperties();
   CreateDevice();
@@ -229,6 +239,10 @@ const PhysicalDeviceProperties2 &GraphicsContext::GetPhysicalDeviceProperties() 
 
 const PhysicalDeviceMemoryProperties2 GraphicsContext::GetPhysicalDeviceMemoryProperties() const {
   return physical_device_memory_properties_;
+}
+
+const PhysicalDeviceRayTracingPipelinePropertiesKHR &GraphicsContext::GetPhysicalDeviceRayTracingPipelineProperties() const {
+  return physical_device_raytracing_pipeline_properties_;
 }
 
 } // namespace Yuggoth

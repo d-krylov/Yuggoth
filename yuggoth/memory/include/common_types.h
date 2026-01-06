@@ -3,7 +3,7 @@
 
 #include <vulkan/vulkan.h>
 #include "yuggoth/scene/light/light.h"
-#include "yuggoth/asset/include/mesh.h"
+#include "yuggoth/asset/model/mesh.h"
 
 namespace Yuggoth {
 

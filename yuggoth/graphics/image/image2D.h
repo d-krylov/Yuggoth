@@ -17,6 +17,8 @@ public:
 
   Image2D(uint32_t width, uint32_t height);
 
+  Image2D(uint32_t width, uint32_t height, Format format, ImageUsageMask optional_usage);
+
   Image2D(Image2D &&other) noexcept = default;
 
   Image2D &operator=(Image2D &&other) noexcept = default;

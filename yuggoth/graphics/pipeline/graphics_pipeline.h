@@ -5,6 +5,8 @@
 
 namespace Yuggoth {
 
+struct GraphicsPipelineSpecification;
+
 class GraphicsPipeline {
 public:
   GraphicsPipeline() = default;

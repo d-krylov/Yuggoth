@@ -24,6 +24,8 @@ public:
 
   VkDescriptorSet GetHandle() const;
 
+  static VkDescriptorSet AllocateDescriptorSet(VkDescriptorPool descriptor_pool, VkDescriptorSetLayout set_layout, uint32_t descriptors_count);
+
 private:
   VkDescriptorSet descriptor_set_{VK_NULL_HANDLE};
 };

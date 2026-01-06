@@ -1,8 +1,13 @@
 #version 460 core
 
+// IN
 layout (location = 0) in vec2 in_position;
 layout (location = 1) in vec2 in_uv;
 layout (location = 2) in uint in_color;
+
+//OUT
+layout (location = 0) out vec4 out_color;
+layout (location = 1) out vec2 out_uv;
 
 layout (push_constant) uniform u_push_constant { 
   vec2 scale; 
@@ -12,11 +17,6 @@ layout (push_constant) uniform u_push_constant {
 out gl_PerVertex { 
   vec4 gl_Position; 
 };
-
-layout (location = 0) out struct { 
-  vec4 color; 
-  vec2 uv; 
-} out_vertex;
 
 vec4 unpack_color(uint color) {
   return vec4(
@@ -28,7 +28,7 @@ vec4 unpack_color(uint color) {
 }
 
 void main() {
-  out_vertex.color = unpack_color(in_color);
-  out_vertex.uv = in_uv;
+  out_color = unpack_color(in_color);
+  out_uv = in_uv;
   gl_Position = vec4(in_position * matrices.scale + matrices.translate, 0, 1);
 }

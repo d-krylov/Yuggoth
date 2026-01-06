@@ -16,6 +16,9 @@ concept CounterConcept = requires(T counter) {
 
 class SingleThreadCounter {
 public:
+  SingleThreadCounter(uint32_t start = 0) : count_(start) {
+  }
+
   void Add() {
     count_++;
   }
@@ -29,13 +32,13 @@ public:
   }
 
 private:
-  uint32_t count_ = 1;
+  uint32_t count_ = 0;
 };
 
 class MultiThreadCounter {
 public:
-  MultiThreadCounter() {
-    count_.store(1, std::memory_order_relaxed);
+  MultiThreadCounter(uint32_t start = 0) {
+    count_.store(start, std::memory_order_relaxed);
   }
 
   void Add() {

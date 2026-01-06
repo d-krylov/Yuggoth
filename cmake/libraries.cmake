@@ -59,3 +59,16 @@ FetchContent_Declare(
 	GIT_REPOSITORY https://github.com/jrouwe/JoltPhysics
 	GIT_TAG master
 )
+
+FetchContent_Declare(
+	unordered_dense
+	GIT_REPOSITORY https://github.com/martinus/unordered_dense
+	GIT_TAG main
+)
+
+FetchContent_Declare(
+	spdlog
+	GIT_REPOSITORY https://github.com/gabime/spdlog
+	GIT_TAG v1.16.0
+)
+

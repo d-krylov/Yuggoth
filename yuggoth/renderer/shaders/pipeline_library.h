@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include "yuggoth/graphics/pipeline/graphics_pipeline.h"
+#include "yuggoth/graphics/pipeline/ray_tracing_pipeline.h"
 
 namespace Yuggoth {
 
@@ -13,6 +14,7 @@ public:
   PipelineLibrary(ShaderLibrary *shader_library);
 
   const GraphicsPipeline &GetPipeline(const char *name) const;
+  const RayTracingPipeline &GetRayTracingPipeline(const char *name) const;
 
 protected:
   void CreatePipelines();
@@ -20,6 +22,7 @@ protected:
 private:
   ShaderLibrary *shader_library_ = nullptr;
   std::unordered_map<std::string, GraphicsPipeline> graphics_pipelines_;
+  std::unordered_map<std::string, RayTracingPipeline> raytracing_pipelines_;
 };
 
 } // namespace Yuggoth

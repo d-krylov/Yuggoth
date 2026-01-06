@@ -1,5 +1,5 @@
 #include "scene_manager.h"
-#include "yuggoth/asset/include/asset_manager.h"
+#include "yuggoth/asset/core/asset_manager.h"
 #include <ranges>
 #include <cassert>
 

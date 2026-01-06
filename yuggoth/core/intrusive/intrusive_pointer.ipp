@@ -9,32 +9,22 @@ template <typename T> uint32_t IntrusivePointer<T>::use_count() const {
   return static_cast<ReferenceBase *>(object_pointer_)->UseCount();
 }
 
-template <typename T> T &IntrusivePointer<T>::operator*() {
+template <typename T> T &IntrusivePointer<T>::operator*() const {
   return *object_pointer_;
 }
 
-template <typename T> const T &IntrusivePointer<T>::operator*() const {
-  return *object_pointer_;
-}
-
-template <typename T> T *IntrusivePointer<T>::operator->() {
+template <typename T> T *IntrusivePointer<T>::operator->() const {
   return object_pointer_;
 }
 
-template <typename T> const T *IntrusivePointer<T>::operator->() const {
-  return object_pointer_;
-}
-
-template <typename T> T *IntrusivePointer<T>::get() {
-  return object_pointer_;
-}
-
-template <typename T> const T *IntrusivePointer<T>::get() const {
+template <typename T> T *IntrusivePointer<T>::get() const {
   return object_pointer_;
 }
 
 template <typename T> void IntrusivePointer<T>::reset() {
-  if (object_pointer_) static_cast<ReferenceBase *>(object_pointer_)->ReleaseReference();
+  if (object_pointer_) {
+    static_cast<ReferenceBase *>(object_pointer_)->ReleaseReference();
+  }
   object_pointer_ = nullptr;
 }
 
@@ -42,7 +32,9 @@ template <typename T> template <typename U> IntrusivePointer<T> &IntrusivePointe
   static_assert(std::derived_from<U, T>, "Cannot safely assign downcasted intrusive pointers.");
   reset();
   object_pointer_ = static_cast<T *>(other.object_pointer_);
-  if (object_pointer_) static_cast<ReferenceBase *>(object_pointer_)->AddReference();
+  if (object_pointer_) {
+    static_cast<ReferenceBase *>(object_pointer_)->AddReference();
+  }
   return *this;
 }
 
@@ -50,7 +42,9 @@ template <typename T> IntrusivePointer<T> &IntrusivePointer<T>::operator=(const 
   if (this != &other) {
     reset();
     object_pointer_ = other.object_pointer_;
-    if (object_pointer_) static_cast<ReferenceBase *>(object_pointer_)->AddReference();
+    if (object_pointer_) {
+      static_cast<ReferenceBase *>(object_pointer_)->AddReference();
+    }
   }
   return *this;
 }
@@ -77,10 +71,8 @@ template <typename T, typename... ARGUMENTS> IntrusivePointer<T> MakeIntrusivePo
   return IntrusivePointer<T>(new T(std::forward<ARGUMENTS>(arguments)...));
 }
 
-template <typename T, typename DELETER, CounterConcept COUNTER>
-IntrusivePointer<T> IntrusiveReferenceCounter<T, DELETER, COUNTER>::ReferenceFromThis() {
-  AddReference();
-  return IntrusivePointer<T>(static_cast<T *>(this));
+template <typename T, typename U> IntrusivePointer<T> static_pointer_cast(const IntrusivePointer<U> &intrusive_pointer) {
+  return IntrusivePointer(static_cast<T *>(intrusive_pointer.get()));
 }
 
 } // namespace Yuggoth

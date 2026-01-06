@@ -85,6 +85,7 @@ target_link_libraries(${PROJECT_NAME}
   ImGuiFileDialog
   tinyobjloader
   meshoptimizer
+  unordered_dense::unordered_dense
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC 

@@ -1,8 +1,9 @@
 #include "scene.h"
 #include "entity.h"
 #include "scene_manager.h"
-#include "yuggoth/asset/include/asset_manager.h"
+#include "yuggoth/asset/core/asset_manager.h"
 #include "yuggoth/scene/components/components.h"
+#include <print>
 
 namespace Yuggoth {
 

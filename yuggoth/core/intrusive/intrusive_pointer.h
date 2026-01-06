@@ -15,7 +15,9 @@ public:
   IntrusivePointer() = default;
 
   explicit IntrusivePointer(T *object_pointer, bool add_reference = true) : object_pointer_(object_pointer) {
-    if (object_pointer != nullptr && add_reference) static_cast<ReferenceBase *>(object_pointer_)->AddReference();
+    if (object_pointer != nullptr && add_reference) {
+      static_cast<ReferenceBase *>(object_pointer_)->AddReference();
+    }
   }
 
   template <typename U>
@@ -38,13 +40,9 @@ public:
     return object_pointer_ != nullptr;
   }
 
-  T &operator*();
-  T *operator->();
-  T *get();
-
-  const T &operator*() const;
-  const T *operator->() const;
-  const T *get() const;
+  T &operator*() const;
+  T *operator->() const;
+  T *get() const;
 
   void reset();
 

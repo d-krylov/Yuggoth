@@ -7,7 +7,11 @@ class Renderer;
 
 class MeshRendererBackend {
 public:
-  MeshRendererBackend();
+  MeshRendererBackend(Renderer *renderer);
+
+  void DrawDirect();
+
+  void DrawIndirect();
 
 private:
   Renderer *renderer_ = nullptr;

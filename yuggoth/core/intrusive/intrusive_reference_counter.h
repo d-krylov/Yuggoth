@@ -25,14 +25,14 @@ public:
   }
 
   void ReleaseReference() {
-    if (reference_counter_.Sub()) DELETER()(static_cast<T *>(this));
+    if (reference_counter_.Sub()) {
+      DELETER()(static_cast<T *>(this));
+    }
   }
 
   uint32_t UseCount() const {
     return reference_counter_.GetCounter();
   }
-
-  IntrusivePointer<T> ReferenceFromThis();
 
 private:
   COUNTER reference_counter_;

@@ -55,9 +55,11 @@ public:
 
   // PUSH
   template <typename T> void CommandPushConstants(VkPipelineLayout layout, ShaderStageMask stage, const T &data, uint32_t offset);
-  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkBuffer buffer, DescriptorType descriptor_type);
-  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkImageView image_view, VkSampler sampler);
+  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkBuffer buffer, DescriptorType descriptor_type,
+                                PipelineBindPoint bind_point);
   void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkAccelerationStructureKHR tlas, PipelineBindPoint point);
+  void CommandPushDescriptorSet(std::span<const DescriptorImageInfo> images, VkPipelineLayout layout, uint32_t set_number, uint32_t binding,
+                                DescriptorType descriptor_type, PipelineBindPoint bind_point);
 
   // OPTIONS
   void CommandSetViewport(float x, float y, float width, float height);
@@ -74,6 +76,7 @@ public:
   void CommandBindIndexBuffer(const VkBuffer buffer, std::size_t offset, IndexType index_type);
 
   // DRAW
+  void CommandDraw(uint32_t vertex_count, uint32_t instance_count, uint32_t first_vertex, uint32_t first_instance);
   void CommandDrawIndexed(uint32_t index_count, uint32_t instance_count, uint32_t first_index, int32_t vertex_offset, uint32_t first_instance);
   void CommandDrawIndexedIndirect(VkBuffer buffer, std::size_t byte_offset, uint32_t draw_count, uint32_t stride);
   void CommandDrawMeshTasks(uint32_t group_count_x, uint32_t group_count_y, uint32_t group_count_z);
@@ -82,6 +85,11 @@ public:
   // COPY
   void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent);
   void CommandCopyBuffer(VkBuffer source, VkBuffer destination, const BufferCopy &buffer_copy);
+
+  // RAY
+  void CommandTraceRay(const StridedDeviceAddressRegionKHR &raygen, const StridedDeviceAddressRegionKHR &miss,
+                       const StridedDeviceAddressRegionKHR &hit, const StridedDeviceAddressRegionKHR &callable, uint32_t width, uint32_t height,
+                       uint32_t depth);
 
   // HELPERS
   void TransitionImageLayout(VkImage image, ImageLayout source_layout, ImageLayout destination_layout, PipelineStageMask2 source_stage,

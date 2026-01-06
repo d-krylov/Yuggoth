@@ -1,31 +1,38 @@
 #include "renderer.h"
 #include "yuggoth/renderer/shaders/shader_library.h"
+#include "yuggoth/renderer/shaders/pipeline_library.h"
 #include "yuggoth/memory/include/buffer_manager.h"
 #include "yuggoth/scene/core/scene.h"
 #include "yuggoth/scene/core/entity.h"
 
 namespace Yuggoth {
 
-Renderer::Renderer(const RendererContext &renderer_context) : renderer_context_(renderer_context), base_renderer_backend_(this) {
+Renderer::Renderer(const RendererContext &renderer_context)
+  : renderer_context_(renderer_context), base_renderer_backend_(this), raytrace_renderer_backend_(this) {
   Create();
+  CreateDescriptorSets();
 }
 
 void Renderer::Create() {
   command_buffer_ = CommandBuffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
   target_image_ = Image2D(100, 100);
   depth_image_ = ImageDepth(100, 100);
+  raytrace_image_ = Image2D(100, 100, Format::E_R32G32B32A32_SFLOAT, ImageUsageMaskBits::E_SAMPLED_BIT | ImageUsageMaskBits::E_STORAGE_BIT);
 }
 
 void Renderer::OnViewportResize(uint32_t width, uint32_t height) {
   target_image_ = Image2D(width, height);
   depth_image_ = ImageDepth(width, height);
+  raytrace_image_ = Image2D(width, height, Format::E_R32G32B32A32_SFLOAT, ImageUsageMaskBits::E_SAMPLED_BIT | ImageUsageMaskBits::E_STORAGE_BIT);
 }
 
 void Renderer::CreateDescriptorSets() {
-  std::vector<DescriptorPoolSize> descriptor_pool_sizes{{DescriptorType::E_SAMPLED_IMAGE, 1000}};
+  std::vector<DescriptorPoolSize> descriptor_pool_sizes{{DescriptorType::E_SAMPLED_IMAGE, 65536}};
+
+  descriptor_pool_ = DescriptorPool(descriptor_pool_sizes, DescriptorPoolCreateMaskBits::E_UPDATE_AFTER_BIND_BIT, 1);
 }
 
-const RendererContext &Renderer::GetRendererConstext() const {
+const RendererContext &Renderer::GetRendererContext() const {
   return renderer_context_;
 }
 
@@ -33,9 +40,14 @@ const Image2D &Renderer::GetImage() const {
   return target_image_;
 }
 
+const Image2D &Renderer::GetStorageImage() const {
+  return raytrace_image_;
+}
+
 void Renderer::Begin(Scene *scene) {
   command_buffer_.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   target_image_.SetImageLayout(ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, &command_buffer_);
+  raytrace_image_.SetImageLayout(ImageLayout::E_GENERAL, &command_buffer_);
 
   std::array<RenderingAttachmentInfo, 1> color_ai;
   color_ai[0].imageView = target_image_.GetImageView();
@@ -52,7 +64,58 @@ void Renderer::Begin(Scene *scene) {
   depth_ai.clearValue.depthStencil = {1.0f, 0};
 
   auto extent = target_image_.GetExtent();
-  command_buffer_.CommandBeginRendering(extent, color_ai, &depth_ai);
+  //command_buffer_.CommandBeginRendering(extent, color_ai, &depth_ai);
+}
+
+void Renderer::DrawRayTrace(Scene *scene) {
+  if (scene == nullptr) {
+    return;
+  }
+
+  auto &registry = scene->GetRegistry();
+
+  if (registry.view<ModelComponent>().empty()) {
+    return;
+  }
+
+  if (registry.view<Camera>().empty()) {
+    return;
+  }
+
+  BuildBottomAccelerationStructures(scene);
+  BuildTopAccelerationStructure();
+
+  auto extent = raytrace_image_.GetExtent();
+  auto camera = scene->GetCurrentCamera();
+  auto aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
+  camera->SetAspect(aspect);
+
+  raytrace_renderer_backend_.Draw(&command_buffer_, scene, extent.width, extent.height);
+
+  std::array<RenderingAttachmentInfo, 1> rendering_ai = {};
+
+  auto &square_pipeline = renderer_context_.pipeline_library_->GetPipeline("square");
+
+  raytrace_image_.SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer_);
+
+  rendering_ai[0].imageView = target_image_.GetImageView();
+  rendering_ai[0].imageLayout = ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL;
+  rendering_ai[0].loadOp = AttachmentLoadOp::E_CLEAR;
+  rendering_ai[0].storeOp = AttachmentStoreOp::E_STORE;
+  rendering_ai[0].clearValue.color = {0.0f, 0.0f, 0.0f, 1.0f};
+
+  command_buffer_.CommandBeginRendering(extent, rendering_ai);
+  command_buffer_.CommandSetViewport(0.0f, extent.height, extent.width, -float(extent.height));
+  command_buffer_.CommandSetScissor(0, 0, extent.width, extent.height);
+  command_buffer_.CommandEnableDepthTest(false);
+  command_buffer_.CommandEnableDepthWrite(false);
+  command_buffer_.CommandBindPipeline(square_pipeline.GetHandle(), PipelineBindPoint::E_GRAPHICS);
+
+  command_buffer_.CommandPushDescriptorSet(std::array{raytrace_image_.GetDescriptor()}, square_pipeline.GetPipelineLayout(), 0, 0,
+                                          DescriptorType::E_COMBINED_IMAGE_SAMPLER, PipelineBindPoint::E_GRAPHICS);
+
+  command_buffer_.CommandDraw(6, 1, 0, 0);
+  command_buffer_.CommandEndRendering();
 }
 
 void Renderer::Draw(Scene *scene) {
@@ -86,7 +149,7 @@ void Renderer::Draw(Scene *scene) {
 }
 
 void Renderer::End() {
-  command_buffer_.CommandEndRendering();
+  //command_buffer_.CommandEndRendering();
   target_image_.SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer_);
   command_buffer_.End();
   command_buffer_.Submit();

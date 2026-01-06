@@ -3,6 +3,7 @@
 
 #include "renderer_context.h"
 #include "base_renderer_backend.h"
+#include "raytrace_renderer_backend.h"
 #include "yuggoth/graphics/descriptors/descriptor_pool.h"
 #include "yuggoth/graphics/descriptors/descriptor_set.h"
 #include "yuggoth/graphics/command/command_buffer.h"
@@ -16,15 +17,17 @@ class Renderer {
 public:
   Renderer(const RendererContext &renderer_context);
 
-  const RendererContext &GetRendererConstext() const;
+  const RendererContext &GetRendererContext() const;
 
   const Image2D &GetImage() const;
+  const Image2D &GetStorageImage() const;
 
   void OnViewportResize(uint32_t width, uint32_t height);
 
   void Begin(Scene *scene);
-
   void Draw(Scene *scene);
+
+  void DrawRayTrace(Scene *scene);
 
   void End();
 
@@ -43,7 +46,9 @@ private:
   CommandBuffer command_buffer_;
   Image2D target_image_;
   ImageDepth depth_image_;
+  Image2D raytrace_image_;
   BaseRendererBackend base_renderer_backend_;
+  RaytraceRendererBackend raytrace_renderer_backend_;
   std::unordered_map<UUID, AccelerationStructure> bottom_acceleration_structures_;
   std::unordered_map<UUID, std::vector<InstanceData>> bottom_transforms_;
   AccelerationStructure top_acceleration_structure_;

@@ -8,9 +8,15 @@
 
 namespace Yuggoth {
 
+struct GraphicsContextSpecification {
+  bool enable_debug = false;
+  DebugUtilsMessageTypeMaskEXT debug_messgae_type;
+  DebugUtilsMessageSeverityMaskEXT debug_message_severity;
+};
+
 class GraphicsContext {
 public:
-  GraphicsContext();
+  GraphicsContext(const GraphicsContextSpecification &specification);
   ~GraphicsContext();
 
   const VkInstance GetInstance() const;
@@ -26,9 +32,10 @@ public:
 
   const PhysicalDeviceProperties2 &GetPhysicalDeviceProperties() const;
   const PhysicalDeviceMemoryProperties2 GetPhysicalDeviceMemoryProperties() const;
+  const PhysicalDeviceRayTracingPipelinePropertiesKHR &GetPhysicalDeviceRayTracingPipelineProperties() const;
 
 protected:
-  void CreateInstance();
+  void CreateInstance(bool enable_debug, DebugUtilsMessageTypeMaskEXT debug_type, DebugUtilsMessageSeverityMaskEXT debug_severity);
   void PickPhysicalDevice();
   void CreateDevice();
   void SetPhysicalDeviceProperties();
@@ -42,6 +49,7 @@ private:
   std::array<int32_t, 3> queue_indices_{-1};
   PhysicalDeviceProperties2 physical_device_properties_;
   PhysicalDeviceMemoryProperties2 physical_device_memory_properties_;
+  PhysicalDeviceRayTracingPipelinePropertiesKHR physical_device_raytracing_pipeline_properties_;
   static GraphicsContext *graphics_context_instance_;
 };
 

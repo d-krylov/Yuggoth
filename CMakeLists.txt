@@ -23,6 +23,7 @@ FetchContent_MakeAvailable(
   fastgltf
   tinyobjloader
   meshoptimizer
+  unordered_dense
   entt
   stb
 )
@@ -35,6 +36,7 @@ file(GLOB_RECURSE SHADER_FILES
   "${PROJECT_SOURCE_DIR}/assets/shaders/base/*"
   "${PROJECT_SOURCE_DIR}/assets/shaders/mesh/*"
   "${PROJECT_SOURCE_DIR}/assets/shaders/gui/*"
+  "${PROJECT_SOURCE_DIR}/assets/shaders/ray/*"
 )
 
 compile_shaders("${SHADER_FILES}" "${PROJECT_BINARY_DIR}/spirv")

@@ -3,7 +3,7 @@
 #include "yuggoth/scene/core/entity.h"
 #include "yuggoth/renderer/shaders/pipeline_library.h"
 #include "yuggoth/memory/include/buffer_manager.h"
-#include "yuggoth/asset/include/asset_manager.h"
+#include "yuggoth/asset/core/asset_manager.h"
 #include "renderer.h"
 
 namespace Yuggoth {
@@ -31,40 +31,40 @@ DrawIndirectContext CollectSceneEntities(Scene *scene, const RendererContext &re
 
     if (!model_component.model_) continue;
 
-    auto &model_loader = asset_storage.GetModelLoader(model_component.model_->GetPath());
+    auto &model_loader = asset_storage.GetModelStorage(model_component.model_->uuid_);
 
     auto meshes = model_loader.GetMeshes();
 
     auto vertices = model_component.model_->GetVertexBufferRange();
     auto indices = model_component.model_->GetIndexBufferRange();
 
-    /*
-        const auto &transform_component = model.GetComponent<Transform>();
-
-        for (const auto &mesh : meshes) {
-          IndexedIndirectCommand command;
-          command.first_index_ = indices.offset_ + mesh.indices_offset_;
-          command.first_instance_ = 0;
-          command.index_count_ = mesh.indices_count_;
-          command.instance_count_ = 1;
-          command.vertex_offset_ = vertices.offset_;
-
-          draw_indirect_context.transforms_.emplace_back(transform_component.GetMatrix());
-          draw_indirect_context.commands_.emplace_back(command);
-        }
-    */
-
-    IndexedIndirectCommand command;
-    command.first_index_ = indices.offset_;
-    command.first_instance_ = 0;
-    command.index_count_ = indices.count_;
-    command.instance_count_ = 1;
-    command.vertex_offset_ = vertices.offset_;
-
     const auto &transform_component = model.GetComponent<Transform>();
 
-    draw_indirect_context.transforms_.emplace_back(transform_component.GetMatrix());
-    draw_indirect_context.commands_.emplace_back(command);
+    for (const auto &mesh : meshes) {
+      IndexedIndirectCommand command;
+      command.first_index_ = indices.offset_ + mesh.indices_offset_;
+      command.first_instance_ = 0;
+      command.index_count_ = mesh.indices_count_;
+      command.instance_count_ = 1;
+      command.vertex_offset_ = vertices.offset_;
+
+      draw_indirect_context.transforms_.emplace_back(transform_component.GetMatrix());
+      draw_indirect_context.commands_.emplace_back(command);
+    }
+
+    /*
+        IndexedIndirectCommand command;
+        command.first_index_ = indices.offset_;
+        command.first_instance_ = 0;
+        command.index_count_ = indices.count_;
+        command.instance_count_ = 1;
+        command.vertex_offset_ = vertices.offset_;
+
+        const auto &transform_component = model.GetComponent<Transform>();
+
+        draw_indirect_context.transforms_.emplace_back(transform_component.GetMatrix());
+        draw_indirect_context.commands_.emplace_back(command);
+    */
   }
 
   auto light_group = registry.group<Light>();
@@ -85,7 +85,7 @@ BaseRendererBackend::BaseRendererBackend(Renderer *renderer) : renderer_(rendere
 }
 
 void BaseRendererBackend::DrawIndirect(CommandBuffer *command_buffer, Scene *scene, const Camera *camera, ObjectMode object_mode) {
-  const auto &renderer_context = renderer_->GetRendererConstext();
+  const auto &renderer_context = renderer_->GetRendererContext();
   const auto &pipeline = renderer_context.pipeline_library_->GetPipeline("base_indirect");
 
   auto buffer_manager = renderer_context.buffer_manager_;
@@ -116,9 +116,12 @@ void BaseRendererBackend::DrawIndirect(CommandBuffer *command_buffer, Scene *sce
   buffer_manager->UploadBuffer(command_buffer, light_range, std::as_bytes(std::span(draw_indirect_context.lights_)));
 
   command_buffer->CommandBindIndexBuffer(ibo->GetHandle(), 0, IndexType::E_UINT32);
-  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 0, vbo->GetHandle(), DescriptorType::E_STORAGE_BUFFER);
-  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 1, matrix_range.buffer_, DescriptorType::E_STORAGE_BUFFER);
-  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 3, light_range.buffer_, DescriptorType::E_UNIFORM_BUFFER);
+  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 0, vbo->GetHandle(), DescriptorType::E_STORAGE_BUFFER,
+                                           PipelineBindPoint::E_GRAPHICS);
+  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 1, matrix_range.buffer_, DescriptorType::E_STORAGE_BUFFER,
+                                           PipelineBindPoint::E_GRAPHICS);
+  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 3, light_range.buffer_, DescriptorType::E_UNIFORM_BUFFER,
+                                           PipelineBindPoint::E_GRAPHICS);
   command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 4, renderer_->GetTopAccelerationStructure().GetHandle(),
                                            PipelineBindPoint::E_GRAPHICS);
 

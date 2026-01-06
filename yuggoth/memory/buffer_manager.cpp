@@ -1,6 +1,6 @@
 #include "yuggoth/memory/include/buffer_manager.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/asset/include/mesh.h"
+#include "yuggoth/asset/model/mesh.h"
 #include "yuggoth/core/tools/include/core.h"
 #include "yuggoth/scene/light/light.h"
 

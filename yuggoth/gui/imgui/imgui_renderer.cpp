@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "ImGuizmo.h"
 #include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/core/tools/include/filesystem.h"
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
@@ -11,13 +12,18 @@
 namespace Yuggoth {
 
 ImGuiRenderer::ImGuiRenderer(Format color_format) {
-  auto shaders_root = GetShadersRoot();
+  auto shaders_root = FileSystem::GetYuggothShaderBinaryDirectory();
+
+  auto push_descriptor_mask = DescriptorSetLayoutCreateMaskBits::E_PUSH_DESCRIPTOR_BIT;
 
   ShaderModule gui_vert(shaders_root / "gui" / "gui.vert.spv");
   ShaderModule gui_frag(shaders_root / "gui" / "gui.frag.spv");
   GraphicsPipelineSpecification specification;
   specification.color_formats_ = {color_format};
   specification.shader_modules_ = {&gui_vert, &gui_frag};
+  specification.descriptor_sets_ = ShaderModule::CreateDescriptorSetSpecifications(specification.shader_modules_, {{0, push_descriptor_mask}});
+  specification.push_constants_ = ShaderModule::CreatePushConstantSpecification(specification.shader_modules_);
+  specification.vertex_inputs_ = gui_vert.GetVertexInputAttributes();
   graphics_pipeline_ = GraphicsPipeline(specification);
 
   vertex_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_VERTEX_BUFFER_BIT, CommonMasks::BUFFER_MAPPED);
@@ -118,7 +124,10 @@ void ImGuiRenderer::RenderDrawData(CommandBuffer &command_buffer) {
         Image *image = reinterpret_cast<Image *>(command.GetTexID());
 
         if (image != previous_image) {
-          command_buffer.CommandPushDescriptorSet(graphics_pipeline_.GetPipelineLayout(), 0, 0, image->GetImageView(), image->GetSampler());
+          std::array descriptors = {image->GetDescriptor()};
+
+          command_buffer.CommandPushDescriptorSet(descriptors, graphics_pipeline_.GetPipelineLayout(), 0, 0, DescriptorType::E_COMBINED_IMAGE_SAMPLER,
+                                                  PipelineBindPoint::E_GRAPHICS);
         }
 
         previous_image = image;

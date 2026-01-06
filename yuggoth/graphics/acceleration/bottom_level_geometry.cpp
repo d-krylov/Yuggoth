@@ -19,7 +19,7 @@ void BottomLevelGeometry::AddTriangleGeometry(VkDeviceAddress vbo_device_address
   geometry.geometry.triangles.vertexStride = vbo_range.stride_;
 
   range.firstVertex = vbo_range.offset_;
-  range.primitiveOffset = 0;
+  range.primitiveOffset = ibo_range.offset_ * ibo_range.stride_;
   range.primitiveCount = ibo_range.count_ / 3;
 
   geometries_.emplace_back(geometry);

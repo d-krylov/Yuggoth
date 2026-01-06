@@ -51,20 +51,21 @@ Image::Image(ImageType type, ImageViewType view_type, const ImageSpecification &
 }
 
 Image::Image(Image &&other) noexcept {
-  image_ = std::exchange(other.image_, VK_NULL_HANDLE);
-  allocation_ = std::exchange(other.allocation_, VK_NULL_HANDLE);
-  image_view_ = std::exchange(other.image_view_, VK_NULL_HANDLE);
-  image_sampler_ = std::exchange(other.image_sampler_, VK_NULL_HANDLE);
+  Swap(other);
 }
 
 Image &Image::operator=(Image &&other) noexcept {
+  Swap(other);
+  return *this;
+}
+
+void Image::Swap(Image &other) noexcept {
   std::swap(image_, other.image_);
   std::swap(allocation_, other.allocation_);
   std::swap(image_view_, other.image_view_);
   std::swap(image_sampler_, other.image_sampler_);
   std::swap(current_layout_, other.current_layout_);
   std::swap(image_specification_, other.image_specification_);
-  return *this;
 }
 
 Image::~Image() {
@@ -114,6 +115,14 @@ void Image::SetImageData(std::span<const std::byte> data) {
 
 const ImageSpecification &Image::GetSpecification() const {
   return image_specification_;
+}
+
+DescriptorImageInfo Image::GetDescriptor() const {
+  DescriptorImageInfo descriptor_image_info;
+  descriptor_image_info.imageLayout = current_layout_;
+  descriptor_image_info.imageView = GetImageView();
+  descriptor_image_info.sampler = GetSampler();
+  return descriptor_image_info;
 }
 
 } // namespace Yuggoth

@@ -2,7 +2,7 @@
 #include "yuggoth/scene/core/entity.h"
 #include "yuggoth/scene/components/components.h"
 #include "yuggoth/editor/core/editor.h"
-#include "yuggoth/asset/include/asset_manager.h"
+#include "yuggoth/asset/core/asset_manager.h"
 #include "yuggoth/scene/core/scene_manager.h"
 #include "external/fonts/IconsFontAwesome6.h"
 #include "imgui.h"

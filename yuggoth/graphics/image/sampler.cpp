@@ -4,6 +4,7 @@
 namespace Yuggoth {
 
 Sampler::Sampler(const SamplerSpecification &specification) {
+  CreateSampler(specification);
 }
 
 Sampler::~Sampler() {

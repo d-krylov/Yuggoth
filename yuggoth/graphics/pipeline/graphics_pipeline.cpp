@@ -1,5 +1,6 @@
 #include "graphics_pipeline.h"
 #include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics/core/graphics_specifications.h"
 #include "yuggoth/graphics/core/structure_tools.h"
 #include <vulkan/utility/vk_format_utils.h>
 #include <utility>
@@ -16,25 +17,26 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
   std::vector<PipelineShaderStageCreateInfo> shader_stages_cis(shader_modules.size());
 
   for (auto i = 0; i < specification.shader_modules_.size(); i++) {
+
+    auto binary_data = shader_modules[i]->GetBinaryData();
+
     ShaderModuleCreateInfo shader_module_ci;
-    shader_modules_cis[i].codeSize = shader_modules[i]->GetSize();
-    shader_modules_cis[i].pCode = shader_modules[i]->GetBinaryData().data();
+    shader_modules_cis[i].codeSize = binary_data.size_bytes();
+    shader_modules_cis[i].pCode = reinterpret_cast<const uint32_t *>(binary_data.data());
 
     PipelineShaderStageCreateInfo shader_stage_ci;
-    shader_stages_cis[i].stage = shader_modules[i]->GetStage();
+    shader_stages_cis[i].stage = shader_modules[i]->GetShaderStage();
     shader_stages_cis[i].pNext = &shader_modules_cis[i];
-    // shader_stages_cis[i].pSpecializationInfo =
+    shader_stages_cis[i].pSpecializationInfo = nullptr;
     shader_stages_cis[i].pName = "main";
   }
-
-  auto vertex_input_attributes = shader_modules[0]->GetInputDescriptions();
 
   VertexInputBindingDescription vertex_binding_description;
   PipelineVertexInputStateCreateInfo vertex_input_state_ci;
 
-  if (vertex_input_attributes.empty() == false) {
+  if (specification.vertex_inputs_.empty() == false) {
 
-    const auto &back_attribute = vertex_input_attributes.back();
+    const auto &back_attribute = specification.vertex_inputs_.back();
 
     auto stride = back_attribute.offset + vkuFormatTexelBlockSize(VkFormat(back_attribute.format));
 
@@ -44,8 +46,8 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
 
     vertex_input_state_ci.vertexBindingDescriptionCount = 1;
     vertex_input_state_ci.pVertexBindingDescriptions = &vertex_binding_description;
-    vertex_input_state_ci.vertexAttributeDescriptionCount = vertex_input_attributes.size();
-    vertex_input_state_ci.pVertexAttributeDescriptions = vertex_input_attributes.data();
+    vertex_input_state_ci.vertexAttributeDescriptionCount = specification.vertex_inputs_.size();
+    vertex_input_state_ci.pVertexAttributeDescriptions = specification.vertex_inputs_.data();
   }
 
   PipelineInputAssemblyStateCreateInfo input_assembly_state_ci;
@@ -119,8 +121,8 @@ VkPipelineLayout GraphicsPipeline::GetPipelineLayout() const {
 // CONSTRUCTORS
 
 GraphicsPipeline::GraphicsPipeline(const GraphicsPipelineSpecification &specification) {
-  descriptor_set_layouts_ = CreateDescriptorSetLayouts(specification.shader_modules_);
-  pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts_, specification.shader_modules_[0]->GetPushConstants());
+  descriptor_set_layouts_ = CreateDescriptorSetLayouts(specification.descriptor_sets_);
+  pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts_, specification.push_constants_);
   pipeline_ = CreateGraphicsPipeline(specification, pipeline_layout_);
 }
 

@@ -5,14 +5,17 @@ namespace Yuggoth {
 
 class SceneManager;
 class AssetManager;
+class MaterialManager;
 class BufferManager;
 class Renderer;
 class PipelineLibrary;
+class ShaderLibrary;
 
 struct EditorContext {
   SceneManager *scene_manager_ = nullptr;
   AssetManager *asset_manager_ = nullptr;
   BufferManager *buffer_manager_ = nullptr;
+  ShaderLibrary *shader_library_ = nullptr;
   Renderer *renderer_ = nullptr;
 };
 
@@ -20,6 +23,11 @@ struct RendererContext {
   PipelineLibrary *pipeline_library_ = nullptr;
   BufferManager *buffer_manager_ = nullptr;
   AssetManager *asset_manager_ = nullptr;
+};
+
+struct AssetManagerCreateContext {
+  BufferManager *buffer_manager_ = nullptr;
+  MaterialManager *material_manager_ = nullptr;
 };
 
 } // namespace Yuggoth

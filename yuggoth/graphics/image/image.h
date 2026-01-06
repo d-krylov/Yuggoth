@@ -2,7 +2,7 @@
 #define YUGGOTH_IMAGE_H
 
 #include "yuggoth/graphics/graphics_context/graphics_allocator.h"
-#include "yuggoth/asset/include/asset.h"
+#include "yuggoth/asset/core/asset.h"
 #include "sampler.h"
 #include <optional>
 #include <span>
@@ -39,10 +39,13 @@ public:
   const ImageSpecification &GetSpecification() const;
 
   void SetImageData(std::span<const std::byte> data);
-
   void SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer);
 
+  DescriptorImageInfo GetDescriptor() const;
+
 protected:
+  void Swap(Image &other) noexcept;
+
   void Initialize(ImageType type, ImageViewType view_type, const ImageSpecification &image_specification,
                   const std::optional<SamplerSpecification> &sampler_specification = std::nullopt);
 

@@ -16,8 +16,6 @@ class BaseRendererBackend {
 public:
   BaseRendererBackend(Renderer *renderer);
 
-  void DrawDirect(CommandBuffer *command_buffer, Scene *scene, const Camera *camera, ObjectMode object_mode);
-
   void DrawIndirect(CommandBuffer *command_buffer, Scene *scene, const Camera *camera, ObjectMode object_mode);
 
 private:

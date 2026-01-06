@@ -32,6 +32,7 @@ public:
 
   Camera *GetCurrentCamera() const;
 
+protected:
 private:
   entt::registry registry_;
   SceneManager *scene_manager_ = nullptr;

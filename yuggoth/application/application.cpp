@@ -11,7 +11,8 @@ Application::Application()
     shader_library_(),                                                                 //
     pipeline_library_(&shader_library_),                                               //
     imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()),                      //
-    asset_manager_(&buffer_manager_),                                                  //
+    material_manager_(),                                                               //
+    asset_manager_(AssetManagerCreateContext(&buffer_manager_, &material_manager_)),   //
     scene_manager_(&asset_manager_),                                                   //
     renderer_(RendererContext(&pipeline_library_, &buffer_manager_, &asset_manager_)), //
     editor_() {
@@ -43,6 +44,7 @@ void Application::OnStart() {
   editor_context.renderer_ = &renderer_;
   editor_context.asset_manager_ = &asset_manager_;
   editor_context.buffer_manager_ = &buffer_manager_;
+  editor_context.shader_library_ = &shader_library_;
   editor_.SetEditorContext(editor_context);
 }
 
@@ -70,7 +72,9 @@ void Application::Run() {
     OnImGui();
 
     renderer_.Begin(scene_manager_.GetCurrentScene());
-    renderer_.Draw(scene_manager_.GetCurrentScene());
+    //renderer_.Draw(scene_manager_.GetCurrentScene());
+
+    renderer_.DrawRayTrace(scene_manager_.GetCurrentScene());
     renderer_.End();
 
     imgui_renderer_.End(*command_buffer, *swapchain);

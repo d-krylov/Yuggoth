@@ -11,14 +11,6 @@ void CORE_ASSERT(bool status, std::string_view message, std::source_location loc
   }
 }
 
-std::filesystem::path GetShadersRoot() {
-  return YUGGOTH_PROJECT_BINARY_DIR / "spirv";
-}
-
-std::filesystem::path GetYuggothRoot() {
-  return YUGGOTH_PROJECT_ROOT_DIR;
-}
-
 std::size_t AlignUp(std::size_t value, std::size_t alignment) {
   return (value + alignment - 1) & ~(alignment - 1);
 }

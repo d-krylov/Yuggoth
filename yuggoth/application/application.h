@@ -29,6 +29,7 @@ private:
   PipelineLibrary pipeline_library_;
   ImGuiHost imgui_host_;
   ImGuiRenderer imgui_renderer_;
+  MaterialManager material_manager_;
   AssetManager asset_manager_;
   SceneManager scene_manager_;
   Renderer renderer_;

@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "yuggoth/gui/window/window.h"
 #include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/core/tools/include/filesystem.h"
 #include "external/fonts/IconsFontAwesome6.h"
 #include <GLFW/glfw3.h>
 
@@ -61,16 +62,16 @@ void ImGuiHost::UpdateMouseData() {
 
 ImGuiHost::ImGuiHost(const Window *window) : window_(window) {
   ImGui::CreateContext();
-  auto settings = GetYuggothRoot() / "assets" / "settings" / "window_settings.ini";
+  auto settings = FileSystem::GetYuggothRootDirectory() / "assets" / "settings" / "window_settings.ini";
   ImGui::LoadIniSettingsFromDisk(settings.c_str());
   ImGuiIO &io = ImGui::GetIO();
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
   auto base_font_size = 16.0f;
-  auto base_font = GetYuggothRoot() / "assets" / "fonts" / "segoe" / "Segoe_UI.ttf";
+  auto base_font = FileSystem::GetYuggothRootDirectory() / "assets" / "fonts" / "segoe" / "Segoe_UI.ttf";
   io.Fonts->AddFontFromFileTTF(base_font.c_str(), base_font_size);
 
-  auto fonts_fas = GetYuggothRoot() / "assets" / "fonts" / "fa" / FONT_ICON_FILE_NAME_FAS;
+  auto fonts_fas = FileSystem::GetYuggothRootDirectory() / "assets" / "fonts" / "fa" / FONT_ICON_FILE_NAME_FAS;
 
   auto icon_font_size = base_font_size;
 
