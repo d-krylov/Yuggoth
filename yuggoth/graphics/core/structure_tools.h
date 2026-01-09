@@ -1,9 +1,11 @@
 #ifndef YUGGOTH_STRUCTURE_TOOLS_H
 #define YUGGOTH_STRUCTURE_TOOLS_H
 
-#include "yuggoth/graphics/wrappers/graphics_structures.h"
+#include "walle/walle.h"
 
 namespace Yuggoth {
+
+using namespace Walle;
 
 ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect = ImageAspectMaskBits::E_COLOR_BIT, uint32_t base_level = 0,
                                                uint32_t level_count = 1, uint32_t base_layer = 0, uint32_t layer_count = 1);

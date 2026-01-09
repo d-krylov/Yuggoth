@@ -1,5 +1,4 @@
 #include "graphics_tools.h"
-#include <vulkan/vk_enum_string_helper.h>
 #include <ranges>
 #include <algorithm>
 #include <print>
@@ -7,8 +6,9 @@
 namespace Yuggoth {
 
 void VK_CHECK(VkResult result, std::source_location source_location) {
-  if (result != VK_SUCCESS) {
-    std::println("VULKAN ERROR: {0} in {1}:{2}", string_VkResult(result), source_location.file_name(), source_location.line());
+  auto status = Walle::Result(result);
+  if (status != Walle::Result::E_SUCCESS) {
+    std::println("VULKAN ERROR: {0} in {1}:{2}", Walle::ToString(status), source_location.file_name(), source_location.line());
     std::abort();
   }
 }

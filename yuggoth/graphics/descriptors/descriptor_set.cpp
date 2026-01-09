@@ -2,6 +2,45 @@
 
 namespace Yuggoth {
 
+VkDescriptorSetLayout DescriptorSet::CreateDescriptorSetLayout(std::span<const Walle::DescriptorSetLayoutBinding> descriptor_set_bindings,
+                                                               DescriptorSetLayoutCreateMask descriptor_set_create_mask) {
+
+  auto binding_count = descriptor_set_bindings.size();
+  std::vector<DescriptorBindingMask> binding_masks(binding_count);
+
+  for (auto i = 0; i < binding_count; i++) {
+    auto is_array = descriptor_set_bindings[i].descriptorCount > 1;
+    auto is_runtime_array = descriptor_set_bindings[i].descriptorCount == 0;
+    auto is_end = (i + 1 == binding_count);
+
+    if (is_runtime_array) {
+      binding_masks[i] |= Walle::DescriptorBindingMaskBits::E_PARTIALLY_BOUND_BIT;
+    }
+
+    if (descriptor_set_create_mask.HasBits(DescriptorSetLayoutCreateMaskBits::E_UPDATE_AFTER_BIND_POOL_BIT)) {
+      binding_masks[i] |= Walle::DescriptorBindingMaskBits::E_UPDATE_AFTER_BIND_BIT;
+    }
+
+    if (is_end && is_runtime_array) {
+      binding_masks[i] |= Walle::DescriptorBindingMaskBits::E_VARIABLE_DESCRIPTOR_COUNT_BIT;
+    }
+  }
+
+  Walle::DescriptorSetLayoutBindingFlagsCreateInfo set_binding_flags_ci;
+  set_binding_flags_ci.bindingCount = binding_masks.size();
+  set_binding_flags_ci.pBindingFlags = binding_masks.data();
+
+  Walle::DescriptorSetLayoutCreateInfo descriptor_set_layout_ci;
+  descriptor_set_layout_ci.bindingCount = descriptor_set_bindings.size();
+  descriptor_set_layout_ci.pBindings = descriptor_set_bindings.data();
+  descriptor_set_layout_ci.flags = descriptor_set_create_mask;
+  descriptor_set_layout_ci.pNext = &set_binding_flags_ci;
+
+  VkDescriptorSetLayout descriptor_set_layout = VK_NULL_HANDLE;
+  VK_CHECK(vkCreateDescriptorSetLayout(GraphicsContext::Get()->GetDevice(), descriptor_set_layout_ci, 0, &descriptor_set_layout));
+  return descriptor_set_layout;
+}
+
 DescriptorSet::DescriptorSet(VkDescriptorPool descriptor_pool, VkDescriptorSetLayout set_layout, uint32_t descriptors_count) {
   descriptor_set_ = AllocateDescriptorSet(descriptor_pool, set_layout, descriptors_count);
 }
@@ -11,6 +50,7 @@ DescriptorSet::~DescriptorSet() {
 
 DescriptorSet::DescriptorSet(DescriptorSet &&other) noexcept {
   descriptor_set_ = std::exchange(other.descriptor_set_, VK_NULL_HANDLE);
+  descriptor_set_layout_ = std::exchange(other.descriptor_set_layout_, VK_NULL_HANDLE);
 }
 
 DescriptorSet &DescriptorSet::operator=(DescriptorSet &&other) noexcept {

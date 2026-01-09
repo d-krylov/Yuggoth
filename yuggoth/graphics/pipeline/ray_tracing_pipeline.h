@@ -1,32 +1,21 @@
 #ifndef YUGGOTH_RAY_TRACING_PIPELINE_H
 #define YUGGOTH_RAY_TRACING_PIPELINE_H
 
-#include "pipeline_tools.h"
+#include "pipeline.h"
 
 namespace Yuggoth {
 
 struct RayTracingPipelineSpecification;
 
-class RayTracingPipeline {
+class RayTracingPipeline : public Pipeline {
 public:
   RayTracingPipeline() = default;
 
   RayTracingPipeline(const RayTracingPipelineSpecification &specification);
 
-  ~RayTracingPipeline();
-
-  VkPipeline GetHandle() const;
-  VkPipelineLayout GetPipelineLayout() const;
-
-  RayTracingPipeline(const RayTracingPipeline &) = delete;
-  RayTracingPipeline &operator=(const RayTracingPipeline &) = delete;
-
-  RayTracingPipeline(RayTracingPipeline &&other) noexcept;
-  RayTracingPipeline &operator=(RayTracingPipeline &&other) noexcept;
+  Walle::PipelineBindPoint GetBindPoint() const override;
 
 private:
-  VkPipeline ray_tracing_pipeline_{VK_NULL_HANDLE};
-  VkPipelineLayout pipeline_layout_{VK_NULL_HANDLE};
   std::vector<VkDescriptorSetLayout> descriptor_set_layouts_;
 };
 

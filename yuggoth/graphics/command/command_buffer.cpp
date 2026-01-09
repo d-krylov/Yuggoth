@@ -1,6 +1,7 @@
 #include "command_buffer.h"
 #include "command_pool.h"
 #include "yuggoth/graphics/synchronization/fence.h"
+#include "yuggoth/graphics/pipeline/pipeline.h"
 
 namespace Yuggoth {
 
@@ -119,8 +120,8 @@ void CommandBuffer::CommandMemoryBarrier(PipelineStageMask2 source_stage, Access
 
 // PUSH
 
-void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkBuffer buffer, DescriptorType descriptor_type,
-                                             PipelineBindPoint bind_point) {
+void CommandBuffer::CommandPushDescriptorSet(const Pipeline &pipeline, int32_t set, uint32_t binding, VkBuffer buffer,
+                                             DescriptorType descriptor_type) {
   DescriptorBufferInfo descriptor_bi;
   descriptor_bi.buffer = buffer;
   descriptor_bi.offset = 0;
@@ -133,7 +134,9 @@ void CommandBuffer::CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t s
   write_descriptor_set.descriptorCount = 1;
   write_descriptor_set.pBufferInfo = &descriptor_bi;
 
-  vkCmdPushDescriptorSetKHR(command_buffer_, VkPipelineBindPoint(bind_point), layout, set, 1, write_descriptor_set);
+  auto bind_point = static_cast<VkPipelineBindPoint>(pipeline.GetBindPoint());
+
+  vkCmdPushDescriptorSetKHR(command_buffer_, bind_point, pipeline.GetPipelineLayout(), set, 1, write_descriptor_set);
 }
 
 void CommandBuffer::CommandPushDescriptorSet(std::span<const DescriptorImageInfo> images, VkPipelineLayout layout, uint32_t set_number,

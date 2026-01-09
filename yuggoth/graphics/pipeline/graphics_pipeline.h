@@ -1,30 +1,20 @@
 #ifndef YUGGOTH_GRAPHICS_PIPELINE_H
 #define YUGGOTH_GRAPHICS_PIPELINE_H
 
-#include "pipeline_tools.h"
+#include "pipeline.h"
 
 namespace Yuggoth {
 
 struct GraphicsPipelineSpecification;
 
-class GraphicsPipeline {
+class GraphicsPipeline : public Pipeline {
 public:
   GraphicsPipeline() = default;
   GraphicsPipeline(const GraphicsPipelineSpecification &specification);
-  ~GraphicsPipeline();
 
-  GraphicsPipeline(const GraphicsPipeline &) = delete;
-  GraphicsPipeline &operator=(const GraphicsPipeline &) = delete;
-
-  GraphicsPipeline(GraphicsPipeline &&other) noexcept;
-  GraphicsPipeline &operator=(GraphicsPipeline &&other) noexcept;
-
-  VkPipeline GetHandle() const;
-  VkPipelineLayout GetPipelineLayout() const;
+  Walle::PipelineBindPoint GetBindPoint() const override;
 
 private:
-  VkPipeline pipeline_{VK_NULL_HANDLE};
-  VkPipelineLayout pipeline_layout_{VK_NULL_HANDLE};
   std::vector<VkDescriptorSetLayout> descriptor_set_layouts_;
 };
 

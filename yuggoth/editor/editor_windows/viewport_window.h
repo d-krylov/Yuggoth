@@ -13,7 +13,7 @@ public:
   vector2i GetViewportSize() const;
 
 private:
-  vector2i viewport_size_;
+  vector2i viewport_size_ = vector2i(0, 0);
 };
 
 } // namespace Yuggoth

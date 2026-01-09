@@ -37,7 +37,7 @@ void main() {
 
   vec3 sun = normalize(vec3(1.0, 1.0, 0.0));
 
-  normal = normalize(transpose(mat3(gl_WorldToObjectEXT)) * normal);
+  normal = normalize(mat3(gl_ObjectToWorldEXT) * normal);
 
   float NdotL = clamp(dot(sun, normal), 0.0, 1.0);
 

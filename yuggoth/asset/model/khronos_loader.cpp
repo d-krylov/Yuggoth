@@ -3,28 +3,29 @@
 #include "fastgltf/types.hpp"
 #include "fastgltf/tools.hpp"
 #include "model_storage.h"
+#include "walle/walle.h"
 
 namespace Yuggoth {
 
 namespace fgf = fastgltf;
 
-Filter GetFilter(fgf::Filter filter) {
+Walle::Filter GetFilter(fgf::Filter filter) {
   switch (filter) {
   case fgf::Filter::Nearest:
   case fgf::Filter::NearestMipMapNearest:
-  case fgf::Filter::NearestMipMapLinear: return Filter::E_NEAREST;
+  case fgf::Filter::NearestMipMapLinear: return Walle::Filter::E_NEAREST;
   case fgf::Filter::Linear:
   case fgf::Filter::LinearMipMapNearest:
-  case fgf::Filter::LinearMipMapLinear: return Filter::E_LINEAR;
+  case fgf::Filter::LinearMipMapLinear: return Walle::Filter::E_LINEAR;
   default: std::unreachable();
   }
 }
 
-SamplerAddressMode GetWrap(fgf::Wrap wrap) {
+Walle::SamplerAddressMode GetWrap(fgf::Wrap wrap) {
   switch (wrap) {
-  case fgf::Wrap::ClampToEdge: return SamplerAddressMode::E_CLAMP_TO_EDGE;
-  case fgf::Wrap::MirroredRepeat: return SamplerAddressMode::E_MIRRORED_REPEAT;
-  case fgf::Wrap::Repeat: return SamplerAddressMode::E_REPEAT;
+  case fgf::Wrap::ClampToEdge: return Walle::SamplerAddressMode::E_CLAMP_TO_EDGE;
+  case fgf::Wrap::MirroredRepeat: return Walle::SamplerAddressMode::E_MIRRORED_REPEAT;
+  case fgf::Wrap::Repeat: return Walle::SamplerAddressMode::E_REPEAT;
   default: std::unreachable();
   }
 }

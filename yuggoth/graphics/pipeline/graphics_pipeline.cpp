@@ -2,7 +2,6 @@
 #include "yuggoth/graphics/graphics_context/graphics_context.h"
 #include "yuggoth/graphics/core/graphics_specifications.h"
 #include "yuggoth/graphics/core/structure_tools.h"
-#include <vulkan/utility/vk_format_utils.h>
 #include <utility>
 #include <print>
 
@@ -31,14 +30,14 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
     shader_stages_cis[i].pName = "main";
   }
 
-  VertexInputBindingDescription vertex_binding_description;
-  PipelineVertexInputStateCreateInfo vertex_input_state_ci;
+  Walle::VertexInputBindingDescription vertex_binding_description;
+  Walle::PipelineVertexInputStateCreateInfo vertex_input_state_ci;
 
   if (specification.vertex_inputs_.empty() == false) {
 
     const auto &back_attribute = specification.vertex_inputs_.back();
 
-    auto stride = back_attribute.offset + vkuFormatTexelBlockSize(VkFormat(back_attribute.format));
+    auto stride = back_attribute.offset + Walle::GetFormatInformation(back_attribute.format).texel_block_size;
 
     vertex_binding_description.binding = 0;
     vertex_binding_description.inputRate = VertexInputRate::E_VERTEX;
@@ -58,7 +57,7 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
   viewport_state_ci.viewportCount = 1;
   viewport_state_ci.scissorCount = 1;
 
-  PipelineRasterizationStateCreateInfo rasterization_state_ci;
+  Walle::PipelineRasterizationStateCreateInfo rasterization_state_ci;
 
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.frontFace = FrontFace::E_COUNTER_CLOCKWISE;
@@ -67,32 +66,31 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
 
   rasterization_state_ci.depthBiasEnable = false;
 
-  PipelineDynamicStateCreateInfo dynamic_state_ci;
-
+  Walle::PipelineDynamicStateCreateInfo dynamic_state_ci;
   dynamic_state_ci.dynamicStateCount = specification.dynamic_states_.size();
   dynamic_state_ci.pDynamicStates = specification.dynamic_states_.data();
 
-  PipelineDepthStencilStateCreateInfo depth_stencil_state_ci;
+  Walle::PipelineDepthStencilStateCreateInfo depth_stencil_state_ci;
   depth_stencil_state_ci.depthCompareOp = CompareOp::E_LESS;
   depth_stencil_state_ci.depthTestEnable = false;
   depth_stencil_state_ci.stencilTestEnable = false;
 
-  PipelineRenderingCreateInfo pipeline_rendering_ci;
+  Walle::PipelineRenderingCreateInfo pipeline_rendering_ci;
   pipeline_rendering_ci.colorAttachmentCount = specification.color_formats_.size();
   pipeline_rendering_ci.pColorAttachmentFormats = specification.color_formats_.data();
   pipeline_rendering_ci.depthAttachmentFormat = specification.depth_format_;
   pipeline_rendering_ci.stencilAttachmentFormat = specification.stencil_format_;
 
-  PipelineMultisampleStateCreateInfo multisample_state_ci;
+  Walle::PipelineMultisampleStateCreateInfo multisample_state_ci;
   multisample_state_ci.rasterizationSamples = SampleCountMaskBits::E_1_BIT;
 
   auto color_blend_attachment_state = GetColorBlendAttachmentState(true);
 
-  PipelineColorBlendStateCreateInfo color_blend_state_ci;
+  Walle::PipelineColorBlendStateCreateInfo color_blend_state_ci;
   color_blend_state_ci.attachmentCount = 1;
   color_blend_state_ci.pAttachments = &color_blend_attachment_state;
 
-  GraphicsPipelineCreateInfo graphics_pipeline_ci;
+  Walle::GraphicsPipelineCreateInfo graphics_pipeline_ci;
   graphics_pipeline_ci.pNext = &pipeline_rendering_ci;
   graphics_pipeline_ci.stageCount = shader_stages_cis.size();
   graphics_pipeline_ci.pStages = shader_stages_cis.data();
@@ -110,14 +108,6 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
   return graphics_pipleine;
 }
 
-VkPipeline GraphicsPipeline::GetHandle() const {
-  return pipeline_;
-}
-
-VkPipelineLayout GraphicsPipeline::GetPipelineLayout() const {
-  return pipeline_layout_;
-}
-
 // CONSTRUCTORS
 
 GraphicsPipeline::GraphicsPipeline(const GraphicsPipelineSpecification &specification) {
@@ -126,18 +116,8 @@ GraphicsPipeline::GraphicsPipeline(const GraphicsPipelineSpecification &specific
   pipeline_ = CreateGraphicsPipeline(specification, pipeline_layout_);
 }
 
-GraphicsPipeline::~GraphicsPipeline() {
-}
-
-GraphicsPipeline::GraphicsPipeline(GraphicsPipeline &&other) noexcept {
-  pipeline_ = std::exchange(other.pipeline_, VK_NULL_HANDLE);
-  pipeline_layout_ = std::exchange(other.pipeline_layout_, VK_NULL_HANDLE);
-}
-
-GraphicsPipeline &GraphicsPipeline::operator=(GraphicsPipeline &&other) noexcept {
-  std::swap(pipeline_, other.pipeline_);
-  std::swap(pipeline_layout_, other.pipeline_layout_);
-  return *this;
+Walle::PipelineBindPoint GraphicsPipeline::GetBindPoint() const {
+  return Walle::PipelineBindPoint::E_GRAPHICS;
 }
 
 } // namespace Yuggoth

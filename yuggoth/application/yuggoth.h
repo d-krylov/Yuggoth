@@ -12,5 +12,6 @@
 #include "yuggoth/renderer/shaders/shader_library.h"
 #include "yuggoth/renderer/shaders/pipeline_library.h"
 #include "yuggoth/asset/material/material_manager.h"
+#include "yuggoth/renderer/resources/renderer_resources.h"
 
 #endif // YUGGOTH_H

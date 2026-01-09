@@ -1,8 +1,8 @@
 #ifndef YUGGOTH_RENDERER_CONTEXT_H
 #define YUGGOTH_RENDERER_CONTEXT_H
 
+#include "walle/walle.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
-#include "yuggoth/graphics/wrappers/graphics_structures.h"
 #include "yuggoth/application/application_context.h"
 #include <vector>
 

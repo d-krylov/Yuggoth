@@ -29,6 +29,7 @@ AccessMask2 GetAccessMaskFromLayout(ImageLayout layout, bool destination) {
   case ImageLayout::E_TRANSFER_SRC_OPTIMAL: return AccessMaskBits2::E_TRANSFER_READ_BIT;
   case ImageLayout::E_TRANSFER_DST_OPTIMAL: return AccessMaskBits2::E_TRANSFER_WRITE_BIT;
   case ImageLayout::E_PREINITIALIZED: assert(destination == false); return AccessMaskBits2::E_HOST_WRITE_BIT;
+  case ImageLayout::E_GENERAL: return AccessMaskBits2::E_SHADER_WRITE_BIT;
   default: std::unreachable();
   }
 }
@@ -44,6 +45,7 @@ PipelineStageMask2 GetPipelineStageMaskFromLayout(ImageLayout layout, bool desti
     return PipelineStageMaskBits2::E_EARLY_FRAGMENT_TESTS_BIT | PipelineStageMaskBits2::E_LATE_FRAGMENT_TESTS_BIT;
   case ImageLayout::E_SHADER_READ_ONLY_OPTIMAL: return PipelineStageMaskBits2::E_VERTEX_SHADER_BIT | PipelineStageMaskBits2::E_FRAGMENT_SHADER_BIT;
   case ImageLayout::E_PRESENT_SRC_KHR: return PipelineStageMaskBits2::E_ALL_COMMANDS_BIT;
+  case ImageLayout::E_GENERAL: return PipelineStageMaskBits2::E_RAY_TRACING_SHADER_BIT_KHR | PipelineStageMaskBits2::E_COMPUTE_SHADER_BIT;
   default: return destination ? PipelineStageMaskBits2::E_NONE : PipelineStageMaskBits2::E_ALL_COMMANDS_BIT;
   }
 }

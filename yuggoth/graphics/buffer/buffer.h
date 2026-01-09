@@ -37,14 +37,14 @@ public:
   VkBuffer GetHandle() const;
   VkDeviceAddress GetDeviceAddress() const;
 
-  BufferUsageMask GetUsage() const;
-  MemoryPropertyMask GetMemoryPropertyMask() const;
+  Walle::BufferUsageMask GetUsage() const;
+  Walle::MemoryPropertyMask GetMemoryPropertyMask() const;
 
   bool IsAccessWithCPU() const;
   bool IsGPU() const;
 
   static VkDeviceAddress GetBufferDeviceAddress(VkBuffer buffer);
-  static BufferInformation CreateBuffer(std::size_t size, BufferUsageMask usage, AllocationCreateMask allocation_mask);
+  static BufferInformation CreateBuffer(std::size_t size, Walle::BufferUsageMask usage, AllocationCreateMask allocation_mask);
 
 protected:
   void Swap(Buffer &other) noexcept;
@@ -55,8 +55,8 @@ private:
   uint64_t buffer_size_{0};
   uint32_t memory_type_{0};
   uint8_t *mapped_memory_{nullptr};
-  BufferUsageMask buffer_usage_;
-  MemoryPropertyMask memory_property_;
+  Walle::BufferUsageMask buffer_usage_;
+  Walle::MemoryPropertyMask memory_property_;
 };
 
 } // namespace Yuggoth

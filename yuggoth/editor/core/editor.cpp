@@ -22,6 +22,7 @@ void Editor::SetEditorContext(const EditorContext &editor_context) {
   inspector_window_.SetEditor(this);
   application_window_.SetEditor(this);
   asset_manager_window_.SetEditor(this);
+  console_window_.SetEditor(this);
 
   viewport_window_.SetEditorContext(&editor_context_);
   hierarchy_window_.SetEditorContext(&editor_context_);
@@ -29,6 +30,7 @@ void Editor::SetEditorContext(const EditorContext &editor_context) {
   application_window_.SetEditorContext(&editor_context_);
   asset_manager_window_.SetEditorContext(&editor_context_);
   renderer_window_.SetEditorContext(&editor_context_);
+  console_window_.SetEditorContext(&editor_context_);
 }
 
 SelectionManager *Editor::GetSelectionManager() {
@@ -45,6 +47,7 @@ void Editor::OnImGui() {
   application_window_.OnImGui();
   asset_manager_window_.OnImGui();
   renderer_window_.OnImGui();
+  console_window_.OnImGui();
 
   HanldeDialog();
 }

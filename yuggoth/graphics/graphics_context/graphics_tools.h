@@ -2,7 +2,7 @@
 #define YUGGOTH_GRAPHICS_TOOLS_H
 
 #include "yuggoth/core/tools/include/type_tools.h"
-#include "yuggoth/graphics/wrappers/graphics_structures.h"
+#include "yuggoth/graphics/core/graphics_types.h"
 #include <source_location>
 #include <vector>
 

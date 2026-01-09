@@ -17,6 +17,7 @@ include(cmake/shader-compiler.cmake)
 include(cmake/helpers.cmake)
 
 FetchContent_MakeAvailable(
+  Walle
   imgui
   imguizmo
   ImGuiFileDialog

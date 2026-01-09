@@ -78,7 +78,7 @@ VkDeviceAddress Buffer::GetDeviceAddress() const {
 }
 
 VkDeviceAddress Buffer::GetBufferDeviceAddress(VkBuffer buffer) {
-  BufferDeviceAddressInfo buffer_device_ai;
+  Walle::BufferDeviceAddressInfo buffer_device_ai;
   buffer_device_ai.buffer = buffer;
   auto address = vkGetBufferDeviceAddress(GraphicsContext::Get()->GetDevice(), buffer_device_ai);
   return address;
@@ -92,20 +92,20 @@ VkBuffer Buffer::GetHandle() const {
   return buffer_;
 }
 
-BufferUsageMask Buffer::GetUsage() const {
+Walle::BufferUsageMask Buffer::GetUsage() const {
   return buffer_usage_;
 }
 
-MemoryPropertyMask Buffer::GetMemoryPropertyMask() const {
+Walle::MemoryPropertyMask Buffer::GetMemoryPropertyMask() const {
   return memory_property_;
 }
 
 bool Buffer::IsGPU() const {
-  return memory_property_.HasBits(MemoryPropertyMaskBits::E_DEVICE_LOCAL_BIT);
+  return memory_property_.HasBits(Walle::MemoryPropertyMaskBits::E_DEVICE_LOCAL_BIT);
 }
 
 bool Buffer::IsAccessWithCPU() const {
-  return memory_property_.HasBits(MemoryPropertyMaskBits::E_HOST_VISIBLE_BIT);
+  return memory_property_.HasBits(Walle::MemoryPropertyMaskBits::E_HOST_VISIBLE_BIT);
 }
 
 } // namespace Yuggoth

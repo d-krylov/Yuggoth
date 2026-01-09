@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_VIRTUAL_ALLOCATOR_TYPES_H
 #define YUGGOTH_VIRTUAL_ALLOCATOR_TYPES_H
 
-#include "yuggoth/core/tools/include/mask.h"
+#include "walle/walle.h"
 #include <vma/vk_mem_alloc.h>
 
 namespace Yuggoth {
@@ -30,8 +30,8 @@ enum class VirtualAllocationCreateMaskBits {
   E_STRATEGY_MASK = VMA_ALLOCATION_CREATE_STRATEGY_MASK,
 };
 
-using AllocationCreateMask = Mask<AllocationCreateMaskBits>;
-using VirtualAllocationCreateMask = Mask<VirtualAllocationCreateMaskBits>;
+using AllocationCreateMask = Walle::Mask<AllocationCreateMaskBits>;
+using VirtualAllocationCreateMask = Walle::Mask<VirtualAllocationCreateMaskBits>;
 
 } // namespace Yuggoth
 

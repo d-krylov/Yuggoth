@@ -80,29 +80,11 @@ RayTracingPipeline::RayTracingPipeline(const RayTracingPipelineSpecification &sp
   descriptor_set_layouts_ = CreateDescriptorSetLayouts(descriptor_set_specifications);
   pipeline_layout_ = CreatePipelineLayout(descriptor_set_layouts_, push_constants_specifications);
 
-  ray_tracing_pipeline_ = CreateRayTracingPipeline(specification, shader_modules, pipeline_layout_);
+  pipeline_ = CreateRayTracingPipeline(specification, shader_modules, pipeline_layout_);
 }
 
-RayTracingPipeline::~RayTracingPipeline() {
-}
-
-RayTracingPipeline::RayTracingPipeline(RayTracingPipeline &&other) noexcept {
-  ray_tracing_pipeline_ = std::exchange(other.ray_tracing_pipeline_, VK_NULL_HANDLE);
-  pipeline_layout_ = std::exchange(other.pipeline_layout_, VK_NULL_HANDLE);
-}
-
-RayTracingPipeline &RayTracingPipeline::operator=(RayTracingPipeline &&other) noexcept {
-  std::swap(ray_tracing_pipeline_, other.ray_tracing_pipeline_);
-  std::swap(pipeline_layout_, other.pipeline_layout_);
-  return *this;
-}
-
-VkPipeline RayTracingPipeline::GetHandle() const {
-  return ray_tracing_pipeline_;
-}
-
-VkPipelineLayout RayTracingPipeline::GetPipelineLayout() const {
-  return pipeline_layout_;
+Walle::PipelineBindPoint RayTracingPipeline::GetBindPoint() const {
+  return Walle::PipelineBindPoint::E_RAY_TRACING_KHR;
 }
 
 } // namespace Yuggoth

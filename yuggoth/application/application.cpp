@@ -45,6 +45,7 @@ void Application::OnStart() {
   editor_context.asset_manager_ = &asset_manager_;
   editor_context.buffer_manager_ = &buffer_manager_;
   editor_context.shader_library_ = &shader_library_;
+  editor_context.renderer_resources_ = &renderer_resources_;
   editor_.SetEditorContext(editor_context);
 }
 
@@ -52,6 +53,11 @@ void Application::Run() {
   while (running_) {
 
     WindowManager::PollEvents();
+
+    auto new_viewport_size = editor_.GetEditorWindow<ViewportWindow>().GetViewportSize();
+    if (new_viewport_size.first != 0 && new_viewport_size.second != 0) {
+      renderer_resources_.GetCurrentFrame().OnResize(new_viewport_size.first, new_viewport_size.second);
+    }
 
     auto command_buffer = window_manager_.BeginFrame();
     auto swapchain = window_manager_.GetSwapchain();
@@ -71,11 +77,16 @@ void Application::Run() {
 
     OnImGui();
 
-    renderer_.Begin(scene_manager_.GetCurrentScene());
-    //renderer_.Draw(scene_manager_.GetCurrentScene());
+    renderer_resources_.BeginFrame();
 
-    renderer_.DrawRayTrace(scene_manager_.GetCurrentScene());
+    auto &current_frame = renderer_resources_.GetCurrentFrame();
+
+    renderer_.Begin(scene_manager_.GetCurrentScene(), current_frame.command_buffer_, current_frame.target_image_, current_frame.depth_image_);
+    renderer_.Draw(scene_manager_.GetCurrentScene(), current_frame.command_buffer_, current_frame.target_image_.GetExtent());
+
+    // renderer_.DrawRayTrace(scene_manager_.GetCurrentScene());
     renderer_.End();
+    renderer_resources_.EndFrame();
 
     imgui_renderer_.End(*command_buffer, *swapchain);
 

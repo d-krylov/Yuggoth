@@ -7,5 +7,6 @@
 #include "application_window.h"
 #include "asset_manager_window.h"
 #include "renderer_window.h"
+#include "console_window.h"
 
 #endif // YUGGOTH_EDITOR_WINDOWS_H

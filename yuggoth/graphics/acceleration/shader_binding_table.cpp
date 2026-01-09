@@ -25,13 +25,13 @@ void ShaderBindingTable::SetRegions(uint32_t miss, uint32_t hit, uint32_t callab
 
   auto sbt_address = Buffer::GetBufferDeviceAddress(sbt_buffer_);
 
-  raygen_sbt.size = AlignUp(raygen_group * aligned_handle_size, group_alignment);
+  raygen_sbt.size = aligned_handle_size;
   raygen_sbt.stride = aligned_handle_size;
   raygen_sbt.deviceAddress = sbt_address;
 
   miss_sbt_.size = AlignUp(miss * aligned_handle_size, group_alignment);
   miss_sbt_.stride = aligned_handle_size;
-  miss_sbt_.deviceAddress = raygen_sbt.deviceAddress + raygen_sbt.size;
+  miss_sbt_.deviceAddress = sbt_address + AlignUp(aligned_handle_size, group_alignment);
 
   hit_sbt_.size = AlignUp(hit * aligned_handle_size, group_alignment);
   hit_sbt_.stride = aligned_handle_size;

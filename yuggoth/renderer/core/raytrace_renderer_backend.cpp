@@ -35,11 +35,9 @@ void RaytraceRendererBackend::Draw(CommandBuffer *command_buffer, Scene *scene, 
   command_buffer->CommandPushDescriptorSet(std::array{target_image.GetDescriptor()}, raytrace_pipeline.GetPipelineLayout(), 0, 1,
                                            DescriptorType::E_STORAGE_IMAGE, PipelineBindPoint::E_RAY_TRACING_KHR);
 
-  command_buffer->CommandPushDescriptorSet(raytrace_pipeline.GetPipelineLayout(), 0, 2, vertex_buffer->GetHandle(), DescriptorType::E_STORAGE_BUFFER,
-                                           PipelineBindPoint::E_RAY_TRACING_KHR);
+  command_buffer->CommandPushDescriptorSet(raytrace_pipeline, 0, 2, vertex_buffer->GetHandle(), DescriptorType::E_STORAGE_BUFFER);
 
-  command_buffer->CommandPushDescriptorSet(raytrace_pipeline.GetPipelineLayout(), 0, 3, index_buffer->GetHandle(), DescriptorType::E_STORAGE_BUFFER,
-                                           PipelineBindPoint::E_RAY_TRACING_KHR);
+  command_buffer->CommandPushDescriptorSet(raytrace_pipeline, 0, 3, index_buffer->GetHandle(), DescriptorType::E_STORAGE_BUFFER);
 
   command_buffer->CommandPushConstants(raytrace_pipeline.GetPipelineLayout(), ShaderStageMaskBits::E_RAYGEN_BIT_KHR, camera->GetPosition(), 0);
 

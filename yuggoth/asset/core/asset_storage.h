@@ -11,6 +11,7 @@ namespace Yuggoth {
 
 struct AssetInformation {
   std::filesystem::path path_;
+  std::filesystem::file_time_type time_;
 };
 
 class AssetStorage {

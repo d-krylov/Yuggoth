@@ -90,6 +90,14 @@ VkSampler Image::GetSampler() const {
   return image_sampler_;
 }
 
+Walle::ImageLayout Image::GetImageLayout() const {
+  return current_layout_;
+}
+
+const ImageSpecification &Image::GetSpecification() const {
+  return image_specification_;
+}
+
 void Image::SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer) {
   if (new_layout == current_layout_) return;
   auto access0 = GetAccessMaskFromLayout(current_layout_, false);
@@ -111,10 +119,6 @@ void Image::SetImageData(std::span<const std::byte> data) {
   SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer);
   command_buffer.End();
   command_buffer.Submit();
-}
-
-const ImageSpecification &Image::GetSpecification() const {
-  return image_specification_;
 }
 
 DescriptorImageInfo Image::GetDescriptor() const {

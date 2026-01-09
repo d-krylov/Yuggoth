@@ -1,6 +1,12 @@
 include(FetchContent)
 
 FetchContent_Declare(
+	Walle
+	GIT_REPOSITORY https://github.com/d-krylov/Walle
+	GIT_TAG main
+)
+
+FetchContent_Declare(
 	fastgltf
 	GIT_REPOSITORY https://github.com/spnda/fastgltf
 	GIT_TAG v0.9.0

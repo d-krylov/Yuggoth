@@ -19,15 +19,15 @@ public:
 
   const RendererContext &GetRendererContext() const;
 
-  const Image2D &GetImage() const;
   const Image2D &GetStorageImage() const;
 
   void OnViewportResize(uint32_t width, uint32_t height);
 
-  void Begin(Scene *scene);
-  void Draw(Scene *scene);
+  void Begin(Scene *scene, CommandBuffer &command_buffer, Image2D &target_image, ImageDepth &depth_image);
 
-  void DrawRayTrace(Scene *scene);
+  void Draw(Scene *scene, CommandBuffer &command_buffer, const Extent2D &extent);
+
+  void DrawRayTrace(Scene *scene, CommandBuffer &command_buffer);
 
   void End();
 
@@ -43,9 +43,6 @@ private:
   RendererContext renderer_context_;
   DescriptorPool descriptor_pool_;
   DescriptorSet descriptor_set_;
-  CommandBuffer command_buffer_;
-  Image2D target_image_;
-  ImageDepth depth_image_;
   Image2D raytrace_image_;
   BaseRendererBackend base_renderer_backend_;
   RaytraceRendererBackend raytrace_renderer_backend_;

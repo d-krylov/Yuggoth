@@ -1,7 +1,6 @@
 #include <SPIRV-Reflect/spirv_reflect.h>
 #include "yuggoth/core/tools/include/type_tools.h"
 #include "yuggoth/core/tools/include/filesystem.h"
-#include "yuggoth/graphics/wrappers/graphics_formats.h"
 #include "yuggoth/graphics/core/graphics_specifications.h"
 #include "shader_module.h"
 #include <algorithm>

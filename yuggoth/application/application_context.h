@@ -10,12 +10,14 @@ class BufferManager;
 class Renderer;
 class PipelineLibrary;
 class ShaderLibrary;
+class RendererResources;
 
 struct EditorContext {
   SceneManager *scene_manager_ = nullptr;
   AssetManager *asset_manager_ = nullptr;
   BufferManager *buffer_manager_ = nullptr;
   ShaderLibrary *shader_library_ = nullptr;
+  RendererResources *renderer_resources_ = nullptr;
   Renderer *renderer_ = nullptr;
 };
 

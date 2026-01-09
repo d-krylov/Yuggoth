@@ -36,6 +36,8 @@ public:
   VkSampler GetSampler() const;
   VkImageView GetImageView() const;
 
+  Walle::ImageLayout GetImageLayout() const;
+
   const ImageSpecification &GetSpecification() const;
 
   void SetImageData(std::span<const std::byte> data);
@@ -54,7 +56,7 @@ private:
   VmaAllocation allocation_{VK_NULL_HANDLE};
   VkImageView image_view_{VK_NULL_HANDLE};
   VkSampler image_sampler_{VK_NULL_HANDLE};
-  ImageLayout current_layout_ = ImageLayout::E_UNDEFINED;
+  Walle::ImageLayout current_layout_ = Walle::ImageLayout::E_UNDEFINED;
   ImageSpecification image_specification_;
 };
 

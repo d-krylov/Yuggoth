@@ -116,12 +116,9 @@ void BaseRendererBackend::DrawIndirect(CommandBuffer *command_buffer, Scene *sce
   buffer_manager->UploadBuffer(command_buffer, light_range, std::as_bytes(std::span(draw_indirect_context.lights_)));
 
   command_buffer->CommandBindIndexBuffer(ibo->GetHandle(), 0, IndexType::E_UINT32);
-  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 0, vbo->GetHandle(), DescriptorType::E_STORAGE_BUFFER,
-                                           PipelineBindPoint::E_GRAPHICS);
-  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 1, matrix_range.buffer_, DescriptorType::E_STORAGE_BUFFER,
-                                           PipelineBindPoint::E_GRAPHICS);
-  command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 3, light_range.buffer_, DescriptorType::E_UNIFORM_BUFFER,
-                                           PipelineBindPoint::E_GRAPHICS);
+  command_buffer->CommandPushDescriptorSet(pipeline, 0, 0, vbo->GetHandle(), DescriptorType::E_STORAGE_BUFFER);
+  command_buffer->CommandPushDescriptorSet(pipeline, 0, 1, matrix_range.buffer_, DescriptorType::E_STORAGE_BUFFER);
+  command_buffer->CommandPushDescriptorSet(pipeline, 0, 3, light_range.buffer_, DescriptorType::E_UNIFORM_BUFFER);
   command_buffer->CommandPushDescriptorSet(pipeline.GetPipelineLayout(), 0, 4, renderer_->GetTopAccelerationStructure().GetHandle(),
                                            PipelineBindPoint::E_GRAPHICS);
 

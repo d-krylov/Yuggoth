@@ -1,0 +1,35 @@
+#ifndef YUGGOTH_FRAME_H
+#define YUGGOTH_FRAME_H
+
+#include "yuggoth/graphics/command/command_buffer.h"
+#include "yuggoth/graphics/synchronization/fence.h"
+#include "yuggoth/graphics/synchronization/semaphore.h"
+#include "yuggoth/graphics/image/image2D.h"
+#include "yuggoth/graphics/image/image_depth.h"
+
+namespace Yuggoth {
+
+struct Frame {
+  Frame();
+
+  Frame(const Frame &) = delete;
+  void operator=(const Frame &) = delete;
+
+  Frame(Frame &&other) noexcept = default;
+  Frame &operator=(Frame &&other) noexcept = default;
+
+  void Begin();
+
+  void End();
+
+  void OnResize(uint32_t width, uint32_t height);
+
+  CommandBuffer command_buffer_;
+  Fence frame_fence_;
+  Image2D target_image_;
+  ImageDepth depth_image_;
+};
+
+} // namespace Yuggoth
+
+#endif // YUGGOTH_FRAME_H

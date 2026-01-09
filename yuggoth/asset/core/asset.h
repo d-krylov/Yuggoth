@@ -9,7 +9,6 @@ namespace Yuggoth {
 enum class AssetKind {
   UNKNOWN,
   MODEL,
-  RESOURCE_OWNING_MODEL,
   IMAGE
 };
 
