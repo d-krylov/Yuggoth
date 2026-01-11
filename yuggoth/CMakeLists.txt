@@ -87,6 +87,7 @@ target_link_libraries(${PROJECT_NAME}
   tinyobjloader
   meshoptimizer
   unordered_dense::unordered_dense
+  spdlog::spdlog_header_only
 )
 
 target_compile_definitions(${PROJECT_NAME} PUBLIC 

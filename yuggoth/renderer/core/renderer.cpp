@@ -14,11 +14,13 @@ Renderer::Renderer(const RendererContext &renderer_context)
 }
 
 void Renderer::Create() {
-  raytrace_image_ = Image2D(100, 100, Format::E_R32G32B32A32_SFLOAT, ImageUsageMaskBits::E_SAMPLED_BIT | ImageUsageMaskBits::E_STORAGE_BIT);
+  auto image_ci = ImageCreateInformation::CreateTexture2D(100, 100, Walle::Format::E_R32G32B32A32_SFLOAT, 1);
+  image_ci.usage_ |= ImageUsageMaskBits::E_STORAGE_BIT;
+  raytrace_image_ = Image(image_ci, SamplerSpecification());
 }
 
 void Renderer::OnViewportResize(uint32_t width, uint32_t height) {
-  raytrace_image_ = Image2D(width, height, Format::E_R32G32B32A32_SFLOAT, ImageUsageMaskBits::E_SAMPLED_BIT | ImageUsageMaskBits::E_STORAGE_BIT);
+  raytrace_image_.Resize(width, height);
 }
 
 void Renderer::CreateDescriptorSets() {
@@ -31,11 +33,11 @@ const RendererContext &Renderer::GetRendererContext() const {
   return renderer_context_;
 }
 
-const Image2D &Renderer::GetStorageImage() const {
+const Image &Renderer::GetStorageImage() const {
   return raytrace_image_;
 }
 
-void Renderer::Begin(Scene *scene, CommandBuffer &command_buffer, Image2D &target_image, ImageDepth &depth_image) {
+void Renderer::Begin(Scene *scene, CommandBuffer &command_buffer, Image &target_image, Image &depth_image) {
 
   std::array<RenderingAttachmentInfo, 1> color_ai;
   color_ai[0].imageView = target_image.GetImageView();
@@ -51,8 +53,8 @@ void Renderer::Begin(Scene *scene, CommandBuffer &command_buffer, Image2D &targe
   depth_ai.storeOp = AttachmentStoreOp::E_STORE;
   depth_ai.clearValue.depthStencil = {1.0f, 0};
 
-  auto extent = target_image.GetExtent();
-  command_buffer.CommandBeginRendering(extent, color_ai, &depth_ai);
+  auto extent = target_image.GetImageCreateInformation().extent_;
+  command_buffer.CommandBeginRendering(Walle::Extent2D(extent.width, extent.height), color_ai, &depth_ai);
 }
 
 void Renderer::DrawRayTrace(Scene *scene, CommandBuffer &command_buffer) {
@@ -73,7 +75,7 @@ void Renderer::DrawRayTrace(Scene *scene, CommandBuffer &command_buffer) {
   BuildBottomAccelerationStructures(scene);
   BuildTopAccelerationStructure();
 
-  auto extent = raytrace_image_.GetExtent();
+  auto extent = raytrace_image_.GetImageCreateInformation().extent_;
   auto camera = scene->GetCurrentCamera();
   auto aspect = static_cast<float>(extent.width) / static_cast<float>(extent.height);
   camera->SetAspect(aspect);
@@ -92,7 +94,7 @@ void Renderer::DrawRayTrace(Scene *scene, CommandBuffer &command_buffer) {
   rendering_ai[0].storeOp = AttachmentStoreOp::E_STORE;
   rendering_ai[0].clearValue.color = {0.0f, 0.0f, 0.0f, 1.0f};
 
-  command_buffer.CommandBeginRendering(extent, rendering_ai);
+  command_buffer.CommandBeginRendering(Walle::Extent2D(extent.width, extent.height), rendering_ai);
   command_buffer.CommandSetViewport(0.0f, extent.height, extent.width, -float(extent.height));
   command_buffer.CommandSetScissor(0, 0, extent.width, extent.height);
   command_buffer.CommandEnableDepthTest(false);

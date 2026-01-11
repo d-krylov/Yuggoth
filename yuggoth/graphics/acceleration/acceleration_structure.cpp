@@ -8,10 +8,11 @@ namespace Yuggoth {
 AccelerationStructure::AccelerationStructure(const BottomLevelGeometry &bottom_geometry) {
   auto acceleration_structure_sizes = GetAccelerationStructureSize(bottom_geometry);
   auto main_size = acceleration_structure_sizes.accelerationStructureSize;
-  auto buffer_information = Buffer::CreateBuffer(main_size, CommonMasks::BUFFER_USAGE_STORAGE_AS, CommonMasks::BUFFER_GPU);
+  auto buffer_information = Buffer::CreateBuffer(BufferCreateInformation::CreateAccelerationStructureBuffer(main_size));
   acceleration_buffer_ = buffer_information.first;
   buffer_allocation_ = buffer_information.second.allocation_;
-  Buffer scratch_buffer(acceleration_structure_sizes.buildScratchSize, CommonMasks::BUFFER_USAGE_SCRATCH_AS, CommonMasks::BUFFER_GPU);
+  auto scratch_ci = BufferCreateInformation::CreateGPUBuffer(acceleration_structure_sizes.buildScratchSize, CommonMasks::BUFFER_USAGE_SCRATCH_AS);
+  Buffer scratch_buffer(scratch_ci);
   AccelerationSpecification specification;
   specification.buffer_ = acceleration_buffer_;
   specification.scratch_address_ = scratch_buffer.GetDeviceAddress();
@@ -24,10 +25,11 @@ AccelerationStructure::AccelerationStructure(std::span<const BLASInstances> bott
   std::ranges::for_each(bottom_instances, [&](const auto &instances) { primitive_count += instances.size(); }, &BLASInstances::instances_);
   auto acceleration_structure_sizes = GetAccelerationStructureSize(primitive_count);
   auto main_size = acceleration_structure_sizes.accelerationStructureSize;
-  auto buffer_information = Buffer::CreateBuffer(main_size, CommonMasks::BUFFER_USAGE_STORAGE_AS, CommonMasks::BUFFER_GPU);
+  auto buffer_information = Buffer::CreateBuffer(BufferCreateInformation::CreateAccelerationStructureBuffer(main_size));
   acceleration_buffer_ = buffer_information.first;
   buffer_allocation_ = buffer_information.second.allocation_;
-  Buffer scratch_buffer(acceleration_structure_sizes.buildScratchSize, CommonMasks::BUFFER_USAGE_SCRATCH_AS, CommonMasks::BUFFER_GPU);
+  auto scratch_ci = BufferCreateInformation::CreateGPUBuffer(acceleration_structure_sizes.buildScratchSize, CommonMasks::BUFFER_USAGE_SCRATCH_AS);
+  Buffer scratch_buffer(scratch_ci);
   AccelerationSpecification specification;
   specification.buffer_ = acceleration_buffer_;
   specification.scratch_address_ = scratch_buffer.GetDeviceAddress();

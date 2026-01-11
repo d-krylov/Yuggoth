@@ -1,4 +1,6 @@
 #include "graphics_allocator.h"
+#include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/graphics/buffer/buffer_create_information.h"
 #define VMA_IMPLEMENTATION
 #include <vma/vk_mem_alloc.h>
 #include <cassert>
@@ -62,22 +64,22 @@ AllocationInformation GraphicsAllocator::AllocateImage(const ImageCreateInfo &im
   return allocation_information;
 }
 
-AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &buffer_ci, VkBuffer &out_buffer,
-                                                        AllocationCreateMask allocation_mask) {
+AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInformation &buffer_create_information, VkBuffer &out_buffer) {
+  Walle::BufferCreateInfo buffer_ci;
+  buffer_ci.size = buffer_create_information.buffer_size_;
+  buffer_ci.usage = buffer_create_information.buffer_usage_;
+  buffer_ci.sharingMode = SharingMode::E_EXCLUSIVE;
 
-  AllocationCreateMask cpu_bit = AllocationCreateMaskBits::E_HOST_ACCESS_SEQUENTIAL_WRITE_BIT | //
-                                 AllocationCreateMaskBits::E_HOST_ACCESS_RANDOM_BIT;
+  Walle::MemoryPropertyMask host_visible = Walle::MemoryPropertyMaskBits::E_HOST_VISIBLE_BIT;
+  Walle::MemoryPropertyMask host_cached = Walle::MemoryPropertyMaskBits::E_HOST_CACHED_BIT;
 
-  auto has_cpu = allocation_mask.HasAnyBits(cpu_bit);
-
-  MemoryPropertyMask preferred_memory = has_cpu ? MemoryPropertyMaskBits::E_HOST_VISIBLE_BIT : MemoryPropertyMaskBits::E_DEVICE_LOCAL_BIT;
-  VmaMemoryUsage memory_usage = has_cpu ? VMA_MEMORY_USAGE_AUTO_PREFER_HOST : VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
+  auto has_cpu = buffer_create_information.required_memory_property_.HasAnyBits(host_visible);
 
   VmaAllocationCreateInfo vma_allocation_ci{};
-  vma_allocation_ci.flags = allocation_mask.GetValue();
-  vma_allocation_ci.usage = memory_usage;
-  vma_allocation_ci.requiredFlags = 0;
-  vma_allocation_ci.preferredFlags = preferred_memory.GetValue();
+  vma_allocation_ci.flags = buffer_create_information.allocator_mask_.GetValue();
+  vma_allocation_ci.usage = has_cpu ? VMA_MEMORY_USAGE_AUTO_PREFER_HOST : VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
+  vma_allocation_ci.requiredFlags = buffer_create_information.required_memory_property_.GetValue();
+  vma_allocation_ci.preferredFlags = buffer_create_information.preferred_memory_property_.GetValue();
   vma_allocation_ci.memoryTypeBits = 0;
   vma_allocation_ci.pool = nullptr;
   vma_allocation_ci.pUserData = nullptr;
@@ -90,6 +92,9 @@ AllocationInformation GraphicsAllocator::AllocateBuffer(const BufferCreateInfo &
   VkMemoryPropertyFlags memory_property;
   vmaGetAllocationMemoryProperties(allocator_, allocation, &memory_property);
   MemoryPropertyMask memory_property_mask(memory_property);
+
+  statistics_.allocated_buffers_count_++;
+  statistics_.allocated_buffer_memory_ += allocation_info.size;
 
   AllocationInformation allocation_information;
   allocation_information.allocation_ = allocation;

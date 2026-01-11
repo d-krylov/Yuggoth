@@ -3,18 +3,18 @@
 
 namespace Yuggoth {
 
-ImageAspectMask GetAspectMask(Format format) {
+Walle::ImageAspectMask GetAspectMask(Walle::Format format) {
   switch (format) {
-  case Format::E_D16_UNORM:
-  case Format::E_X8_D24_UNORM_PACK32:
-  case Format::E_D32_SFLOAT: return ImageAspectMaskBits::E_DEPTH_BIT;
-  case Format::E_S8_UINT: return ImageAspectMaskBits::E_STENCIL_BIT;
-  case Format::E_D16_UNORM_S8_UINT:
-  case Format::E_D24_UNORM_S8_UINT:
-  case Format::E_D32_SFLOAT_S8_UINT: return ImageAspectMaskBits::E_DEPTH_BIT | ImageAspectMaskBits::E_STENCIL_BIT;
+  case Walle::Format::E_D16_UNORM:
+  case Walle::Format::E_X8_D24_UNORM_PACK32:
+  case Walle::Format::E_D32_SFLOAT: return Walle::ImageAspectMaskBits::E_DEPTH_BIT;
+  case Walle::Format::E_S8_UINT: return Walle::ImageAspectMaskBits::E_STENCIL_BIT;
+  case Walle::Format::E_D16_UNORM_S8_UINT:
+  case Walle::Format::E_D24_UNORM_S8_UINT:
+  case Walle::Format::E_D32_SFLOAT_S8_UINT: return Walle::ImageAspectMaskBits::E_DEPTH_BIT | Walle::ImageAspectMaskBits::E_STENCIL_BIT;
   default: break;
   }
-  return ImageAspectMaskBits::E_COLOR_BIT;
+  return Walle::ImageAspectMaskBits::E_COLOR_BIT;
 }
 
 AccessMask2 GetAccessMaskFromLayout(ImageLayout layout, bool destination) {
@@ -62,6 +62,11 @@ PipelineStageMask2 StageMaskFromBufferUsage(BufferUsageMask usage) {
   mask |= usage.HasAnyBits(vertices_mask) ? PipelineStageMaskBits2::E_VERTEX_INPUT_BIT : PipelineStageMask2();
   mask |= usage.HasBits(acceleration_mask) ? PipelineStageMaskBits2::E_ACCELERATION_STRUCTURE_BUILD_BIT_KHR : PipelineStageMask2();
   mask |= usage.HasBits(indirect_mask) ? PipelineStageMaskBits2::E_DRAW_INDIRECT_BIT : PipelineStageMask2();
+}
+
+uint32_t GetImageNumberMipLevels(const Walle::Extent3D &extent) {
+  auto size = std::max<uint32_t>(std::max<uint32_t>(extent.width, extent.height), extent.depth);
+  return std::bit_width(size);
 }
 
 } // namespace Yuggoth

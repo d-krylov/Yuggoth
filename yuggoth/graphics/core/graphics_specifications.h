@@ -8,14 +8,6 @@ namespace Yuggoth {
 
 class ShaderModule;
 
-struct ImageSpecification {
-  Walle::Format format_ = Walle::Format::E_UNDEFINED;
-  Walle::Extent3D extent_{0, 0, 0};
-  uint32_t levels_{1};
-  uint32_t layers_{1};
-  Walle::ImageUsageMask usage_;
-};
-
 struct SamplerSpecification {
   Walle::Filter min_filter_ = Walle::Filter::E_LINEAR;
   Walle::Filter mag_filter_ = Walle::Filter::E_LINEAR;

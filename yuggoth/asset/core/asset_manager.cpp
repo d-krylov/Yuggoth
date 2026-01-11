@@ -60,22 +60,14 @@ IntrusivePointer<Model> AssetManager::RegisterModel(const std::filesystem::path 
   auto mesh_data = model_storage.Load(path);
   auto mesh_buffer_range = PutMeshDataInBuffers(mesh_data);
   auto model = MakeIntrusivePointer<Model>(mesh_buffer_range.first, mesh_buffer_range.second, path);
+
+  RegisterModelImages(model_storage);
   asset_storage_.AddModelStorage(model->uuid_, std::move(model_storage));
 
   assets_[model->uuid_] = model;
   outer_uuids_[path] = model->uuid_;
 
   return model;
-}
-
-IntrusivePointer<Image2D> AssetManager::RegisterTexture(const std::filesystem::path &path) {
-  if (outer_uuids_.contains(path)) {
-    auto uuid = outer_uuids_[path];
-    return IntrusivePointer<Image2D>(static_cast<Image2D *>(assets_[uuid].get()));
-  }
-
-  ImageWrapper image(path);
-  auto texture = MakeIntrusivePointer<Image2D>(image.GetWidth(), image.GetHeight(), image.GetData(), SamplerSpecification());
 }
 
 const AssetStorage &AssetManager::GetAssetStorage() const {
@@ -101,6 +93,46 @@ MeshBufferRange AssetManager::PutMeshDataInBuffers(const MeshData &mesh_data) {
   command_buffer.Submit();
 
   return MeshBufferRange(vertices_range, indices_range);
+}
+
+void AssetManager::RegisterModelImages(const ModelStorage &model_storage) {
+  auto image_paths = model_storage.GetImagePaths();
+  auto image_create_information = ImageCreateInformation::CreateTexture2D(0, 0, Walle::Format::E_R8G8B8A8_UNORM, 1);
+  std::size_t total_size = 0;
+  std::vector<ImageWrapper> image_wrappers;
+  for (const auto &image_path : image_paths) {
+    auto &image_wrapper = image_wrappers.emplace_back(image_path);
+    auto image_data = image_wrapper.GetData();
+    total_size += image_data.size_bytes();
+  }
+
+  std::size_t offset = 0;
+  Buffer staging_buffer(BufferCreateInformation::CreateStagingBuffer(total_size));
+  for (const auto &image_wrapper : image_wrappers) {
+    auto image_data = image_wrapper.GetData();
+    staging_buffer.SetData(image_data, offset);
+    offset += image_data.size_bytes();
+  }
+
+  offset = 0;
+  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
+  for (const auto &image_wrapper : image_wrappers) {
+    image_create_information.extent_.width = image_wrapper.GetWidth();
+    image_create_information.extent_.height = image_wrapper.GetHeight();
+    auto image = MakeIntrusivePointer<Image>(image_create_information, SamplerSpecification());
+    assets_[image->uuid_] = image;
+    image->SetImageLayout(ImageLayout::E_TRANSFER_DST_OPTIMAL, &command_buffer);
+    command_buffer.CommandCopyBufferToImage(staging_buffer.GetHandle(), image->GetImage(), image->GetImageCreateInformation().extent_, offset);
+    image->SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer);
+    offset += image_wrapper.GetData().size_bytes();
+  }
+  command_buffer.End();
+  command_buffer.Submit();
+}
+
+const std::unordered_map<UUID, IntrusivePointer<Asset>> &AssetManager::GetAssets() const {
+  return assets_;
 }
 
 } // namespace Yuggoth

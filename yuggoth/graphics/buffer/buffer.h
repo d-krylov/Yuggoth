@@ -3,6 +3,7 @@
 
 #include "yuggoth/graphics/graphics_context/graphics_context.h"
 #include "yuggoth/graphics/graphics_context/graphics_allocator.h"
+#include "buffer_create_information.h"
 #include <span>
 
 namespace Yuggoth {
@@ -13,7 +14,7 @@ class Buffer {
 public:
   Buffer() = default;
 
-  Buffer(std::size_t buffer_size, BufferUsageMask buffer_usage, AllocationCreateMask allocation_mask);
+  Buffer(const BufferCreateInformation &buffer_ci);
 
   ~Buffer();
 
@@ -33,6 +34,7 @@ public:
   void Map();
   void Unmap();
   void Destroy();
+  void Resize(std::size_t size);
 
   VkBuffer GetHandle() const;
   VkDeviceAddress GetDeviceAddress() const;
@@ -44,7 +46,7 @@ public:
   bool IsGPU() const;
 
   static VkDeviceAddress GetBufferDeviceAddress(VkBuffer buffer);
-  static BufferInformation CreateBuffer(std::size_t size, Walle::BufferUsageMask usage, AllocationCreateMask allocation_mask);
+  static BufferInformation CreateBuffer(const BufferCreateInformation &buffer_ci);
 
 protected:
   void Swap(Buffer &other) noexcept;

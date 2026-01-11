@@ -30,8 +30,8 @@ private:
   RendererResources renderer_resources_;
   ImGuiHost imgui_host_;
   ImGuiRenderer imgui_renderer_;
-  MaterialManager material_manager_;
   AssetManager asset_manager_;
+  MaterialManager material_manager_;
   SceneManager scene_manager_;
   Renderer renderer_;
   Editor editor_;

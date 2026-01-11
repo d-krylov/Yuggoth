@@ -1,5 +1,5 @@
-#ifndef YUGGOTH_VIRTUAL_ALLOCATOR_TYPES_H
-#define YUGGOTH_VIRTUAL_ALLOCATOR_TYPES_H
+#ifndef YUGGOTH_VMA_ALLOCATOR_TYPES_H
+#define YUGGOTH_VMA_ALLOCATOR_TYPES_H
 
 #include "walle/walle.h"
 #include <vma/vk_mem_alloc.h>
@@ -35,4 +35,4 @@ using VirtualAllocationCreateMask = Walle::Mask<VirtualAllocationCreateMaskBits>
 
 } // namespace Yuggoth
 
-#endif // YUGGOTH_VIRTUAL_ALLOCATOR_TYPES_H
+#endif // YUGGOTH_VMA_ALLOCATOR_TYPES_H

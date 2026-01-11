@@ -234,15 +234,15 @@ void CommandBuffer::CommandBindIndexBuffer(const VkBuffer buffer, std::size_t of
 }
 
 // COPY
-void CommandBuffer::CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent) {
-  ImageSubresourceLayers subresource_layers;
+void CommandBuffer::CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent, std::size_t buffer_offset) {
+  Walle::ImageSubresourceLayers subresource_layers;
   subresource_layers.aspectMask = ImageAspectMaskBits::E_COLOR_BIT;
   subresource_layers.mipLevel = 0;
   subresource_layers.baseArrayLayer = 0;
   subresource_layers.layerCount = 1;
 
-  BufferImageCopy buffer_image_copy;
-  buffer_image_copy.bufferOffset = 0;
+  Walle::BufferImageCopy buffer_image_copy;
+  buffer_image_copy.bufferOffset = buffer_offset;
   buffer_image_copy.bufferRowLength = 0;
   buffer_image_copy.bufferImageHeight = 0;
   buffer_image_copy.imageSubresource = subresource_layers;
@@ -255,6 +255,12 @@ void CommandBuffer::CommandCopyBufferToImage(VkBuffer buffer, VkImage image, con
 void CommandBuffer::CommandCopyBuffer(VkBuffer source, VkBuffer destination, const BufferCopy &buffer_copy) {
   vkCmdCopyBuffer(command_buffer_, source, destination, 1, buffer_copy);
 }
+
+void CommandBuffer::UpdateBuffer(VkBuffer buffer, std::size_t offset, std::span<const std::byte> data) {
+  vkCmdUpdateBuffer(command_buffer_, buffer, offset, data.size(), data.data());
+}
+
+// DEBUG
 
 void CommandBuffer::CommandBeginDebugUtilsLabel(std::string_view label_name) {
   DebugUtilsLabelEXT debug_utils_label;

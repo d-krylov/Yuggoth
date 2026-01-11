@@ -52,7 +52,7 @@ void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instan
 
   auto size = sizeof(AccelerationStructureInstanceKHR) * primitive_count;
 
-  Buffer instance_buffer(size, CommonMasks::BUFFER_USAGE_SOURCES_AS, CommonMasks::BUFFER_CPU);
+  Buffer instance_buffer(BufferCreateInformation::CreateCPUBuffer(size, CommonMasks::BUFFER_USAGE_SOURCES_AS));
 
   auto instance_vector = GetInstanceVector(blas_instances);
   instance_buffer.SetData<AccelerationStructureInstanceKHR>(instance_vector);
@@ -66,8 +66,8 @@ void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instan
 
   auto type = AccelerationStructureTypeKHR::E_TOP_LEVEL_KHR;
 
-  BufferUsageMask scratch_usage = BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT | BufferUsageMaskBits::E_STORAGE_BUFFER_BIT;
-  Buffer scrath_buffer(sizes.buildScratchSize, scratch_usage, AllocationCreateMaskBits::E_DEDICATED_MEMORY_BIT);
+  auto scratch_ci = BufferCreateInformation::CreateGPUBuffer(sizes.buildScratchSize, CommonMasks::BUFFER_USAGE_SCRATCH_AS);
+  Buffer scrath_buffer(scratch_ci);
 
   acceleration_structure_ = CreateAccelerationStructure(specification.buffer_, type, specification.buffer_offset_, specification.structure_size_);
   auto geometry_info = GetBuildGeometryInformation(geometries, scrath_buffer.GetDeviceAddress(), acceleration_structure_, type);

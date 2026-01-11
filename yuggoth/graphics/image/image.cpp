@@ -17,17 +17,17 @@ VkImageView Image::CreateImageView(VkImage image, Format format, ImageViewType i
   return image_view;
 }
 
-VkImage Image::CreateImage(ImageType image_type, const ImageSpecification &image_specification, VmaAllocation &out_allocation) {
-  ImageCreateInfo image_ci;
-  image_ci.imageType = image_type;
-  image_ci.extent = image_specification.extent_;
-  image_ci.mipLevels = image_specification.levels_;
-  image_ci.arrayLayers = image_specification.layers_;
-  image_ci.format = image_specification.format_;
+VkImage Image::CreateImage(const ImageCreateInformation &image_create_information, VmaAllocation &out_allocation) {
+  Walle::ImageCreateInfo image_ci;
+  image_ci.imageType = image_create_information.image_type_;
+  image_ci.extent = image_create_information.extent_;
+  image_ci.mipLevels = image_create_information.levels_;
+  image_ci.arrayLayers = image_create_information.layers_;
+  image_ci.format = image_create_information.format_;
   image_ci.tiling = ImageTiling::E_OPTIMAL;
   image_ci.initialLayout = ImageLayout::E_UNDEFINED;
-  image_ci.usage = image_specification.usage_;
-  image_ci.samples = SampleCountMaskBits::E_1_BIT;
+  image_ci.usage = image_create_information.usage_;
+  image_ci.samples = image_create_information.samples_;
   image_ci.sharingMode = SharingMode::E_EXCLUSIVE;
   VkImage image = VK_NULL_HANDLE;
   auto allocation_information = GraphicsAllocator::Get()->AllocateImage(image_ci, image);
@@ -35,19 +35,18 @@ VkImage Image::CreateImage(ImageType image_type, const ImageSpecification &image
   return image;
 }
 
-void Image::Initialize(ImageType image_type, ImageViewType view_type, const ImageSpecification &image_specification,
-                       const std::optional<SamplerSpecification> &sampler_specification) {
-  image_specification_ = image_specification;
-  auto aspect_mask = GetAspectMask(image_specification_.format_);
-  auto subresource = GetImageSubresourceRange(aspect_mask, 0, image_specification_.levels_, 0, image_specification_.layers_);
-  image_ = CreateImage(image_type, image_specification_, allocation_);
-  image_view_ = CreateImageView(GetImage(), image_specification_.format_, view_type, subresource);
-  image_sampler_ = sampler_specification.has_value() ? Sampler::CreateSampler(sampler_specification.value()) : nullptr;
+void Image::CreateImage() {
+  auto aspect_mask = GetAspectMask(image_create_information_.format_);
+  auto subresource = GetImageSubresourceRange(aspect_mask, 0, image_create_information_.levels_, 0, image_create_information_.layers_);
+  image_ = CreateImage(image_create_information_, allocation_);
+  image_view_ = CreateImageView(GetImage(), image_create_information_.format_, image_create_information_.image_view_type_, subresource);
+  current_layout_ = ImageLayout::E_UNDEFINED;
 }
 
-Image::Image(ImageType type, ImageViewType view_type, const ImageSpecification &specification,
-             const std::optional<SamplerSpecification> &sampler_specification) {
-  Initialize(type, view_type, specification, sampler_specification);
+Image::Image(const ImageCreateInformation &image_ci, const std::optional<SamplerSpecification> &sampler_specification)
+  : image_create_information_(image_ci) {
+  CreateImage();
+  image_sampler_ = sampler_specification.transform(Sampler::CreateSampler).value_or(VK_NULL_HANDLE);
 }
 
 Image::Image(Image &&other) noexcept {
@@ -65,17 +64,29 @@ void Image::Swap(Image &other) noexcept {
   std::swap(image_view_, other.image_view_);
   std::swap(image_sampler_, other.image_sampler_);
   std::swap(current_layout_, other.current_layout_);
-  std::swap(image_specification_, other.image_specification_);
+  std::swap(image_create_information_, other.image_create_information_);
 }
 
 Image::~Image() {
-  Destroy();
+  DestroyImage();
+  DestroySampler();
 }
 
-void Image::Destroy() {
+void Image::DestroyImage() {
   vkDestroyImageView(GraphicsContext::Get()->GetDevice(), image_view_, nullptr);
-  vkDestroySampler(GraphicsContext::Get()->GetDevice(), image_sampler_, nullptr);
   GraphicsAllocator::Get()->DestroyImage(image_, allocation_);
+}
+
+void Image::DestroySampler() {
+  vkDestroySampler(GraphicsContext::Get()->GetDevice(), image_sampler_, nullptr);
+}
+
+// API
+void Image::Resize(uint32_t width, uint32_t heigth) {
+  DestroyImage();
+  image_create_information_.extent_.width = width;
+  image_create_information_.extent_.height = heigth;
+  CreateImage();
 }
 
 VkImage Image::GetImage() const {
@@ -94,8 +105,8 @@ Walle::ImageLayout Image::GetImageLayout() const {
   return current_layout_;
 }
 
-const ImageSpecification &Image::GetSpecification() const {
-  return image_specification_;
+const ImageCreateInformation &Image::GetImageCreateInformation() const {
+  return image_create_information_;
 }
 
 void Image::SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer) {
@@ -110,12 +121,12 @@ void Image::SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer
 }
 
 void Image::SetImageData(std::span<const std::byte> data) {
-  Buffer buffer(data.size(), BufferUsageMaskBits::E_TRANSFER_SRC_BIT, CommonMasks::BUFFER_CPU);
+  Buffer buffer(BufferCreateInformation::CreateStagingBuffer(data.size_bytes()));
   buffer.SetData<std::byte>(data);
   CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   SetImageLayout(ImageLayout::E_TRANSFER_DST_OPTIMAL, &command_buffer);
-  command_buffer.CommandCopyBufferToImage(buffer.GetHandle(), GetImage(), image_specification_.extent_);
+  command_buffer.CommandCopyBufferToImage(buffer.GetHandle(), GetImage(), image_create_information_.extent_);
   SetImageLayout(ImageLayout::E_SHADER_READ_ONLY_OPTIMAL, &command_buffer);
   command_buffer.End();
   command_buffer.Submit();
@@ -127,6 +138,10 @@ DescriptorImageInfo Image::GetDescriptor() const {
   descriptor_image_info.imageView = GetImageView();
   descriptor_image_info.sampler = GetSampler();
   return descriptor_image_info;
+}
+
+AssetKind Image::GetAssetKind() const {
+  return AssetKind::IMAGE;
 }
 
 } // namespace Yuggoth

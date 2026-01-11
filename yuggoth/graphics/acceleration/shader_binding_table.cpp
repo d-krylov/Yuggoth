@@ -67,9 +67,9 @@ void ShaderBindingTable::CreateShaderBindingTable(VkPipeline pipeline, uint32_t 
   auto buffer_size = GetShaderBindingTableSize(miss, hit, callable);
   auto aligned_buffer_size = AlignUp(buffer_size, raytracing_properties.shaderGroupHandleAlignment);
 
-  Buffer staging_buffer(buffer_size, BufferUsageMaskBits::E_TRANSFER_SRC_BIT, CommonMasks::BUFFER_CPU);
+  Buffer staging_buffer(BufferCreateInformation::CreateStagingBuffer(buffer_size));
 
-  auto buffer_information = Buffer::CreateBuffer(aligned_buffer_size, CommonMasks::BUFFER_USAGE_SBT, CommonMasks::BUFFER_GPU);
+  auto buffer_information = Buffer::CreateBuffer(BufferCreateInformation::CreateGPUBuffer(aligned_buffer_size, CommonMasks::BUFFER_USAGE_SBT));
   sbt_buffer_ = buffer_information.first;
   sbt_buffer_allocation_ = buffer_information.second.allocation_;
 

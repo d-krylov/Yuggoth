@@ -2,7 +2,7 @@
 #define YUGGOTH_COMMON_TYPES_H
 
 #include <vulkan/vulkan.h>
-#include "yuggoth/scene/light/light.h"
+#include "yuggoth/scene/components/light.h"
 #include "yuggoth/asset/model/mesh.h"
 
 namespace Yuggoth {

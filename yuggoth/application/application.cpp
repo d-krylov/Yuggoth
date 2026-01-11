@@ -11,7 +11,7 @@ Application::Application()
     shader_library_(),                                                                 //
     pipeline_library_(&shader_library_),                                               //
     imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()),                      //
-    material_manager_(),                                                               //
+    material_manager_(&asset_manager_),                                                //
     asset_manager_(AssetManagerCreateContext(&buffer_manager_, &material_manager_)),   //
     scene_manager_(&asset_manager_),                                                   //
     renderer_(RendererContext(&pipeline_library_, &buffer_manager_, &asset_manager_)), //
@@ -81,8 +81,10 @@ void Application::Run() {
 
     auto &current_frame = renderer_resources_.GetCurrentFrame();
 
+    auto extent = current_frame.target_image_.GetImageCreateInformation().extent_;
+
     renderer_.Begin(scene_manager_.GetCurrentScene(), current_frame.command_buffer_, current_frame.target_image_, current_frame.depth_image_);
-    renderer_.Draw(scene_manager_.GetCurrentScene(), current_frame.command_buffer_, current_frame.target_image_.GetExtent());
+    renderer_.Draw(scene_manager_.GetCurrentScene(), current_frame.command_buffer_, Extent2D(extent.width, extent.height));
 
     // renderer_.DrawRayTrace(scene_manager_.GetCurrentScene());
     renderer_.End();

@@ -39,7 +39,7 @@ private:
   std::vector<Semaphore> render_finished_semaphores_;
   std::vector<Semaphore> image_available_semaphores_;
   std::vector<Fence> frame_fences_;
-  uint32_t frame_index_ = 0;
+  uint64_t frame_index_ = 0;
 };
 
 } // namespace Yuggoth

@@ -2,8 +2,8 @@
 
 namespace Yuggoth {
 
-DescriptorPool::DescriptorPool(std::span<const DescriptorPoolSize> descriptor_pool_sizes, DescriptorPoolCreateMask mask, uint32_t max_sets) {
-  descriptor_pool_ = CreateDescriptorPool(descriptor_pool_sizes, mask, max_sets);
+DescriptorPool::DescriptorPool(std::span<const Walle::DescriptorPoolSize> descriptor_sizes, Walle::DescriptorPoolCreateMask mask, uint32_t max_sets) {
+  descriptor_pool_ = Create(descriptor_sizes, mask, max_sets);
 }
 
 DescriptorPool::~DescriptorPool() {
@@ -22,8 +22,8 @@ DescriptorPool &DescriptorPool::operator=(DescriptorPool &&other) noexcept {
   return *this;
 }
 
-VkDescriptorPool DescriptorPool::CreateDescriptorPool(std::span<const DescriptorPoolSize> sizes, DescriptorPoolCreateMask mask, uint32_t max_sets) {
-  DescriptorPoolCreateInfo descriptor_pool_ci;
+VkDescriptorPool DescriptorPool::Create(std::span<const Walle::DescriptorPoolSize> sizes, Walle::DescriptorPoolCreateMask mask, uint32_t max_sets) {
+  Walle::DescriptorPoolCreateInfo descriptor_pool_ci;
   descriptor_pool_ci.flags = mask;
   descriptor_pool_ci.maxSets = max_sets;
   descriptor_pool_ci.poolSizeCount = sizes.size();

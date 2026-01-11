@@ -5,9 +5,8 @@ namespace Yuggoth {
 
 // CONSTRUCTORS
 
-Buffer::Buffer(std::size_t buffer_size, BufferUsageMask buffer_usage, AllocationCreateMask allocation_mask)
-  : buffer_size_(buffer_size), buffer_usage_(buffer_usage) {
-  auto buffer_information = CreateBuffer(buffer_size, buffer_usage, allocation_mask);
+Buffer::Buffer(const BufferCreateInformation &buffer_ci) : buffer_size_(buffer_ci.buffer_size_), buffer_usage_(buffer_ci.buffer_usage_) {
+  auto buffer_information = CreateBuffer(buffer_ci);
   buffer_ = buffer_information.first;
   allocation_ = buffer_information.second.allocation_;
   memory_type_ = buffer_information.second.memory_type_;
@@ -43,15 +42,9 @@ void Buffer::Swap(Buffer &other) noexcept {
   std::swap(memory_type_, other.memory_type_);
 }
 
-BufferInformation Buffer::CreateBuffer(std::size_t size, BufferUsageMask usage, AllocationCreateMask allocation_mask) {
-  BufferCreateInfo buffer_ci;
-  buffer_ci.size = size;
-  buffer_ci.usage = usage;
-  buffer_ci.sharingMode = SharingMode::E_EXCLUSIVE;
-
+BufferInformation Buffer::CreateBuffer(const BufferCreateInformation &buffer_create_information) {
   BufferInformation buffer_information;
-  buffer_information.second = GraphicsAllocator::Get()->AllocateBuffer(buffer_ci, buffer_information.first, allocation_mask);
-
+  buffer_information.second = GraphicsAllocator::Get()->AllocateBuffer(buffer_create_information, buffer_information.first);
   return buffer_information;
 }
 
@@ -68,6 +61,9 @@ void Buffer::MemoryCopy(std::span<const std::byte> data, std::size_t byte_offset
   auto destination_span = GetMappedAs<std::byte>();
   auto destination_offset = destination_span.subspan(byte_offset);
   std::ranges::copy(data, destination_offset.begin());
+}
+
+void Buffer::Resize(std::size_t size) {
 }
 
 // GETTERS

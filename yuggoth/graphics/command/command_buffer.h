@@ -86,8 +86,9 @@ public:
   void CommandDrawMeshTasksIndirect(VkBuffer buffer, std::size_t byte_offset, uint32_t draw_count, uint32_t stride);
 
   // COPY
-  void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent);
+  void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent, std::size_t buffer_offset = 0);
   void CommandCopyBuffer(VkBuffer source, VkBuffer destination, const BufferCopy &buffer_copy);
+  void UpdateBuffer(VkBuffer buffer, std::size_t offset, std::span<const std::byte> data);
 
   // RAY
   void CommandTraceRay(const StridedDeviceAddressRegionKHR &raygen, const StridedDeviceAddressRegionKHR &miss,

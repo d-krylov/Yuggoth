@@ -3,7 +3,7 @@
 
 #include "yuggoth/graphics/pipeline/graphics_pipeline.h"
 #include "yuggoth/graphics/buffer/buffer.h"
-#include "yuggoth/graphics/image/image2D.h"
+#include "yuggoth/graphics/image/image.h"
 #include <memory>
 
 namespace Yuggoth {
@@ -38,7 +38,7 @@ private:
   Buffer vertex_buffer_;
   Buffer index_buffer_;
   ImGuiPushConstants imgui_push_constants_;
-  Image2D image_;
+  Image image_;
 };
 
 } // namespace Yuggoth

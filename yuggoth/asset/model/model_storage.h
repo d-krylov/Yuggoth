@@ -17,7 +17,7 @@ public:
   std::span<const Meshlet> GetMeshlets() const;
   std::span<const Texture> GetTextures() const;
   std::span<const Material> GetMaterials() const;
-  std::span<const std::filesystem::path> GetImages() const;
+  std::span<const std::filesystem::path> GetImagePaths() const;
 
   std::size_t GetNumberOfVertices() const;
   std::size_t GetNumberOfIndices() const;

@@ -2,7 +2,7 @@
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/asset/model/mesh.h"
 #include "yuggoth/core/tools/include/core.h"
-#include "yuggoth/scene/light/light.h"
+#include "yuggoth/scene/components/light.h"
 
 namespace Yuggoth {
 
@@ -12,12 +12,12 @@ BufferManager::BufferManager() {
 
 void BufferManager::Create() {
   BufferUsageMask USAGE = BufferUsageMaskBits::E_STORAGE_BUFFER_BIT | CommonMasks::BUFFER_USAGE_SOURCES_AS;
-  AddBufferAllocator<Staging>(100_MiB, BufferUsageMaskBits::E_TRANSFER_SRC_BIT, CommonMasks::BUFFER_CPU);
-  AddBufferAllocator<Index32>(100_MiB, USAGE | BufferUsageMaskBits::E_INDEX_BUFFER_BIT | CommonMasks::BUFFER_USAGE_GPU, CommonMasks::BUFFER_GPU);
-  AddBufferAllocator<Vertex>(100_MiB, USAGE | BufferUsageMaskBits::E_VERTEX_BUFFER_BIT | CommonMasks::BUFFER_USAGE_GPU, CommonMasks::BUFFER_GPU);
-  AddBufferAllocator<IndexedIndirectCommand>(10_MiB, BufferUsageMaskBits::E_INDIRECT_BUFFER_BIT, CommonMasks::BUFFER_CPU);
-  AddBufferAllocator<TransformMatrix>(10_MiB, BufferUsageMaskBits::E_STORAGE_BUFFER_BIT, CommonMasks::BUFFER_CPU);
-  AddBufferAllocator<Light>(32_KiB, BufferUsageMaskBits::E_UNIFORM_BUFFER_BIT, CommonMasks::BUFFER_CPU);
+  AddBufferAllocator<Staging>(BufferCreateInformation::CreateStagingBuffer(100_MiB));
+  AddBufferAllocator<Index32>(BufferCreateInformation::CreateGPUBuffer(100_MiB, USAGE | BufferUsageMaskBits::E_INDEX_BUFFER_BIT));
+  AddBufferAllocator<Vertex>(BufferCreateInformation::CreateGPUBuffer(100_MiB, USAGE | BufferUsageMaskBits::E_VERTEX_BUFFER_BIT));
+  AddBufferAllocator<IndexedIndirectCommand>(BufferCreateInformation::CreateCPUBuffer(10_MiB, BufferUsageMaskBits::E_INDIRECT_BUFFER_BIT));
+  AddBufferAllocator<TransformMatrix>(BufferCreateInformation::CreateCPUBuffer(10_MiB, BufferUsageMaskBits::E_STORAGE_BUFFER_BIT));
+  AddBufferAllocator<Light>(BufferCreateInformation::CreateCPUBuffer(32_KiB, BufferUsageMaskBits::E_UNIFORM_BUFFER_BIT));
 }
 
 BufferAllocator &BufferManager::GetBufferAllocator(std::size_t type_id) {

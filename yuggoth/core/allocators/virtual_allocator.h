@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_VIRTUAL_ALLOCATOR_H
 #define YUGGOTH_VIRTUAL_ALLOCATOR_H
 
-#include "virtual_allocator_types.h"
+#include "yuggoth/graphics/core/vma_allocator_types.h"
 #include <unordered_map>
 #include <vector>
 

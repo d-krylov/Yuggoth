@@ -3,7 +3,7 @@
 namespace Yuggoth {
 
 VkDescriptorSetLayout DescriptorSet::CreateDescriptorSetLayout(std::span<const Walle::DescriptorSetLayoutBinding> descriptor_set_bindings,
-                                                               DescriptorSetLayoutCreateMask descriptor_set_create_mask) {
+                                                               Walle::DescriptorSetLayoutCreateMask descriptor_set_create_mask) {
 
   auto binding_count = descriptor_set_bindings.size();
   std::vector<DescriptorBindingMask> binding_masks(binding_count);
@@ -59,11 +59,11 @@ DescriptorSet &DescriptorSet::operator=(DescriptorSet &&other) noexcept {
 }
 
 VkDescriptorSet DescriptorSet::AllocateDescriptorSet(VkDescriptorPool descriptor_pool, VkDescriptorSetLayout set_layout, uint32_t descriptors_count) {
-  DescriptorSetVariableDescriptorCountAllocateInfo descriptor_set_count_ai;
+  Walle::DescriptorSetVariableDescriptorCountAllocateInfo descriptor_set_count_ai;
   descriptor_set_count_ai.descriptorSetCount = 1;
   descriptor_set_count_ai.pDescriptorCounts = &descriptors_count;
 
-  DescriptorSetAllocateInfo descriptor_set_ai;
+  Walle::DescriptorSetAllocateInfo descriptor_set_ai;
   descriptor_set_ai.pNext = &descriptor_set_count_ai;
   descriptor_set_ai.descriptorPool = descriptor_pool;
   descriptor_set_ai.descriptorSetCount = 1;
@@ -75,7 +75,7 @@ VkDescriptorSet DescriptorSet::AllocateDescriptorSet(VkDescriptorPool descriptor
 }
 
 void DescriptorSet::Update(std::span<const DescriptorImageInfo> images, uint32_t binding, DescriptorType descriptor_type, uint32_t start) {
-  WriteDescriptorSet write_descriptor_set;
+  Walle::WriteDescriptorSet write_descriptor_set;
   write_descriptor_set.dstSet = descriptor_set_;
   write_descriptor_set.dstBinding = binding;
   write_descriptor_set.dstArrayElement = start;

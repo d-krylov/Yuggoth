@@ -5,7 +5,7 @@
 #include "yuggoth/asset/model/primitives.h"
 #include "yuggoth/core/intrusive/intrusive_pointer.h"
 #include "yuggoth/application/application_context.h"
-#include "yuggoth/graphics/image/image2D.h"
+#include "yuggoth/graphics/image/image.h"
 #include <memory>
 #include "asset_storage.h"
 
@@ -22,14 +22,16 @@ public:
   IntrusivePointer<Model> RegisterModel(const std::filesystem::path &path);
   IntrusivePointer<Model> RegisterModel(PrimitiveKind primitive_kind);
 
-  IntrusivePointer<Image2D> RegisterTexture(const std::filesystem::path &path);
-
   void Update();
 
   const AssetStorage &GetAssetStorage() const;
 
+  const std::unordered_map<UUID, IntrusivePointer<Asset>> &GetAssets() const;
+
 protected:
   MeshBufferRange PutMeshDataInBuffers(const MeshData &mesh_data);
+
+  void RegisterModelImages(const ModelStorage &model_storage);
 
 private:
   AssetManagerCreateContext create_context_;

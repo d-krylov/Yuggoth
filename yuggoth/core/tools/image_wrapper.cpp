@@ -9,7 +9,7 @@ ImageWrapper::ImageWrapper(const std::filesystem::path &image_path) {
 }
 
 ImageWrapper::~ImageWrapper() {
-  stbi_image_free(image_);
+  // stbi_image_free(image_);
 }
 
 std::span<const std::byte> ImageWrapper::GetData() const {

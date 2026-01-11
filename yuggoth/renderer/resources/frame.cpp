@@ -5,8 +5,11 @@ namespace Yuggoth {
 
 Frame::Frame() {
   command_buffer_ = CommandBuffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
-  target_image_ = Image2D(100, 100);
-  depth_image_ = ImageDepth(100, 100);
+  auto target_ci = ImageCreateInformation::CreateRenderTarget(100, 100, Walle::Format::E_R8G8B8A8_UNORM);
+  auto depth_ci = ImageCreateInformation::CreateRenderTarget(100, 100, Walle::Format::E_D32_SFLOAT);
+  target_ci.usage_ |= Walle::ImageUsageMaskBits::E_SAMPLED_BIT;
+  target_image_ = Image(target_ci, SamplerSpecification());
+  depth_image_ = Image(depth_ci, std::nullopt);
   frame_fence_ = Fence(Walle::FenceCreateMaskBits::E_SIGNALED_BIT);
 }
 
@@ -32,12 +35,12 @@ void Frame::End() {
 
 void Frame::OnResize(uint32_t width, uint32_t height) {
 
-  auto current_extent = target_image_.GetExtent();
+  auto current_extent = target_image_.GetImageCreateInformation().extent_;
 
   if (current_extent.width != width && current_extent.height != height) {
     frame_fence_.Wait();
-    target_image_ = Image2D(width, height);
-    depth_image_ = ImageDepth(width, height);
+    target_image_.Resize(width, height);
+    depth_image_.Resize(width, height);
   }
 }
 

@@ -3,14 +3,11 @@
 
 namespace Yuggoth {
 
-template <typename T>
-void BufferManager::AddBufferAllocator(uint64_t buffer_size, BufferUsageMask buffer_usage, AllocationCreateMask allocation_mask) {
+template <typename T> void BufferManager::AddBufferAllocator(const BufferCreateInformation &buffer_ci) {
   BufferAllocatorSpecification specification;
-  specification.allocation_mask_ = allocation_mask;
-  specification.buffer_size_ = buffer_size;
+  specification.buffer_ci_ = buffer_ci;
   specification.buffer_stride_ = sizeof(T);
   specification.buffer_typeid_ = T::type_id;
-  specification.buffer_usage_ = buffer_usage;
   allocators_.emplace(T::type_id, specification);
 }
 

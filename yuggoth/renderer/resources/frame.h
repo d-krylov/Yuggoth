@@ -4,8 +4,7 @@
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/graphics/synchronization/fence.h"
 #include "yuggoth/graphics/synchronization/semaphore.h"
-#include "yuggoth/graphics/image/image2D.h"
-#include "yuggoth/graphics/image/image_depth.h"
+#include "yuggoth/graphics/image/image.h"
 
 namespace Yuggoth {
 
@@ -26,8 +25,8 @@ struct Frame {
 
   CommandBuffer command_buffer_;
   Fence frame_fence_;
-  Image2D target_image_;
-  ImageDepth depth_image_;
+  Image target_image_;
+  Image depth_image_;
 };
 
 } // namespace Yuggoth

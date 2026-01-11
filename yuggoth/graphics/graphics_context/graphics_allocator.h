@@ -6,8 +6,10 @@
 
 namespace Yuggoth {
 
+struct BufferCreateInformation;
+
 struct AllocationInformation {
-  MemoryPropertyMask memory_property_;
+  Walle::MemoryPropertyMask memory_property_;
   VmaAllocation allocation_ = nullptr;
   uint8_t *mapped_memory_ = nullptr;
   uint32_t memory_type_ = 0;
@@ -15,10 +17,10 @@ struct AllocationInformation {
 };
 
 struct GraphicsAllocatorStatistics {
-  std::size_t allocated_buffers_count_ = 0;
-  std::size_t allocated_images_count_ = 0;
-  std::size_t allocated_buffer_memory_ = 0;
-  std::size_t allocated_image_memory_ = 0;
+  int64_t allocated_buffers_count_ = 0;
+  int64_t allocated_images_count_ = 0;
+  int64_t allocated_buffer_memory_ = 0;
+  int64_t allocated_image_memory_ = 0;
 };
 
 class GraphicsAllocator {
@@ -30,7 +32,7 @@ public:
   static GraphicsAllocator *Get();
 
   AllocationInformation AllocateImage(const ImageCreateInfo &image_ci, VkImage &out_image);
-  AllocationInformation AllocateBuffer(const BufferCreateInfo &buffer_ci, VkBuffer &out_buffer, AllocationCreateMask allocation_mask);
+  AllocationInformation AllocateBuffer(const BufferCreateInformation &buffer_ci, VkBuffer &out_buffer);
 
   void DestroyImage(VkImage image, VmaAllocation vma_allocation);
   void DestroyBuffer(VkBuffer buffer, VmaAllocation vma_allocation);

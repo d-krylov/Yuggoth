@@ -28,7 +28,7 @@ std::size_t ModelStorage::GetNumberOfIndices() const {
   return number_of_indices_;
 }
 
-std::span<const std::filesystem::path> ModelStorage::GetImages() const {
+std::span<const std::filesystem::path> ModelStorage::GetImagePaths() const {
   return images_;
 }
 

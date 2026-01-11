@@ -25,6 +25,7 @@ FetchContent_MakeAvailable(
   tinyobjloader
   meshoptimizer
   unordered_dense
+  spdlog
   entt
   stb
 )

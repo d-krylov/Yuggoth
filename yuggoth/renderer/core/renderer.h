@@ -7,8 +7,7 @@
 #include "yuggoth/graphics/descriptors/descriptor_pool.h"
 #include "yuggoth/graphics/descriptors/descriptor_set.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/graphics/image/image2D.h"
-#include "yuggoth/graphics/image/image_depth.h"
+#include "yuggoth/graphics/image/image.h"
 #include "yuggoth/graphics/acceleration/acceleration_structure.h"
 
 namespace Yuggoth {
@@ -19,11 +18,11 @@ public:
 
   const RendererContext &GetRendererContext() const;
 
-  const Image2D &GetStorageImage() const;
+  const Image &GetStorageImage() const;
 
   void OnViewportResize(uint32_t width, uint32_t height);
 
-  void Begin(Scene *scene, CommandBuffer &command_buffer, Image2D &target_image, ImageDepth &depth_image);
+  void Begin(Scene *scene, CommandBuffer &command_buffer, Image &target_image, Image &depth_image);
 
   void Draw(Scene *scene, CommandBuffer &command_buffer, const Extent2D &extent);
 
@@ -43,7 +42,7 @@ private:
   RendererContext renderer_context_;
   DescriptorPool descriptor_pool_;
   DescriptorSet descriptor_set_;
-  Image2D raytrace_image_;
+  Image raytrace_image_;
   BaseRendererBackend base_renderer_backend_;
   RaytraceRendererBackend raytrace_renderer_backend_;
   std::unordered_map<UUID, AccelerationStructure> bottom_acceleration_structures_;

@@ -19,7 +19,7 @@ public:
 protected:
   void Create();
 
-  template <typename T> void AddBufferAllocator(uint64_t buffer_size, BufferUsageMask buffer_usage, AllocationCreateMask allocation_mask);
+  template <typename T> void AddBufferAllocator(const BufferCreateInformation &buffer_ci);
 
   void CopyBuffer(CommandBuffer *command_buffer, const BufferRange &buffer_range, std::span<const std::byte> data,
                   PipelineStageMask2 destination_stage, AccessMask2 destination_access);

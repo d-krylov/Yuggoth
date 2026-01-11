@@ -10,7 +10,7 @@ class DescriptorPool {
 public:
   DescriptorPool() = default;
 
-  DescriptorPool(std::span<const DescriptorPoolSize> descriptor_pool_sizes, DescriptorPoolCreateMask mask, uint32_t max_sets);
+  DescriptorPool(std::span<const Walle::DescriptorPoolSize> descriptor_pool_sizes, Walle::DescriptorPoolCreateMask mask, uint32_t max_sets);
 
   ~DescriptorPool();
 
@@ -22,7 +22,7 @@ public:
 
   VkDescriptorPool GetHandle() const;
 
-  static VkDescriptorPool CreateDescriptorPool(std::span<const DescriptorPoolSize> sizes, DescriptorPoolCreateMask mask, uint32_t max_sets);
+  static VkDescriptorPool Create(std::span<const Walle::DescriptorPoolSize> sizes, Walle::DescriptorPoolCreateMask mask, uint32_t max_sets);
 
 private:
   VkDescriptorPool descriptor_pool_{VK_NULL_HANDLE};

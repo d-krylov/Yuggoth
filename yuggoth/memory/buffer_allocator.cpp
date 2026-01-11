@@ -16,8 +16,8 @@ BufferRange BufferAllocator::allocate(uint32_t count, uint32_t alignment) {
 
 BufferAllocator::BufferAllocator(const BufferAllocatorSpecification &specification)
   : stride_(specification.buffer_stride_), typeid_(specification.buffer_typeid_) {
-  allocator_ = std::make_unique<VirtualAllocator>(specification.buffer_size_);
-  buffer_ = std::make_unique<Buffer>(specification.buffer_size_, specification.buffer_usage_, specification.allocation_mask_);
+  allocator_ = std::make_unique<VirtualAllocator>(specification.buffer_ci_.buffer_size_);
+  buffer_ = std::make_unique<Buffer>(specification.buffer_ci_);
 }
 
 void BufferAllocator::free(uint32_t offset) {

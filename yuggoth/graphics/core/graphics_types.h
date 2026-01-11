@@ -2,7 +2,7 @@
 #define YUGGOTH_GRAPHICS_TYPES_H
 
 #include "structure_tools.h"
-#include "yuggoth/core/allocators/virtual_allocator_types.h"
+#include "vma_allocator_types.h"
 #include <volk/volk.h>
 
 namespace Yuggoth {

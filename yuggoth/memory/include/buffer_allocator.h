@@ -9,11 +9,9 @@
 namespace Yuggoth {
 
 struct BufferAllocatorSpecification {
-  uint64_t buffer_size_;
   uint64_t buffer_stride_;
   uint64_t buffer_typeid_;
-  BufferUsageMask buffer_usage_;
-  AllocationCreateMask allocation_mask_;
+  BufferCreateInformation buffer_ci_;
 };
 
 class BufferAllocator {

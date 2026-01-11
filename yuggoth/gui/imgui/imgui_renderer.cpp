@@ -26,8 +26,8 @@ ImGuiRenderer::ImGuiRenderer(Format color_format) {
   specification.vertex_inputs_ = gui_vert.GetVertexInputAttributes();
   graphics_pipeline_ = GraphicsPipeline(specification);
 
-  vertex_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_VERTEX_BUFFER_BIT, CommonMasks::BUFFER_MAPPED);
-  index_buffer_ = Buffer(30_MiB, BufferUsageMaskBits::E_INDEX_BUFFER_BIT, CommonMasks::BUFFER_MAPPED);
+  vertex_buffer_ = Buffer(BufferCreateInformation::CreateCPUBuffer(10_MiB, Walle::BufferUsageMaskBits::E_VERTEX_BUFFER_BIT, true));
+  index_buffer_ = Buffer(BufferCreateInformation::CreateCPUBuffer(10_MiB, Walle::BufferUsageMaskBits::E_INDEX_BUFFER_BIT, true));
 
   CreateTexture();
 }
@@ -146,7 +146,9 @@ void ImGuiRenderer::CreateTexture() {
   int32_t width, height, channels;
   io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &channels);
   auto data = std::span(pixels, width * height * channels);
-  image_ = Image2D(width, height, std::as_bytes(data), SamplerSpecification());
+  auto image_ci = ImageCreateInformation::CreateTexture2D(width, height, Walle::Format::E_R8G8B8A8_UNORM, 1);
+  image_ = Image(image_ci, SamplerSpecification());
+  image_.SetImageData(std::as_bytes(data));
   io.Fonts->SetTexID((ImTextureID)&image_);
 }
 

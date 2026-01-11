@@ -30,7 +30,7 @@ void ViewportWindow::OnImGui() {
   if (image.GetImageLayout() != Walle::ImageLayout::E_UNDEFINED) {
     ImGui::Image((ImTextureID)(intptr_t)&image, ImVec2(viewport_size_.first, viewport_size_.second));
   }
-  
+
   ImGui::End();
 }
 

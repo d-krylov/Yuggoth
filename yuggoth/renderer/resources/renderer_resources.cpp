@@ -2,7 +2,7 @@
 
 namespace Yuggoth {
 
-uint32_t FRAMES_IN_FLIGHT = 2;
+uint32_t FRAMES_IN_FLIGHT = 3;
 uint64_t current_frame_index_ = 0;
 
 RendererResources::RendererResources() {
