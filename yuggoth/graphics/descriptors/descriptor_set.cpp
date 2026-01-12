@@ -37,7 +37,7 @@ VkDescriptorSetLayout DescriptorSet::CreateDescriptorSetLayout(std::span<const W
   descriptor_set_layout_ci.pNext = &set_binding_flags_ci;
 
   VkDescriptorSetLayout descriptor_set_layout = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateDescriptorSetLayout(GraphicsContext::Get()->GetDevice(), descriptor_set_layout_ci, 0, &descriptor_set_layout));
+  VK_CHECK(vkCreateDescriptorSetLayout(GraphicsDevice::Get()->GetDevice(), descriptor_set_layout_ci, 0, &descriptor_set_layout));
   return descriptor_set_layout;
 }
 
@@ -70,7 +70,7 @@ VkDescriptorSet DescriptorSet::AllocateDescriptorSet(VkDescriptorPool descriptor
   descriptor_set_ai.pSetLayouts = &set_layout;
 
   VkDescriptorSet descriptor_set = VK_NULL_HANDLE;
-  VK_CHECK(vkAllocateDescriptorSets(GraphicsContext::Get()->GetDevice(), descriptor_set_ai, &descriptor_set));
+  VK_CHECK(vkAllocateDescriptorSets(GraphicsDevice::Get()->GetDevice(), descriptor_set_ai, &descriptor_set));
   return descriptor_set;
 }
 
@@ -82,7 +82,7 @@ void DescriptorSet::Update(std::span<const DescriptorImageInfo> images, uint32_t
   write_descriptor_set.descriptorType = descriptor_type;
   write_descriptor_set.descriptorCount = images.size();
   write_descriptor_set.pImageInfo = images.data();
-  vkUpdateDescriptorSets(GraphicsContext::Get()->GetDevice(), 1, write_descriptor_set, 0, nullptr);
+  vkUpdateDescriptorSets(GraphicsDevice::Get()->GetDevice(), 1, write_descriptor_set, 0, nullptr);
 }
 
 VkDescriptorSet DescriptorSet::GetHandle() const {

@@ -1,4 +1,5 @@
 #include "buffer.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 #include <algorithm>
 
 namespace Yuggoth {
@@ -20,7 +21,7 @@ Buffer::~Buffer() {
 
 void Buffer::Destroy() {
   if (allocation_ == nullptr && buffer_ == nullptr) return;
-  GraphicsAllocator::Get()->DestroyBuffer(buffer_, allocation_);
+  GraphicsDevice::Get()->DestroyBuffer(buffer_, allocation_);
 }
 
 Buffer::Buffer(Buffer &&other) noexcept {
@@ -44,16 +45,16 @@ void Buffer::Swap(Buffer &other) noexcept {
 
 BufferInformation Buffer::CreateBuffer(const BufferCreateInformation &buffer_create_information) {
   BufferInformation buffer_information;
-  buffer_information.second = GraphicsAllocator::Get()->AllocateBuffer(buffer_create_information, buffer_information.first);
+  buffer_information.second = GraphicsDevice::Get()->AllocateBuffer(buffer_create_information, buffer_information.first);
   return buffer_information;
 }
 
 void Buffer::Map() {
-  GraphicsAllocator::Get()->MapMemory(allocation_, &mapped_memory_);
+  GraphicsDevice::Get()->MapMemory(allocation_, &mapped_memory_);
 }
 
 void Buffer::Unmap() {
-  GraphicsAllocator::Get()->UnmapMemory(allocation_);
+  GraphicsDevice::Get()->UnmapMemory(allocation_);
   mapped_memory_ = nullptr;
 }
 
@@ -66,7 +67,7 @@ void Buffer::MemoryCopy(std::span<const std::byte> data, std::size_t byte_offset
 void Buffer::Resize(std::size_t size) {
 }
 
-// GETTERS
+// API
 
 VkDeviceAddress Buffer::GetDeviceAddress() const {
   auto handle = GetHandle();
@@ -76,8 +77,12 @@ VkDeviceAddress Buffer::GetDeviceAddress() const {
 VkDeviceAddress Buffer::GetBufferDeviceAddress(VkBuffer buffer) {
   Walle::BufferDeviceAddressInfo buffer_device_ai;
   buffer_device_ai.buffer = buffer;
-  auto address = vkGetBufferDeviceAddress(GraphicsContext::Get()->GetDevice(), buffer_device_ai);
+  auto address = vkGetBufferDeviceAddress(GraphicsDevice::Get()->GetDevice(), buffer_device_ai);
   return address;
+}
+
+void Buffer::SetRawData(std::span<const std::byte> data, std::size_t byte_offset) {
+  GraphicsDevice::Get()->CopyMemoryToAllocation(data, allocation_, byte_offset);
 }
 
 std::size_t Buffer::GetSize() const {

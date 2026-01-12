@@ -3,7 +3,7 @@
 #include "ImGuizmo.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
 #include "yuggoth/scene/core/scene_manager.h"
-#include "yuggoth/renderer/resources/renderer_resources.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 
 namespace Yuggoth {
 
@@ -19,9 +19,7 @@ void ViewportWindow::OnImGui() {
   auto size = ImGui::GetContentRegionAvail();
   auto position = ImGui::GetWindowPos();
 
-  auto renderer_resources = GetEditorContext()->renderer_resources_;
-
-  auto &image = renderer_resources->GetCurrentFrame().target_image_;
+  auto &image = GraphicsDevice::Get()->GetCurrentFrame().target_image_;
 
   auto region_size = ImGui::GetContentRegionAvail();
 

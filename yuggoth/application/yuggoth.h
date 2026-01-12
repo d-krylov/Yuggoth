@@ -8,10 +8,9 @@
 #include "yuggoth/scene/core/scene_manager.h"
 #include "yuggoth/asset/core/asset_manager.h"
 #include "yuggoth/renderer/core/renderer.h"
-#include "yuggoth/memory/include/buffer_manager.h"
+#include "yuggoth/graphics_device/include/buffer_manager.h"
 #include "yuggoth/renderer/shaders/shader_library.h"
 #include "yuggoth/renderer/shaders/pipeline_library.h"
 #include "yuggoth/asset/material/material_manager.h"
-#include "yuggoth/renderer/resources/renderer_resources.h"
 
 #endif // YUGGOTH_H

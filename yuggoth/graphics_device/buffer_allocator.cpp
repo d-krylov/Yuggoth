@@ -1,4 +1,4 @@
-#include "yuggoth/memory/include/buffer_allocator.h"
+#include "yuggoth/graphics_device/include/buffer_allocator.h"
 
 namespace Yuggoth {
 

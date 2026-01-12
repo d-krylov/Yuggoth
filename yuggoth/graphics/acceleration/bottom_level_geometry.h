@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_BOTTOM_LEVEL_GEOMETRY_H
 #define YUGGOTH_BOTTOM_LEVEL_GEOMETRY_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 #include "yuggoth/core/tools/include/core_types.h"
 #include <span>
 

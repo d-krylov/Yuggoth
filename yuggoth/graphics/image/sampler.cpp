@@ -1,5 +1,5 @@
 #include "sampler.h"
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 
 namespace Yuggoth {
 
@@ -41,7 +41,7 @@ VkSampler Sampler::CreateSampler(const SamplerSpecification &specification) {
   sampler_ci.borderColor = BorderColor::E_INT_OPAQUE_BLACK;
 
   VkSampler sampler = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateSampler(GraphicsContext::Get()->GetDevice(), sampler_ci, nullptr, &sampler));
+  VK_CHECK(vkCreateSampler(GraphicsDevice::Get()->GetDevice(), sampler_ci, nullptr, &sampler));
   return sampler;
 }
 

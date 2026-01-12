@@ -26,7 +26,7 @@ TransformMatrixKHR ConvertTransform(const Matrix4f &matrix) {
 auto GetBottomLevelAccelerationStructuresAddress(VkAccelerationStructureKHR acceleration_structure) {
   AccelerationStructureDeviceAddressInfoKHR device_address_info;
   device_address_info.accelerationStructure = acceleration_structure;
-  auto address = vkGetAccelerationStructureDeviceAddressKHR(GraphicsContext::Get()->GetDevice(), device_address_info);
+  auto address = vkGetAccelerationStructureDeviceAddressKHR(GraphicsDevice::Get()->GetDevice(), device_address_info);
   return address;
 }
 
@@ -79,7 +79,7 @@ void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instan
 
   const VkAccelerationStructureBuildRangeInfoKHR *build_range_pointer = build_range;
 
-  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(GraphicsDevice::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   vkCmdBuildAccelerationStructuresKHR(command_buffer.GetHandle(), 1, geometry_info, &build_range_pointer);
   command_buffer.End();

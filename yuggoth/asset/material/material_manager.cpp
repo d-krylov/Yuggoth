@@ -20,7 +20,7 @@ void MaterialManager::CreateDescriptorSet() {
   descriptor_pool_sizes[0].descriptorCount = 2;
   descriptor_pool_sizes[0].type = Walle::DescriptorType::E_COMBINED_IMAGE_SAMPLER;
   descriptor_pool_ = DescriptorPool(descriptor_pool_sizes, Walle::DescriptorPoolCreateMaskBits::E_UPDATE_AFTER_BIND_BIT, 1);
-  //descriptor_set_ = DescriptorSet(descriptor_pool_.GetHandle());
+  // descriptor_set_ = DescriptorSet(descriptor_pool_.GetHandle());
 }
 
 } // namespace Yuggoth

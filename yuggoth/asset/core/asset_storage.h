@@ -3,7 +3,7 @@
 
 #include "yuggoth/asset/model/model_storage.h"
 #include "yuggoth/core/tools/include/uuid.h"
-#include "yuggoth/memory/include/common_types.h"
+#include "yuggoth/graphics_device/include/common_types.h"
 #include "ankerl/unordered_dense.h"
 #include <memory>
 

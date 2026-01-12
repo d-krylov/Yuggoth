@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_COMMAND_BUFFER_H
 #define YUGGOTH_COMMAND_BUFFER_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "walle/walle.h"
 #include <string_view>
 #include <span>
 
@@ -25,7 +25,7 @@ public:
   CommandBuffer(CommandBuffer &&other) noexcept;
   CommandBuffer &operator=(CommandBuffer &&other) noexcept;
 
-  static VkCommandBuffer AllocateCommandBuffer(VkCommandPool command_pool, CommandBufferLevel level);
+  static VkCommandBuffer AllocateCommandBuffer(VkCommandPool command_pool, Walle::CommandBufferLevel level);
 
   const VkCommandBuffer *get() const;
 
@@ -34,49 +34,51 @@ public:
   void Submit();
   void Reset();
 
-  void Begin(CommandBufferUsageMask usage);
+  void Begin(Walle::CommandBufferUsageMask usage);
   void End();
 
-  void CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors, //
-                             const RenderingAttachmentInfo *depth = nullptr,                          //
-                             const RenderingAttachmentInfo *stencil = nullptr);
+  void CommandBeginRendering(const Walle::Extent2D &extent, std::span<const Walle::RenderingAttachmentInfo> colors, //
+                             const Walle::RenderingAttachmentInfo *depth = nullptr,                                 //
+                             const Walle::RenderingAttachmentInfo *stencil = nullptr);
 
   void CommandEndRendering();
 
   // BARRIERS
-  void CommandMemoryBarrier(PipelineStageMask2 source_stage, AccessMask2 source_access, //
-                            PipelineStageMask2 destination_stage, AccessMask2 destination_access);
+  void CommandMemoryBarrier(Walle::PipelineStageMask2 source_stage, Walle::AccessMask2 source_access, //
+                            Walle::PipelineStageMask2 destination_stage, Walle::AccessMask2 destination_access);
 
-  void CommandPipelineBarrier(std::span<const ImageMemoryBarrier2> image_barriers, //
-                              std::span<const MemoryBarrier2> memory_barriers,     //
-                              std::span<const BufferMemoryBarrier2> buffer_barriers);
+  void CommandPipelineBarrier(std::span<const Walle::ImageMemoryBarrier2> image_barriers, //
+                              std::span<const Walle::MemoryBarrier2> memory_barriers,     //
+                              std::span<const Walle::BufferMemoryBarrier2> buffer_barriers);
 
   // DEBUG
   void CommandBeginDebugUtilsLabel(std::string_view label_name);
   void CommandEndDebugUtilsLabel();
 
   // PUSH
-  template <typename T> void CommandPushConstants(VkPipelineLayout layout, ShaderStageMask stage, const T &data, uint32_t offset);
+  template <typename T> void CommandPushConstants(VkPipelineLayout layout, Walle::ShaderStageMask stage, const T &data, uint32_t offset);
 
-  void CommandPushDescriptorSet(const Pipeline &pipeline, int32_t set, uint32_t binding, VkBuffer buffer, DescriptorType descriptor_type);
+  void CommandPushDescriptorSet(const Pipeline &pipeline, int32_t set, uint32_t binding, VkBuffer buffer, Walle::DescriptorType descriptor_type);
 
-  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkAccelerationStructureKHR tlas, PipelineBindPoint point);
-  void CommandPushDescriptorSet(std::span<const DescriptorImageInfo> images, VkPipelineLayout layout, uint32_t set_number, uint32_t binding,
-                                DescriptorType descriptor_type, PipelineBindPoint bind_point);
+  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkAccelerationStructureKHR tlas,
+                                Walle::PipelineBindPoint point);
+
+  void CommandPushDescriptorSet(std::span<const Walle::DescriptorImageInfo> images, VkPipelineLayout layout, uint32_t set_number, uint32_t binding,
+                                Walle::DescriptorType descriptor_type, Walle::PipelineBindPoint bind_point);
 
   // OPTIONS
   void CommandSetViewport(float x, float y, float width, float height);
   void CommandSetScissor(int32_t x, int32_t y, uint32_t width, uint32_t height);
-  void CommandSetCullMode(CullModeMask mode);
-  void CommandSetFrontFace(FrontFace front_face);
+  void CommandSetCullMode(Walle::CullModeMask mode);
+  void CommandSetFrontFace(Walle::FrontFace front_face);
   void CommandEnableDepthTest(bool enabled);
   void CommandEnableDepthWrite(bool enabled);
   void CommandEnableStencilTest(bool enabled);
 
   // BIND
-  void CommandBindPipeline(const VkPipeline pipeline, PipelineBindPoint bind_point);
+  void CommandBindPipeline(const VkPipeline pipeline, Walle::PipelineBindPoint bind_point);
   void CommandBindVertexBuffer(const VkBuffer buffer, std::size_t offset);
-  void CommandBindIndexBuffer(const VkBuffer buffer, std::size_t offset, IndexType index_type);
+  void CommandBindIndexBuffer(const VkBuffer buffer, std::size_t offset, Walle::IndexType index_type);
 
   // DRAW
   void CommandDraw(uint32_t vertex_count, uint32_t instance_count, uint32_t first_vertex, uint32_t first_instance);
@@ -86,19 +88,19 @@ public:
   void CommandDrawMeshTasksIndirect(VkBuffer buffer, std::size_t byte_offset, uint32_t draw_count, uint32_t stride);
 
   // COPY
-  void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Extent3D &extent, std::size_t buffer_offset = 0);
-  void CommandCopyBuffer(VkBuffer source, VkBuffer destination, const BufferCopy &buffer_copy);
+  void CommandCopyBufferToImage(VkBuffer buffer, VkImage image, const Walle::Extent3D &extent, std::size_t buffer_offset = 0);
+  void CommandCopyBuffer(VkBuffer source, VkBuffer destination, const Walle::BufferCopy &buffer_copy);
   void UpdateBuffer(VkBuffer buffer, std::size_t offset, std::span<const std::byte> data);
 
   // RAY
-  void CommandTraceRay(const StridedDeviceAddressRegionKHR &raygen, const StridedDeviceAddressRegionKHR &miss,
-                       const StridedDeviceAddressRegionKHR &hit, const StridedDeviceAddressRegionKHR &callable, uint32_t width, uint32_t height,
-                       uint32_t depth);
+  void CommandTraceRay(const Walle::StridedDeviceAddressRegionKHR &raygen, const Walle::StridedDeviceAddressRegionKHR &miss,
+                       const Walle::StridedDeviceAddressRegionKHR &hit, const Walle::StridedDeviceAddressRegionKHR &callable, uint32_t width,
+                       uint32_t height, uint32_t depth);
 
   // HELPERS
-  void TransitionImageLayout(VkImage image, ImageLayout source_layout, ImageLayout destination_layout, PipelineStageMask2 source_stage,
-                             PipelineStageMask2 destination_stage, AccessMask2 source_access, AccessMask2 destination_access,
-                             const ImageSubresourceRange &subresource);
+  void TransitionImageLayout(VkImage image, Walle::ImageLayout source_layout, Walle::ImageLayout destination_layout,
+                             Walle::PipelineStageMask2 source_stage, Walle::PipelineStageMask2 destination_stage, Walle::AccessMask2 source_access,
+                             Walle::AccessMask2 destination_access, const Walle::ImageSubresourceRange &subresource);
 
 private:
   VkCommandBuffer command_buffer_{VK_NULL_HANDLE};

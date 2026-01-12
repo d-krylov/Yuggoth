@@ -1,4 +1,4 @@
-#include "graphics_context.h"
+#include "graphics_device.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
 #include "yuggoth/core/tools/include/core.h"
 #include <print>
@@ -7,34 +7,34 @@
 
 namespace Yuggoth {
 
-GraphicsContext *GraphicsContext::graphics_context_instance_ = nullptr;
+GraphicsDevice *GraphicsDevice::graphics_context_instance_ = nullptr;
 
-GraphicsContext *GraphicsContext::Get() {
+GraphicsDevice *GraphicsDevice::Get() {
   assert(graphics_context_instance_ != nullptr);
   return graphics_context_instance_;
 }
 
-const VkInstance GraphicsContext::GetInstance() const {
+VkInstance GraphicsDevice::GetInstance() const {
   assert(instance_ != VK_NULL_HANDLE);
   return instance_;
 }
 
-const VkPhysicalDevice GraphicsContext::GetPhysicalDevice() const {
+VkPhysicalDevice GraphicsDevice::GetPhysicalDevice() const {
   assert(physical_device_ != VK_NULL_HANDLE);
   return physical_device_;
 }
 
-const VkDevice GraphicsContext::GetDevice() const {
+VkDevice GraphicsDevice::GetDevice() const {
   assert(device_ != VK_NULL_HANDLE);
   return device_;
 }
 
-int32_t GraphicsContext::GetGraphicsQueueIndex() const {
+int32_t GraphicsDevice::GetGraphicsQueueIndex() const {
   assert(queue_indices_[0] != -1);
   return queue_indices_[0];
 }
 
-VkQueue GraphicsContext::GetGraphicsQueue() const {
+VkQueue GraphicsDevice::GetGraphicsQueue() const {
   assert(queues_[0] != VK_NULL_HANDLE);
   return queues_[0];
 }
@@ -53,7 +53,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(VkDebugUtilsMessageSeverityF
 }
 // clang-format on
 
-void GraphicsContext::CreateInstance(bool enable_debug, DebugUtilsMessageTypeMaskEXT debug_type, DebugUtilsMessageSeverityMaskEXT debug_severity) {
+void GraphicsDevice::CreateInstance(bool enable_debug, DebugUtilsMessageTypeMaskEXT debug_type, DebugUtilsMessageSeverityMaskEXT debug_severity) {
   VK_CHECK(volkInitialize());
 
   ApplicationInfo application_info;
@@ -104,7 +104,7 @@ void GraphicsContext::CreateInstance(bool enable_debug, DebugUtilsMessageTypeMas
   }
 }
 
-void GraphicsContext::PickPhysicalDevice() {
+void GraphicsDevice::PickPhysicalDevice() {
   auto physical_devices = Enumerate<VkPhysicalDevice>(vkEnumeratePhysicalDevices, instance_);
 
   for (const auto physical_device : physical_devices) {
@@ -118,7 +118,7 @@ void GraphicsContext::PickPhysicalDevice() {
   CORE_ASSERT(physical_device_ != VK_NULL_HANDLE, "No Physical Devices found");
 }
 
-void GraphicsContext::CreateDevice() {
+void GraphicsDevice::CreateDevice() {
   queue_indices_ = PickPhysicalDeviceQueues(physical_device_);
 
   std::array queue_priorities = {0.0f};
@@ -207,41 +207,43 @@ void GraphicsContext::CreateDevice() {
   vkGetDeviceQueue(GetDevice(), GetGraphicsQueueIndex(), 0, &queues_[0]);
 }
 
-void GraphicsContext::SetPhysicalDeviceProperties() {
+void GraphicsDevice::SetPhysicalDeviceProperties() {
   physical_device_properties_.pNext = &physical_device_raytracing_pipeline_properties_;
   vkGetPhysicalDeviceProperties2(GetPhysicalDevice(), physical_device_properties_);
   vkGetPhysicalDeviceMemoryProperties2(GetPhysicalDevice(), physical_device_memory_properties_);
 }
 
-GraphicsContext::GraphicsContext(const GraphicsContextSpecification &specification) {
+GraphicsDevice::GraphicsDevice(const GraphicsDeviceSpecification &specification) {
   CreateInstance(specification.enable_debug, specification.debug_messgae_type, specification.debug_message_severity);
   PickPhysicalDevice();
   SetPhysicalDeviceProperties();
   CreateDevice();
-
+  CreateGraphicsAllocator();
   graphics_context_instance_ = this;
+
+  CreateFrames();
 }
 
-GraphicsContext::~GraphicsContext() {
+GraphicsDevice::~GraphicsDevice() {
 }
 
-void GraphicsContext::SetObjectName(ObjectType object_type, std::string_view name, void *handle) {
+void GraphicsDevice::SetObjectName(ObjectType object_type, std::string_view name, void *handle) {
   DebugUtilsObjectNameInfoEXT object_name_info;
   object_name_info.objectType = object_type;
   object_name_info.objectHandle = reinterpret_cast<uint64_t>(handle);
   object_name_info.pObjectName = name.data();
-  vkSetDebugUtilsObjectNameEXT(GraphicsContext::Get()->GetDevice(), object_name_info);
+  vkSetDebugUtilsObjectNameEXT(GraphicsDevice::Get()->GetDevice(), object_name_info);
 }
 
-const PhysicalDeviceProperties2 &GraphicsContext::GetPhysicalDeviceProperties() const {
+const PhysicalDeviceProperties2 &GraphicsDevice::GetPhysicalDeviceProperties() const {
   return physical_device_properties_;
 }
 
-const PhysicalDeviceMemoryProperties2 GraphicsContext::GetPhysicalDeviceMemoryProperties() const {
+const PhysicalDeviceMemoryProperties2 GraphicsDevice::GetPhysicalDeviceMemoryProperties() const {
   return physical_device_memory_properties_;
 }
 
-const PhysicalDeviceRayTracingPipelinePropertiesKHR &GraphicsContext::GetPhysicalDeviceRayTracingPipelineProperties() const {
+const PhysicalDeviceRayTracingPipelinePropertiesKHR &GraphicsDevice::GetPhysicalDeviceRayTracingPipelineProperties() const {
   return physical_device_raytracing_pipeline_properties_;
 }
 

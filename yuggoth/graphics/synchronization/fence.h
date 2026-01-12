@@ -1,13 +1,13 @@
 #ifndef YUGGOTH_FENCE_H
 #define YUGGOTH_FENCE_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "walle/walle.h"
 
 namespace Yuggoth {
 
 class Fence {
 public:
-  Fence(FenceCreateMask fence_create_mask = FenceCreateMask());
+  Fence(Walle::FenceCreateMask fence_create_mask = Walle::FenceCreateMask());
 
   ~Fence();
 

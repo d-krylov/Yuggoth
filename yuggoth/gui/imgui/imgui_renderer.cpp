@@ -163,8 +163,12 @@ void ImGuiRenderer::End(CommandBuffer &command_buffer, const Swapchain &swapchai
 
   auto image_view = swapchain.GetCurrentImageView();
 
-  std::array<RenderingAttachmentInfo, 1> color;
-  color[0] = GetRenderingAttachmentInfo(image_view, ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, AttachmentLoadOp::E_CLEAR, AttachmentStoreOp::E_STORE);
+  std::array<Walle::RenderingAttachmentInfo, 1> color;
+  color[0].imageView = image_view;
+  color[0].imageLayout = Walle::ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL;
+  color[0].loadOp = Walle::AttachmentLoadOp::E_CLEAR;
+  color[0].storeOp = AttachmentStoreOp::E_STORE;
+  color[0].clearValue = {0.0f, 0.0f, 0.0f, 1.0f};
 
   command_buffer.CommandBeginRendering(swapchain.GetExtent(), color);
 

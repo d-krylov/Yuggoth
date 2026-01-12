@@ -14,7 +14,7 @@ public:
   BufferAllocator &GetBufferAllocator(std::size_t type_id);
 
   void UploadBuffer(CommandBuffer *command_buffer, const BufferRange &buffer_range, std::span<const std::byte> data,
-                    PipelineStageMask2 destination_stage = {}, AccessMask2 destination_access = {});
+                    Walle::PipelineStageMask2 destination_stage = {}, Walle::AccessMask2 destination_access = {});
 
 protected:
   void Create();
@@ -22,7 +22,7 @@ protected:
   template <typename T> void AddBufferAllocator(const BufferCreateInformation &buffer_ci);
 
   void CopyBuffer(CommandBuffer *command_buffer, const BufferRange &buffer_range, std::span<const std::byte> data,
-                  PipelineStageMask2 destination_stage, AccessMask2 destination_access);
+                  Walle::PipelineStageMask2 destination_stage, Walle::AccessMask2 destination_access);
 
 private:
   std::unordered_map<std::size_t, BufferAllocator> allocators_;

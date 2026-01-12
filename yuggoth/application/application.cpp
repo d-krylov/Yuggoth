@@ -45,7 +45,6 @@ void Application::OnStart() {
   editor_context.asset_manager_ = &asset_manager_;
   editor_context.buffer_manager_ = &buffer_manager_;
   editor_context.shader_library_ = &shader_library_;
-  editor_context.renderer_resources_ = &renderer_resources_;
   editor_.SetEditorContext(editor_context);
 }
 
@@ -56,7 +55,7 @@ void Application::Run() {
 
     auto new_viewport_size = editor_.GetEditorWindow<ViewportWindow>().GetViewportSize();
     if (new_viewport_size.first != 0 && new_viewport_size.second != 0) {
-      renderer_resources_.GetCurrentFrame().OnResize(new_viewport_size.first, new_viewport_size.second);
+      GraphicsDevice::Get()->GetCurrentFrame().OnResize(new_viewport_size.first, new_viewport_size.second);
     }
 
     auto command_buffer = window_manager_.BeginFrame();
@@ -77,9 +76,9 @@ void Application::Run() {
 
     OnImGui();
 
-    renderer_resources_.BeginFrame();
+    GraphicsDevice::Get()->BeginFrame();
 
-    auto &current_frame = renderer_resources_.GetCurrentFrame();
+    auto &current_frame = GraphicsDevice::Get()->GetCurrentFrame();
 
     auto extent = current_frame.target_image_.GetImageCreateInformation().extent_;
 
@@ -88,7 +87,7 @@ void Application::Run() {
 
     // renderer_.DrawRayTrace(scene_manager_.GetCurrentScene());
     renderer_.End();
-    renderer_resources_.EndFrame();
+    GraphicsDevice::Get()->EndFrame();
 
     imgui_renderer_.End(*command_buffer, *swapchain);
 
@@ -99,7 +98,7 @@ void Application::Run() {
     window_manager_.EndFrame(*command_buffer);
   }
 
-  vkDeviceWaitIdle(GraphicsContext::Get()->GetDevice());
+  vkDeviceWaitIdle(GraphicsDevice::Get()->GetDevice());
 }
 
 } // namespace Yuggoth

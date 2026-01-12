@@ -8,7 +8,7 @@ collect_source_recursive("${YUGGOTH_SOURCE_DIR}/renderer" ".cpp" YUGGOTH_RENDERE
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/graphics" ".cpp" YUGGOTH_GRAPHICS_SOURCES)
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/editor" ".cpp" YUGGOTH_EDITOR_SOURCES)
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/scene" ".cpp" YUGGOTH_SCENE_SOURCES)
-collect_source_recursive("${YUGGOTH_SOURCE_DIR}/memory" ".cpp" YUGGOTH_MEMORY_SOURCES)
+collect_source_recursive("${YUGGOTH_SOURCE_DIR}/graphics_device" ".cpp" YUGGOTH_GRAPHICS_DEVICE_SOURCES)
 collect_source_recursive("${YUGGOTH_SOURCE_DIR}/gui" ".cpp" YUGGOTH_GUI_SOURCES)
 
 
@@ -21,7 +21,7 @@ set(YUGGOTH_SOURCES
   ${YUGGOTH_RENDERER_SOURCES}
   ${YUGGOTH_CORE_SOURCES}
   ${YUGGOTH_MATHEMATICS_SOURCES}
-  ${YUGGOTH_MEMORY_SOURCES}
+  ${YUGGOTH_GRAPHICS_DEVICE_SOURCES}
   ${YUGGOTH_APPLICATION_SOURCES}
   ${Vulkan_INCLUDE_DIR}/SPIRV-Reflect/spirv_reflect.c
 )

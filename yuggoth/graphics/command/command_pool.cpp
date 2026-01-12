@@ -7,7 +7,7 @@ CommandPool::CommandPool(uint32_t queue_family_index) {
 }
 
 CommandPool::~CommandPool() {
-  vkDestroyCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_, nullptr);
+  vkDestroyCommandPool(GraphicsDevice::Get()->GetDevice(), command_pool_, nullptr);
 }
 
 CommandPool::CommandPool(CommandPool &&other) noexcept {
@@ -25,7 +25,7 @@ VkCommandPool CommandPool::CreateCommandPool(uint32_t queue_family_index) {
   command_pool_ci.queueFamilyIndex = queue_family_index;
 
   VkCommandPool command_pool = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_ci, 0, &command_pool));
+  VK_CHECK(vkCreateCommandPool(GraphicsDevice::Get()->GetDevice(), command_pool_ci, 0, &command_pool));
   return command_pool;
 }
 
@@ -34,7 +34,7 @@ VkCommandPool CommandPool::GetHandle() const {
 }
 
 void CommandPool::Reset() {
-  vkResetCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_, 0);
+  vkResetCommandPool(GraphicsDevice::Get()->GetDevice(), command_pool_, 0);
 }
 
 } // namespace Yuggoth

@@ -31,14 +31,4 @@ PipelineColorBlendAttachmentState GetColorBlendAttachmentState(bool enable, Blen
   return color_blend_attachment_state;
 }
 
-RenderingAttachmentInfo GetRenderingAttachmentInfo(VkImageView view, ImageLayout layout, AttachmentLoadOp load, AttachmentStoreOp store) {
-  RenderingAttachmentInfo rendering_ai;
-  rendering_ai.imageView = view;
-  rendering_ai.imageLayout = layout;
-  rendering_ai.loadOp = load;
-  rendering_ai.storeOp = store;
-  rendering_ai.clearValue.color = {0.0f, 0.0f, 0.0f, 1.0f};
-  return rendering_ai;
-}
-
 } // namespace Yuggoth

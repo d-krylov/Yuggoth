@@ -1,6 +1,6 @@
 
 #include "pipeline.h"
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 #include "yuggoth/graphics/core/graphics_specifications.h"
 #include "yuggoth/graphics/descriptors/descriptor_set.h"
 #include <unordered_map>
@@ -15,7 +15,7 @@ VkPipelineLayout CreatePipelineLayout(std::span<const VkDescriptorSetLayout> set
   pipeline_layout_ci.pSetLayouts = set_layouts.data();
   pipeline_layout_ci.pushConstantRangeCount = push_constants.size();
   pipeline_layout_ci.pPushConstantRanges = push_constants.data();
-  VK_CHECK(vkCreatePipelineLayout(GraphicsContext::Get()->GetDevice(), pipeline_layout_ci, nullptr, &pipeline_layout));
+  VK_CHECK(vkCreatePipelineLayout(GraphicsDevice::Get()->GetDevice(), pipeline_layout_ci, nullptr, &pipeline_layout));
   return pipeline_layout;
 }
 

@@ -1,7 +1,7 @@
 #include "image.h"
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 #include <algorithm>
 
 namespace Yuggoth {
@@ -13,7 +13,7 @@ VkImageView Image::CreateImageView(VkImage image, Format format, ImageViewType i
   image_view_ci.format = format;
   image_view_ci.subresourceRange = subresource_range;
   VkImageView image_view = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateImageView(GraphicsContext::Get()->GetDevice(), image_view_ci, nullptr, &image_view));
+  VK_CHECK(vkCreateImageView(GraphicsDevice::Get()->GetDevice(), image_view_ci, nullptr, &image_view));
   return image_view;
 }
 
@@ -30,7 +30,7 @@ VkImage Image::CreateImage(const ImageCreateInformation &image_create_informatio
   image_ci.samples = image_create_information.samples_;
   image_ci.sharingMode = SharingMode::E_EXCLUSIVE;
   VkImage image = VK_NULL_HANDLE;
-  auto allocation_information = GraphicsAllocator::Get()->AllocateImage(image_ci, image);
+  auto allocation_information = GraphicsDevice::Get()->AllocateImage(image_ci, image);
   out_allocation = allocation_information.allocation_;
   return image;
 }
@@ -73,12 +73,12 @@ Image::~Image() {
 }
 
 void Image::DestroyImage() {
-  vkDestroyImageView(GraphicsContext::Get()->GetDevice(), image_view_, nullptr);
-  GraphicsAllocator::Get()->DestroyImage(image_, allocation_);
+  vkDestroyImageView(GraphicsDevice::Get()->GetDevice(), image_view_, nullptr);
+  GraphicsDevice::Get()->DestroyImage(image_, allocation_);
 }
 
 void Image::DestroySampler() {
-  vkDestroySampler(GraphicsContext::Get()->GetDevice(), image_sampler_, nullptr);
+  vkDestroySampler(GraphicsDevice::Get()->GetDevice(), image_sampler_, nullptr);
 }
 
 // API
@@ -123,7 +123,7 @@ void Image::SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer
 void Image::SetImageData(std::span<const std::byte> data) {
   Buffer buffer(BufferCreateInformation::CreateStagingBuffer(data.size_bytes()));
   buffer.SetData<std::byte>(data);
-  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(GraphicsDevice::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   SetImageLayout(ImageLayout::E_TRANSFER_DST_OPTIMAL, &command_buffer);
   command_buffer.CommandCopyBufferToImage(buffer.GetHandle(), GetImage(), image_create_information_.extent_);
@@ -132,8 +132,8 @@ void Image::SetImageData(std::span<const std::byte> data) {
   command_buffer.Submit();
 }
 
-DescriptorImageInfo Image::GetDescriptor() const {
-  DescriptorImageInfo descriptor_image_info;
+Walle::DescriptorImageInfo Image::GetDescriptor() const {
+  Walle::DescriptorImageInfo descriptor_image_info;
   descriptor_image_info.imageLayout = current_layout_;
   descriptor_image_info.imageView = GetImageView();
   descriptor_image_info.sampler = GetSampler();

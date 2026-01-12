@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_SWAPCHAIN_H
 #define YUGGOTH_SWAPCHAIN_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 #include <span>
 
 struct GLFWwindow;

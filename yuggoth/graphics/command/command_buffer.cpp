@@ -15,7 +15,7 @@ CommandBuffer::CommandBuffer(uint32_t queue_family_index) : own_command_pool_(tr
 }
 
 CommandBuffer::~CommandBuffer() {
-  vkDestroyCommandPool(GraphicsContext::Get()->GetDevice(), own_command_pool_ ? command_pool_ : VK_NULL_HANDLE, nullptr);
+  vkDestroyCommandPool(GraphicsDevice::Get()->GetDevice(), own_command_pool_ ? command_pool_ : VK_NULL_HANDLE, nullptr);
 }
 
 CommandBuffer::CommandBuffer(CommandBuffer &&other) noexcept {
@@ -31,14 +31,14 @@ CommandBuffer &CommandBuffer::operator=(CommandBuffer &&other) noexcept {
   return *this;
 }
 
-VkCommandBuffer CommandBuffer::AllocateCommandBuffer(VkCommandPool command_pool, CommandBufferLevel level) {
+VkCommandBuffer CommandBuffer::AllocateCommandBuffer(VkCommandPool command_pool, Walle::CommandBufferLevel level) {
   CommandBufferAllocateInfo command_buffer_ai;
   command_buffer_ai.commandPool = command_pool;
   command_buffer_ai.level = level;
   command_buffer_ai.commandBufferCount = 1;
 
   VkCommandBuffer command_buffer = VK_NULL_HANDLE;
-  VK_CHECK(vkAllocateCommandBuffers(GraphicsContext::Get()->GetDevice(), command_buffer_ai, &command_buffer));
+  VK_CHECK(vkAllocateCommandBuffers(GraphicsDevice::Get()->GetDevice(), command_buffer_ai, &command_buffer));
   return command_buffer;
 }
 
@@ -52,7 +52,7 @@ void CommandBuffer::Submit() {
   submit_info.pCommandBuffers = get();
 
   Fence fence;
-  VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
+  VK_CHECK(vkQueueSubmit(GraphicsDevice::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
   fence.Wait();
 }
 

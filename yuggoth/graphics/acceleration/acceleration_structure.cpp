@@ -1,5 +1,4 @@
 #include "acceleration_structure.h"
-#include "yuggoth/graphics/graphics_context/graphics_allocator.h"
 #include "yuggoth/graphics/buffer/buffer.h"
 #include <algorithm>
 
@@ -39,9 +38,9 @@ AccelerationStructure::AccelerationStructure(std::span<const BLASInstances> bott
 }
 
 AccelerationStructure::~AccelerationStructure() {
-  vkDestroyAccelerationStructureKHR(GraphicsContext::Get()->GetDevice(), acceleration_structure_, nullptr);
+  vkDestroyAccelerationStructureKHR(GraphicsDevice::Get()->GetDevice(), acceleration_structure_, nullptr);
   if (buffer_allocation_ != nullptr && acceleration_buffer_ != nullptr) {
-    GraphicsAllocator::Get()->DestroyBuffer(acceleration_buffer_, buffer_allocation_);
+    GraphicsDevice::Get()->DestroyBuffer(acceleration_buffer_, buffer_allocation_);
   }
 }
 

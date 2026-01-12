@@ -1,7 +1,7 @@
 #include "raytrace_renderer_backend.h"
 #include "yuggoth/renderer/shaders/pipeline_library.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/memory/include/buffer_manager.h"
+#include "yuggoth/graphics_device/include/buffer_manager.h"
 #include "yuggoth/scene/core/scene.h"
 #include "renderer.h"
 

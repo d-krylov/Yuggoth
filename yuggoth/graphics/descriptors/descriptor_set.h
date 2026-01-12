@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_DESCRIPTOR_SET_H
 #define YUGGOTH_DESCRIPTOR_SET_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 #include <span>
 
 namespace Yuggoth {

@@ -3,7 +3,7 @@
 namespace Yuggoth {
 
 AccelerationStructureBuildSizesInfoKHR GetAccelerationStructureSize(uint32_t instances) {
-  auto device = GraphicsContext::Get()->GetDevice();
+  auto device = GraphicsDevice::Get()->GetDevice();
   AccelerationStructureBuildSizesInfoKHR out_size;
   AccelerationStructureGeometryKHR geometry;
   geometry.geometryType = GeometryTypeKHR::E_INSTANCES_KHR;
@@ -18,7 +18,7 @@ AccelerationStructureBuildSizesInfoKHR GetAccelerationStructureSize(uint32_t ins
 }
 
 AccelerationStructureBuildSizesInfoKHR GetAccelerationStructureSize(const BottomLevelGeometry &bottom_geometry) {
-  auto device = GraphicsContext::Get()->GetDevice();
+  auto device = GraphicsDevice::Get()->GetDevice();
   auto geometries = bottom_geometry.GetGeometries();
   AccelerationStructureBuildGeometryInfoKHR geometry_bi;
   geometry_bi.flags = BuildAccelerationStructureMaskBitsKHR::E_PREFER_FAST_TRACE_BIT_KHR;
@@ -38,7 +38,7 @@ VkAccelerationStructureKHR CreateAccelerationStructure(VkBuffer buffer, Accelera
   acceleration_structure_ci.size = size;
   acceleration_structure_ci.type = type;
   VkAccelerationStructureKHR acceleration_structure = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateAccelerationStructureKHR(GraphicsContext::Get()->GetDevice(), acceleration_structure_ci, nullptr, &acceleration_structure));
+  VK_CHECK(vkCreateAccelerationStructureKHR(GraphicsDevice::Get()->GetDevice(), acceleration_structure_ci, nullptr, &acceleration_structure));
   return acceleration_structure;
 }
 

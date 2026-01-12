@@ -1,10 +1,10 @@
 #include "frame.h"
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 
 namespace Yuggoth {
 
 Frame::Frame() {
-  command_buffer_ = CommandBuffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_buffer_ = CommandBuffer(GraphicsDevice::Get()->GetGraphicsQueueIndex());
   auto target_ci = ImageCreateInformation::CreateRenderTarget(100, 100, Walle::Format::E_R8G8B8A8_UNORM);
   auto depth_ci = ImageCreateInformation::CreateRenderTarget(100, 100, Walle::Format::E_D32_SFLOAT);
   target_ci.usage_ |= Walle::ImageUsageMaskBits::E_SAMPLED_BIT;
@@ -30,7 +30,7 @@ void Frame::End() {
   submit.commandBufferCount = 1;
   submit.pCommandBuffers = command_buffer_.get();
 
-  vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit, frame_fence_.GetHandle());
+  vkQueueSubmit(GraphicsDevice::Get()->GetGraphicsQueue(), 1, submit, frame_fence_.GetHandle());
 }
 
 void Frame::OnResize(uint32_t width, uint32_t height) {
@@ -42,6 +42,31 @@ void Frame::OnResize(uint32_t width, uint32_t height) {
     target_image_.Resize(width, height);
     depth_image_.Resize(width, height);
   }
+}
+
+uint32_t FRAMES_IN_FLIGHT = 3;
+uint64_t current_frame_index_ = 0;
+
+void GraphicsDevice::CreateFrames() {
+  frames_.resize(FRAMES_IN_FLIGHT);
+}
+
+void GraphicsDevice::BeginFrame() {
+  current_frame_index_ = frame_index_ % FRAMES_IN_FLIGHT;
+  frames_[current_frame_index_].Begin();
+}
+
+void GraphicsDevice::EndFrame() {
+  frames_[current_frame_index_].End();
+  frame_index_++;
+}
+
+Frame &GraphicsDevice::GetCurrentFrame() {
+  return frames_[current_frame_index_];
+}
+
+void GraphicsDevice::OnResize(uint32_t width, uint32_t height) {
+  GetCurrentFrame().OnResize(width, height);
 }
 
 } // namespace Yuggoth

@@ -10,7 +10,7 @@ template <typename T> std::span<T> Buffer::GetMappedAs() {
 }
 
 template <typename T> void Buffer::SetData(std::span<const T> data, std::size_t byte_offset) {
-  GraphicsAllocator::Get()->CopyMemoryToAllocation(std::as_bytes(data), allocation_, byte_offset);
+  SetRawData(std::as_bytes(data), byte_offset);
 }
 
 } // namespace Yuggoth

@@ -1,8 +1,7 @@
 #ifndef YUGGOTH_BUFFER_H
 #define YUGGOTH_BUFFER_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
-#include "yuggoth/graphics/graphics_context/graphics_allocator.h"
+#include "yuggoth/graphics_device/graphics_device_types.h"
 #include "buffer_create_information.h"
 #include <span>
 
@@ -25,6 +24,8 @@ public:
   Buffer &operator=(Buffer &&other) noexcept;
 
   std::size_t GetSize() const;
+
+  void SetRawData(std::span<const std::byte> data, std::size_t byte_offset = 0);
 
   template <typename T> std::span<T> GetMappedAs();
   template <typename T> void SetData(std::span<const T> data, std::size_t byte_offset = 0);

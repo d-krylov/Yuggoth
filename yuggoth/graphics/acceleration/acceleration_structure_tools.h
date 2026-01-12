@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_ACCELERATION_STRUCTURE_TOOLS_H
 #define YUGGOTH_ACCELERATION_STRUCTURE_TOOLS_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "yuggoth/graphics_device/graphics_device.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
 #include "bottom_level_geometry.h"
 

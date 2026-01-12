@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_SEMAPHORE_H
 #define YUGGOTH_SEMAPHORE_H
 
-#include "yuggoth/graphics/graphics_context/graphics_context.h"
+#include "walle/walle.h"
 
 namespace Yuggoth {
 

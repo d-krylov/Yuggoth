@@ -5,7 +5,7 @@
 namespace Yuggoth {
 
 WindowManager::WindowManager() : window_(1920, 1080, "Yuggoth Engine"), swapchain_(window_.GetNativeWindow()) {
-  command_pool_ = CommandPool(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_pool_ = CommandPool(GraphicsDevice::Get()->GetGraphicsQueueIndex());
   Create();
 }
 
@@ -65,7 +65,7 @@ void WindowManager::EndFrame(CommandBuffer &command_buffer) {
   submit.signalSemaphoreCount = 1;
   submit.pSignalSemaphores = render_finished_semaphore.get();
 
-  VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit, fence.GetHandle()));
+  VK_CHECK(vkQueueSubmit(GraphicsDevice::Get()->GetGraphicsQueue(), 1, submit, fence.GetHandle()));
 
   swapchain_.Present(render_finished_semaphore.get());
 
