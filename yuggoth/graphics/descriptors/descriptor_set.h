@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_DESCRIPTOR_SET_H
 #define YUGGOTH_DESCRIPTOR_SET_H
 
-#include "yuggoth/graphics_device/graphics_device.h"
+#include "walle/walle.h"
 #include <span>
 
 namespace Yuggoth {
@@ -20,7 +20,7 @@ public:
   DescriptorSet(DescriptorSet &&other) noexcept;
   DescriptorSet &operator=(DescriptorSet &&other) noexcept;
 
-  void Update(std::span<const DescriptorImageInfo> images, uint32_t binding, DescriptorType descriptor_type, uint32_t start);
+  void Update(std::span<const Walle::DescriptorImageInfo> images, uint32_t binding, Walle::DescriptorType descriptor_type, uint32_t start);
 
   VkDescriptorSet GetHandle() const;
 

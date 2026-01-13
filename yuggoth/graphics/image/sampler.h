@@ -1,13 +1,13 @@
 #ifndef YUGGOTH_SAMPLER_H
 #define YUGGOTH_SAMPLER_H
 
-#include "yuggoth/graphics/core/graphics_specifications.h"
+#include "image_create_information.h"
 
 namespace Yuggoth {
 
 class Sampler {
 public:
-  Sampler(const SamplerSpecification &specification);
+  Sampler(const SamplerCreateInformation &sampler_ci);
 
   ~Sampler();
 
@@ -17,7 +17,7 @@ public:
   Sampler(Sampler &&other) noexcept;
   Sampler &operator=(Sampler &&other) noexcept;
 
-  static VkSampler CreateSampler(const SamplerSpecification &specification);
+  static VkSampler CreateSampler(const SamplerCreateInformation &sampler_ci);
 
   VkSampler GetHandle() const;
 

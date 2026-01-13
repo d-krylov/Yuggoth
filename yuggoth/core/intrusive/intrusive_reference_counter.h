@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_INTRUSIVE_REFERENCE_COUNTER_H
 #define YUGGOTH_INTRUSIVE_REFERENCE_COUNTER_H
 
-#include "yuggoth/core/tools/include/counter.h"
+#include "yuggoth/core/tools/counter.h"
 #include <memory>
 
 namespace Yuggoth {

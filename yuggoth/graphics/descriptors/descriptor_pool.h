@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_DESCRIPTOR_POOL_H
 #define YUGGOTH_DESCRIPTOR_POOL_H
 
-#include "yuggoth/graphics_device/graphics_device.h"
+#include "walle/walle.h"
 #include <span>
 
 namespace Yuggoth {

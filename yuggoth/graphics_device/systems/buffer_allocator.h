@@ -3,7 +3,7 @@
 
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/core/allocators/virtual_allocator.h"
-#include "common_types.h"
+#include "yuggoth/graphics_device/core/common_types.h"
 #include <memory>
 
 namespace Yuggoth {

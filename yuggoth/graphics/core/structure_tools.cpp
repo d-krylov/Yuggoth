@@ -1,9 +1,17 @@
 #include "structure_tools.h"
+#include <print>
 
 namespace Yuggoth {
 
-ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect, uint32_t base_level, uint32_t level_count, uint32_t base_layer,
-                                               uint32_t layer_count) {
+void VK_CHECK(VkResult result, std::source_location source_location) {
+  auto status = Walle::Result(result);
+  if (status != Walle::Result::E_SUCCESS) {
+    std::println("VULKAN ERROR: {0} in {1}:{2}", Walle::ToString(status), source_location.file_name(), source_location.line());
+    std::abort();
+  }
+}
+
+ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect, uint32_t base_level, uint32_t level_count, uint32_t base_layer, uint32_t layer_count) {
   ImageSubresourceRange image_subresource_range;
 
   image_subresource_range.aspectMask = aspect;

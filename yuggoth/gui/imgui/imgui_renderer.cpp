@@ -1,11 +1,12 @@
 #include "imgui_renderer.h"
 #include "imgui.h"
 #include "ImGuizmo.h"
-#include "yuggoth/core/tools/include/core.h"
-#include "yuggoth/core/tools/include/filesystem.h"
+#include "yuggoth/core/tools/core.h"
+#include "yuggoth/core/tools/filesystem.h"
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
+#include "yuggoth/graphics/core/graphics_specifications.h"
 #include <algorithm>
 #include <print>
 
@@ -147,7 +148,7 @@ void ImGuiRenderer::CreateTexture() {
   io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height, &channels);
   auto data = std::span(pixels, width * height * channels);
   auto image_ci = ImageCreateInformation::CreateTexture2D(width, height, Walle::Format::E_R8G8B8A8_UNORM, 1);
-  image_ = Image(image_ci, SamplerSpecification());
+  image_ = Image(image_ci, SamplerCreateInformation());
   image_.SetImageData(std::as_bytes(data));
   io.Fonts->SetTexID((ImTextureID)&image_);
 }
@@ -158,10 +159,8 @@ void ImGuiRenderer::Begin(CommandBuffer &command_buffer) {
   ImGui::DockSpaceOverViewport();
 }
 
-void ImGuiRenderer::End(CommandBuffer &command_buffer, const Swapchain &swapchain) {
+void ImGuiRenderer::End(CommandBuffer &command_buffer, VkImageView image_view, const Walle::Extent2D &extent) {
   ImGui::Render();
-
-  auto image_view = swapchain.GetCurrentImageView();
 
   std::array<Walle::RenderingAttachmentInfo, 1> color;
   color[0].imageView = image_view;
@@ -170,7 +169,7 @@ void ImGuiRenderer::End(CommandBuffer &command_buffer, const Swapchain &swapchai
   color[0].storeOp = AttachmentStoreOp::E_STORE;
   color[0].clearValue = {0.0f, 0.0f, 0.0f, 1.0f};
 
-  command_buffer.CommandBeginRendering(swapchain.GetExtent(), color);
+  command_buffer.CommandBeginRendering(extent, color);
 
   RenderDrawData(command_buffer);
   command_buffer.CommandEndRendering();

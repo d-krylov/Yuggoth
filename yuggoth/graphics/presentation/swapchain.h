@@ -1,16 +1,14 @@
 #ifndef YUGGOTH_SWAPCHAIN_H
 #define YUGGOTH_SWAPCHAIN_H
 
-#include "yuggoth/graphics_device/graphics_device.h"
-#include <span>
-
-struct GLFWwindow;
+#include "surface.h"
+#include <vector>
 
 namespace Yuggoth {
 
 class Swapchain {
 public:
-  Swapchain(GLFWwindow *native_window);
+  Swapchain(const Surface &surface);
 
   ~Swapchain();
 
@@ -24,29 +22,18 @@ public:
 
   uint32_t GetImageIndex() const;
   std::size_t GetNumberOfImages() const;
-  const Extent2D &GetExtent() const;
-  Format GetFormat() const;
-
-  std::span<const VkImageView> GetImageViews() const;
 
   VkResult AcquireNextImage(const VkSemaphore semaphore);
 
-  static std::vector<const char *> GetSwapchainExtensions();
-
   void Cleanup();
-  void Recreate();
+  void Recreate(const Surface &surface);
 
 protected:
-  void CreateSurface(GLFWwindow *native_window);
-  void CreateSwapchain();
-  void CreateImageViews();
+  void CreateSwapchain(const Surface &surface);
 
 private:
-  VkSurfaceKHR surface_{VK_NULL_HANDLE};
   VkSwapchainKHR swapchain_current_{VK_NULL_HANDLE};
   VkSwapchainKHR swapchain_previous_{VK_NULL_HANDLE};
-  SurfaceFormatKHR surface_format_;
-  Extent2D surface_extent_;
   std::vector<VkImage> images_;
   std::vector<VkImageView> image_views_;
   uint32_t image_index_{0};

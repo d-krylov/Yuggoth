@@ -1,5 +1,5 @@
 #include "graphics_pipeline.h"
-#include "yuggoth/graphics_device/graphics_device.h"
+#include "yuggoth/graphics/core/graphics_context.h"
 #include "yuggoth/graphics/core/graphics_specifications.h"
 #include "yuggoth/graphics/core/structure_tools.h"
 #include <utility>
@@ -104,7 +104,7 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
   graphics_pipeline_ci.pDynamicState = &dynamic_state_ci;
   graphics_pipeline_ci.layout = pipeline_layout;
 
-  VK_CHECK(vkCreateGraphicsPipelines(GraphicsDevice::Get()->GetDevice(), nullptr, 1, graphics_pipeline_ci, 0, &graphics_pipleine));
+  VK_CHECK(vkCreateGraphicsPipelines(GraphicsContext::Get()->GetDevice(), nullptr, 1, graphics_pipeline_ci, 0, &graphics_pipleine));
   return graphics_pipleine;
 }
 

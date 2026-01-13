@@ -1,4 +1,7 @@
 #include "descriptor_set.h"
+#include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/graphics/core/structure_tools.h"
+#include <vector>
 
 namespace Yuggoth {
 
@@ -6,7 +9,7 @@ VkDescriptorSetLayout DescriptorSet::CreateDescriptorSetLayout(std::span<const W
                                                                Walle::DescriptorSetLayoutCreateMask descriptor_set_create_mask) {
 
   auto binding_count = descriptor_set_bindings.size();
-  std::vector<DescriptorBindingMask> binding_masks(binding_count);
+  std::vector<Walle::DescriptorBindingMask> binding_masks(binding_count);
 
   for (auto i = 0; i < binding_count; i++) {
     auto is_array = descriptor_set_bindings[i].descriptorCount > 1;
@@ -17,7 +20,7 @@ VkDescriptorSetLayout DescriptorSet::CreateDescriptorSetLayout(std::span<const W
       binding_masks[i] |= Walle::DescriptorBindingMaskBits::E_PARTIALLY_BOUND_BIT;
     }
 
-    if (descriptor_set_create_mask.HasBits(DescriptorSetLayoutCreateMaskBits::E_UPDATE_AFTER_BIND_POOL_BIT)) {
+    if (descriptor_set_create_mask.HasBits(Walle::DescriptorSetLayoutCreateMaskBits::E_UPDATE_AFTER_BIND_POOL_BIT)) {
       binding_masks[i] |= Walle::DescriptorBindingMaskBits::E_UPDATE_AFTER_BIND_BIT;
     }
 
@@ -37,7 +40,7 @@ VkDescriptorSetLayout DescriptorSet::CreateDescriptorSetLayout(std::span<const W
   descriptor_set_layout_ci.pNext = &set_binding_flags_ci;
 
   VkDescriptorSetLayout descriptor_set_layout = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateDescriptorSetLayout(GraphicsDevice::Get()->GetDevice(), descriptor_set_layout_ci, 0, &descriptor_set_layout));
+  VK_CHECK(vkCreateDescriptorSetLayout(GraphicsContext::Get()->GetDevice(), descriptor_set_layout_ci, 0, &descriptor_set_layout));
   return descriptor_set_layout;
 }
 
@@ -70,11 +73,11 @@ VkDescriptorSet DescriptorSet::AllocateDescriptorSet(VkDescriptorPool descriptor
   descriptor_set_ai.pSetLayouts = &set_layout;
 
   VkDescriptorSet descriptor_set = VK_NULL_HANDLE;
-  VK_CHECK(vkAllocateDescriptorSets(GraphicsDevice::Get()->GetDevice(), descriptor_set_ai, &descriptor_set));
+  VK_CHECK(vkAllocateDescriptorSets(GraphicsContext::Get()->GetDevice(), descriptor_set_ai, &descriptor_set));
   return descriptor_set;
 }
 
-void DescriptorSet::Update(std::span<const DescriptorImageInfo> images, uint32_t binding, DescriptorType descriptor_type, uint32_t start) {
+void DescriptorSet::Update(std::span<const Walle::DescriptorImageInfo> images, uint32_t binding, Walle::DescriptorType descriptor_type, uint32_t start) {
   Walle::WriteDescriptorSet write_descriptor_set;
   write_descriptor_set.dstSet = descriptor_set_;
   write_descriptor_set.dstBinding = binding;
@@ -82,7 +85,7 @@ void DescriptorSet::Update(std::span<const DescriptorImageInfo> images, uint32_t
   write_descriptor_set.descriptorType = descriptor_type;
   write_descriptor_set.descriptorCount = images.size();
   write_descriptor_set.pImageInfo = images.data();
-  vkUpdateDescriptorSets(GraphicsDevice::Get()->GetDevice(), 1, write_descriptor_set, 0, nullptr);
+  vkUpdateDescriptorSets(GraphicsContext::Get()->GetDevice(), 1, write_descriptor_set, 0, nullptr);
 }
 
 VkDescriptorSet DescriptorSet::GetHandle() const {

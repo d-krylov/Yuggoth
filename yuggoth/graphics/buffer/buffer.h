@@ -1,13 +1,11 @@
 #ifndef YUGGOTH_BUFFER_H
 #define YUGGOTH_BUFFER_H
 
-#include "yuggoth/graphics_device/graphics_device_types.h"
+#include "yuggoth/graphics/core/graphics_context_types.h"
 #include "buffer_create_information.h"
 #include <span>
 
 namespace Yuggoth {
-
-using BufferInformation = std::pair<VkBuffer, AllocationInformation>;
 
 class Buffer {
 public:
@@ -47,7 +45,7 @@ public:
   bool IsGPU() const;
 
   static VkDeviceAddress GetBufferDeviceAddress(VkBuffer buffer);
-  static BufferInformation CreateBuffer(const BufferCreateInformation &buffer_ci);
+  static BufferAllocationInformation CreateBuffer(const BufferCreateInformation &buffer_ci);
 
 protected:
   void Swap(Buffer &other) noexcept;

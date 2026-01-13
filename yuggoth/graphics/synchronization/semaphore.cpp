@@ -1,16 +1,17 @@
 
 #include "semaphore.h"
-#include "yuggoth/graphics_device/graphics_device.h"
+#include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/graphics/core/structure_tools.h"
 
 namespace Yuggoth {
 
 Semaphore::Semaphore() {
   Walle::SemaphoreCreateInfo semaphore_ci;
-  VK_CHECK(vkCreateSemaphore(GraphicsDevice::Get()->GetDevice(), semaphore_ci, nullptr, &semaphore_));
+  VK_CHECK(vkCreateSemaphore(GraphicsContext::Get()->GetDevice(), semaphore_ci, nullptr, &semaphore_));
 }
 
 Semaphore::~Semaphore() {
-  vkDestroySemaphore(GraphicsDevice::Get()->GetDevice(), semaphore_, nullptr);
+  vkDestroySemaphore(GraphicsContext::Get()->GetDevice(), semaphore_, nullptr);
 }
 
 Semaphore::Semaphore(Semaphore &&other) noexcept {

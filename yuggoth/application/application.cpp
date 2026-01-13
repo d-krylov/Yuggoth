@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cassert>
 #include "yuggoth/graphics/core/structure_tools.h"
+#include "yuggoth/graphics/core/graphics_context.h"
 
 namespace Yuggoth {
 
@@ -10,7 +11,7 @@ Application::Application()
     buffer_manager_(), imgui_host_(window_manager_.GetWindow()),                       //
     shader_library_(),                                                                 //
     pipeline_library_(&shader_library_),                                               //
-    imgui_renderer_(window_manager_.GetSwapchain()->GetFormat()),                      //
+    imgui_renderer_(window_manager_.GetSurface()->GetSurfaceFormat().format),          //
     material_manager_(&asset_manager_),                                                //
     asset_manager_(AssetManagerCreateContext(&buffer_manager_, &material_manager_)),   //
     scene_manager_(&asset_manager_),                                                   //
@@ -45,6 +46,7 @@ void Application::OnStart() {
   editor_context.asset_manager_ = &asset_manager_;
   editor_context.buffer_manager_ = &buffer_manager_;
   editor_context.shader_library_ = &shader_library_;
+  editor_context.graphics_device = &graphics_device_;
   editor_.SetEditorContext(editor_context);
 }
 
@@ -55,7 +57,7 @@ void Application::Run() {
 
     auto new_viewport_size = editor_.GetEditorWindow<ViewportWindow>().GetViewportSize();
     if (new_viewport_size.first != 0 && new_viewport_size.second != 0) {
-      GraphicsDevice::Get()->GetCurrentFrame().OnResize(new_viewport_size.first, new_viewport_size.second);
+      graphics_device_.GetCurrentFrame().OnResize(new_viewport_size.first, new_viewport_size.second);
     }
 
     auto command_buffer = window_manager_.BeginFrame();
@@ -67,18 +69,17 @@ void Application::Run() {
 
     auto subresource = GetImageSubresourceRange();
     command_buffer->TransitionImageLayout(swapchain->GetCurrentImage(), ImageLayout::E_UNDEFINED, ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL,
-                                          PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT,
-                                          PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, AccessMaskBits2::E_NONE,
-                                          AccessMaskBits2::E_COLOR_ATTACHMENT_WRITE_BIT, subresource);
+                                          PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT,
+                                          AccessMaskBits2::E_NONE, AccessMaskBits2::E_COLOR_ATTACHMENT_WRITE_BIT, subresource);
 
     imgui_host_.NewFrame();
     imgui_renderer_.Begin(*command_buffer);
 
     OnImGui();
 
-    GraphicsDevice::Get()->BeginFrame();
+    graphics_device_.BeginFrame();
 
-    auto &current_frame = GraphicsDevice::Get()->GetCurrentFrame();
+    auto &current_frame = graphics_device_.GetCurrentFrame();
 
     auto extent = current_frame.target_image_.GetImageCreateInformation().extent_;
 
@@ -87,9 +88,9 @@ void Application::Run() {
 
     // renderer_.DrawRayTrace(scene_manager_.GetCurrentScene());
     renderer_.End();
-    GraphicsDevice::Get()->EndFrame();
+    graphics_device_.EndFrame();
 
-    imgui_renderer_.End(*command_buffer, *swapchain);
+    imgui_renderer_.End(*command_buffer, swapchain->GetCurrentImageView(), window_manager_.GetSurface()->GetSurfaceCapabilities().currentExtent);
 
     command_buffer->TransitionImageLayout(swapchain->GetCurrentImage(), ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL, ImageLayout::E_PRESENT_SRC_KHR,
                                           PipelineStageMaskBits2::E_COLOR_ATTACHMENT_OUTPUT_BIT, PipelineStageMaskBits2::E_NONE,
@@ -98,7 +99,7 @@ void Application::Run() {
     window_manager_.EndFrame(*command_buffer);
   }
 
-  vkDeviceWaitIdle(GraphicsDevice::Get()->GetDevice());
+  vkDeviceWaitIdle(GraphicsContext::Get()->GetDevice());
 }
 
 } // namespace Yuggoth

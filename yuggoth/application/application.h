@@ -27,6 +27,7 @@ private:
   BufferManager buffer_manager_;
   ShaderLibrary shader_library_;
   PipelineLibrary pipeline_library_;
+  GraphicsDevice graphics_device_;
   ImGuiHost imgui_host_;
   ImGuiRenderer imgui_renderer_;
   AssetManager asset_manager_;

@@ -44,7 +44,7 @@ set(IMGUIZMO_SOURCES
 # CONFIG
 
 configure_file(
-  ${YUGGOTH_SOURCE_DIR}/core/tools/include/config.h.in
+  ${PROJECT_SOURCE_DIR}/assets/settings/config.h.in
   ${CMAKE_BINARY_DIR}/config/yuggoth_config.h
 )
 

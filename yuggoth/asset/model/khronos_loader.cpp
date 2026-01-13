@@ -30,8 +30,8 @@ Walle::SamplerAddressMode GetWrap(fgf::Wrap wrap) {
   }
 }
 
-SamplerSpecification GetSamplerSpecification(const fgf::Sampler &sampler) {
-  SamplerSpecification specification;
+SamplerCreateInformation GetSamplerSpecification(const fgf::Sampler &sampler) {
+  SamplerCreateInformation specification;
   specification.min_filter_ = GetFilter(sampler.minFilter.value_or(fgf::Filter::Linear));
   specification.mag_filter_ = GetFilter(sampler.magFilter.value_or(fgf::Filter::Linear));
   specification.address_mode_u_ = GetWrap(sampler.wrapS);

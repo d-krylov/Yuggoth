@@ -1,4 +1,6 @@
 #include "descriptor_pool.h"
+#include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/graphics/core/structure_tools.h"
 
 namespace Yuggoth {
 
@@ -30,7 +32,7 @@ VkDescriptorPool DescriptorPool::Create(std::span<const Walle::DescriptorPoolSiz
   descriptor_pool_ci.pPoolSizes = sizes.data();
 
   VkDescriptorPool descriptor_pool = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateDescriptorPool(GraphicsDevice::Get()->GetDevice(), descriptor_pool_ci, 0, &descriptor_pool));
+  VK_CHECK(vkCreateDescriptorPool(GraphicsContext::Get()->GetDevice(), descriptor_pool_ci, 0, &descriptor_pool));
   return descriptor_pool;
 }
 

@@ -2,6 +2,7 @@
 #include "command_pool.h"
 #include "yuggoth/graphics/synchronization/fence.h"
 #include "yuggoth/graphics/pipeline/pipeline.h"
+#include "yuggoth/graphics/core/graphics_context.h"
 
 namespace Yuggoth {
 
@@ -15,7 +16,7 @@ CommandBuffer::CommandBuffer(uint32_t queue_family_index) : own_command_pool_(tr
 }
 
 CommandBuffer::~CommandBuffer() {
-  vkDestroyCommandPool(GraphicsDevice::Get()->GetDevice(), own_command_pool_ ? command_pool_ : VK_NULL_HANDLE, nullptr);
+  vkDestroyCommandPool(GraphicsContext::Get()->GetDevice(), own_command_pool_ ? command_pool_ : VK_NULL_HANDLE, nullptr);
 }
 
 CommandBuffer::CommandBuffer(CommandBuffer &&other) noexcept {
@@ -38,7 +39,7 @@ VkCommandBuffer CommandBuffer::AllocateCommandBuffer(VkCommandPool command_pool,
   command_buffer_ai.commandBufferCount = 1;
 
   VkCommandBuffer command_buffer = VK_NULL_HANDLE;
-  VK_CHECK(vkAllocateCommandBuffers(GraphicsDevice::Get()->GetDevice(), command_buffer_ai, &command_buffer));
+  VK_CHECK(vkAllocateCommandBuffers(GraphicsContext::Get()->GetDevice(), command_buffer_ai, &command_buffer));
   return command_buffer;
 }
 
@@ -52,7 +53,7 @@ void CommandBuffer::Submit() {
   submit_info.pCommandBuffers = get();
 
   Fence fence;
-  VK_CHECK(vkQueueSubmit(GraphicsDevice::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
+  VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
   fence.Wait();
 }
 
@@ -70,8 +71,8 @@ void CommandBuffer::Reset() {
   vkResetCommandBuffer(command_buffer_, 0);
 }
 
-void CommandBuffer::CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors,
-                                          const RenderingAttachmentInfo *depth, const RenderingAttachmentInfo *stencil) {
+void CommandBuffer::CommandBeginRendering(const Extent2D &extent, std::span<const RenderingAttachmentInfo> colors, const RenderingAttachmentInfo *depth,
+                                          const RenderingAttachmentInfo *stencil) {
   RenderingInfo rendering_info;
   rendering_info.renderArea.offset = {0, 0};
   rendering_info.renderArea.extent = extent;
@@ -120,8 +121,7 @@ void CommandBuffer::CommandMemoryBarrier(PipelineStageMask2 source_stage, Access
 
 // PUSH
 
-void CommandBuffer::CommandPushDescriptorSet(const Pipeline &pipeline, int32_t set, uint32_t binding, VkBuffer buffer,
-                                             DescriptorType descriptor_type) {
+void CommandBuffer::CommandPushDescriptorSet(const Pipeline &pipeline, int32_t set, uint32_t binding, VkBuffer buffer, DescriptorType descriptor_type) {
   DescriptorBufferInfo descriptor_bi;
   descriptor_bi.buffer = buffer;
   descriptor_bi.offset = 0;
@@ -139,8 +139,8 @@ void CommandBuffer::CommandPushDescriptorSet(const Pipeline &pipeline, int32_t s
   vkCmdPushDescriptorSetKHR(command_buffer_, bind_point, pipeline.GetPipelineLayout(), set, 1, write_descriptor_set);
 }
 
-void CommandBuffer::CommandPushDescriptorSet(std::span<const DescriptorImageInfo> images, VkPipelineLayout layout, uint32_t set_number,
-                                             uint32_t binding, DescriptorType descriptor_type, PipelineBindPoint bind_point) {
+void CommandBuffer::CommandPushDescriptorSet(std::span<const DescriptorImageInfo> images, VkPipelineLayout layout, uint32_t set_number, uint32_t binding,
+                                             DescriptorType descriptor_type, PipelineBindPoint bind_point) {
   WriteDescriptorSet write_descriptor_set;
   write_descriptor_set.dstBinding = binding;
   write_descriptor_set.dstArrayElement = 0;
@@ -295,8 +295,8 @@ void CommandBuffer::TransitionImageLayout(VkImage image, ImageLayout source_layo
 }
 
 void CommandBuffer::CommandTraceRay(const StridedDeviceAddressRegionKHR &raygen, const StridedDeviceAddressRegionKHR &miss,
-                                    const StridedDeviceAddressRegionKHR &hit, const StridedDeviceAddressRegionKHR &callable, uint32_t width,
-                                    uint32_t height, uint32_t depth) {
+                                    const StridedDeviceAddressRegionKHR &hit, const StridedDeviceAddressRegionKHR &callable, uint32_t width, uint32_t height,
+                                    uint32_t depth) {
   vkCmdTraceRaysKHR(command_buffer_, raygen, miss, hit, callable, width, height, depth);
 }
 

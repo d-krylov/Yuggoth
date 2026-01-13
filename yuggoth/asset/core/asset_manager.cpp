@@ -1,10 +1,11 @@
 #include "asset_manager.h"
 #include "yuggoth/asset/model/model_storage.h"
 #include "yuggoth/asset/model/model.h"
-#include "yuggoth/graphics_device/include/buffer_manager.h"
-#include "yuggoth/core/tools/include/image_wrapper.h"
+#include "yuggoth/graphics_device/systems/buffer_manager.h"
+#include "yuggoth/core/tools/image_wrapper.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/graphics_device/graphics_device.h"
+#include "yuggoth/graphics_device/core/graphics_device.h"
+#include "yuggoth/graphics/core/graphics_context.h"
 #include <print>
 
 namespace Yuggoth {
@@ -84,7 +85,7 @@ MeshBufferRange AssetManager::PutMeshDataInBuffers(const MeshData &mesh_data) {
   auto vertices_range = vertex_allocator.allocate(mesh_data.vertices_.size(), 0);
   auto indices_range = index_allocator.allocate(mesh_data.indices_.size(), 0);
 
-  CommandBuffer command_buffer(GraphicsDevice::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
 
   buffer_manager->UploadBuffer(&command_buffer, vertices_range, std::as_bytes(mesh_data.GetVertices()));
@@ -116,12 +117,12 @@ void AssetManager::RegisterModelImages(const ModelStorage &model_storage) {
   }
 
   offset = 0;
-  CommandBuffer command_buffer(GraphicsDevice::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin(Walle::CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   for (const auto &image_wrapper : image_wrappers) {
     image_create_information.extent_.width = image_wrapper.GetWidth();
     image_create_information.extent_.height = image_wrapper.GetHeight();
-    auto image = MakeIntrusivePointer<Image>(image_create_information, SamplerSpecification());
+    auto image = MakeIntrusivePointer<Image>(image_create_information, SamplerCreateInformation());
     assets_[image->uuid_] = image;
     image->SetImageLayout(Walle::ImageLayout::E_TRANSFER_DST_OPTIMAL, &command_buffer);
     command_buffer.CommandCopyBufferToImage(staging_buffer.GetHandle(), image->GetImage(), image->GetImageCreateInformation().extent_, offset);

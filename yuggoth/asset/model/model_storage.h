@@ -3,7 +3,7 @@
 
 #include "mesh.h"
 #include "yuggoth/asset/material/material.h"
-#include "yuggoth/graphics/core/graphics_specifications.h"
+#include "yuggoth/graphics/image/image_create_information.h"
 #include <filesystem>
 #include <vector>
 
@@ -32,7 +32,7 @@ private:
   std::vector<Mesh> meshes_;
   std::vector<std::filesystem::path> images_;
   std::vector<Material> materials_;
-  std::vector<SamplerSpecification> sampler_specifications_;
+  std::vector<SamplerCreateInformation> sampler_specifications_;
   std::vector<Meshlet> meshlets_;
   std::vector<Texture> textures_;
 

@@ -14,7 +14,7 @@ BufferCreateInformation BufferCreateInformation::CreateCPUBuffer(uint64_t size, 
   BufferCreateInformation buffer_ci;
   buffer_ci.buffer_size_ = size;
   buffer_ci.buffer_usage_ = usage;
-  buffer_ci.allocator_mask_ = mapped ? AllocationCreateMaskBits::E_MAPPED_BIT : AllocationCreateMask();
+  buffer_ci.allocator_mask_ = mapped ? Walle::AllocationCreateMaskBits::E_MAPPED_BIT : Walle::AllocationCreateMask();
   buffer_ci.required_memory_property_ = Walle::MemoryPropertyMaskBits::E_HOST_VISIBLE_BIT;
   return buffer_ci;
 }

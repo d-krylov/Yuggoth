@@ -60,8 +60,7 @@ public:
 
   void CommandPushDescriptorSet(const Pipeline &pipeline, int32_t set, uint32_t binding, VkBuffer buffer, Walle::DescriptorType descriptor_type);
 
-  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkAccelerationStructureKHR tlas,
-                                Walle::PipelineBindPoint point);
+  void CommandPushDescriptorSet(VkPipelineLayout layout, uint32_t set, uint32_t binding, VkAccelerationStructureKHR tlas, Walle::PipelineBindPoint point);
 
   void CommandPushDescriptorSet(std::span<const Walle::DescriptorImageInfo> images, VkPipelineLayout layout, uint32_t set_number, uint32_t binding,
                                 Walle::DescriptorType descriptor_type, Walle::PipelineBindPoint bind_point);
@@ -94,13 +93,13 @@ public:
 
   // RAY
   void CommandTraceRay(const Walle::StridedDeviceAddressRegionKHR &raygen, const Walle::StridedDeviceAddressRegionKHR &miss,
-                       const Walle::StridedDeviceAddressRegionKHR &hit, const Walle::StridedDeviceAddressRegionKHR &callable, uint32_t width,
-                       uint32_t height, uint32_t depth);
+                       const Walle::StridedDeviceAddressRegionKHR &hit, const Walle::StridedDeviceAddressRegionKHR &callable, uint32_t width, uint32_t height,
+                       uint32_t depth);
 
   // HELPERS
-  void TransitionImageLayout(VkImage image, Walle::ImageLayout source_layout, Walle::ImageLayout destination_layout,
-                             Walle::PipelineStageMask2 source_stage, Walle::PipelineStageMask2 destination_stage, Walle::AccessMask2 source_access,
-                             Walle::AccessMask2 destination_access, const Walle::ImageSubresourceRange &subresource);
+  void TransitionImageLayout(VkImage image, Walle::ImageLayout source_layout, Walle::ImageLayout destination_layout, Walle::PipelineStageMask2 source_stage,
+                             Walle::PipelineStageMask2 destination_stage, Walle::AccessMask2 source_access, Walle::AccessMask2 destination_access,
+                             const Walle::ImageSubresourceRange &subresource);
 
 private:
   VkCommandBuffer command_buffer_{VK_NULL_HANDLE};

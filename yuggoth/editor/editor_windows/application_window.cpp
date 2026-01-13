@@ -1,5 +1,6 @@
-#include "yuggoth/graphics_device/graphics_device.h"
-#include "yuggoth/graphics_device/include/buffer_manager.h"
+#include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/graphics/core/graphics_allocator.h"
+#include "yuggoth/graphics_device/systems/buffer_manager.h"
 #include "application_window.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -8,7 +9,7 @@
 namespace Yuggoth {
 
 void ApplicationWindow::DrawMemoryStatistics() {
-  const auto &allocator_statistics = GraphicsDevice::Get()->GetGraphicsAllocatorStatistics();
+  const auto &allocator_statistics = GraphicsAllocator::Get()->GetGraphicsAllocatorStatistics();
 
   auto buffer_allocated_memory = allocator_statistics.allocated_buffer_memory_ / (1024.0f * 1024.0f);
   auto image_allocated_memory = allocator_statistics.allocated_image_memory_ / (1024.0f * 1024.0f);
@@ -22,11 +23,10 @@ void ApplicationWindow::DrawMemoryStatistics() {
 }
 
 void ApplicationWindow::DrawSystemStatistics() {
-  const auto &memory_properties = GraphicsDevice::Get()->GetPhysicalDeviceMemoryProperties();
-  const auto &device_properties = GraphicsDevice::Get()->GetPhysicalDeviceProperties();
+  const auto &physical_device_properties = GraphicsContext::Get()->GetPhysicalDeviceProperties();
 
   if (ImGui::CollapsingHeader("System")) {
-    ImGui::Text("Device Name: %s", device_properties.properties.deviceName);
+    ImGui::Text("Device Name: %s", physical_device_properties.physical_device_properties_2.properties.deviceName);
   }
 }
 

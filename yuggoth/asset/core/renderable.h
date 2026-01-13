@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_MODEL_BASE_H
 #define YUGGOTH_MODEL_BASE_H
 
-#include "yuggoth/graphics_device/include/common_types.h"
+#include "yuggoth/graphics_device/core/common_types.h"
 #include "yuggoth/asset/model/mesh.h"
 #include "asset.h"
 #include <filesystem>

@@ -18,7 +18,7 @@ public:
   void RenderDrawData(CommandBuffer &command_buffer);
 
   void Begin(CommandBuffer &command_buffer);
-  void End(CommandBuffer &command_buffer, const Swapchain &swapchain);
+  void End(CommandBuffer &command_buffer, VkImageView image_view, const Walle::Extent2D &extent);
 
 protected:
   struct ImGuiPushConstants {

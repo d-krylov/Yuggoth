@@ -1,6 +1,6 @@
 #include "asset_manager_window.h"
 #include "yuggoth/asset/core/asset_manager.h"
-#include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/core/tools/core.h"
 #include "external/fonts/IconsFontAwesome6.h"
 #include "imgui.h"
 

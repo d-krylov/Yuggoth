@@ -1,7 +1,7 @@
 #include "renderer.h"
 #include "yuggoth/renderer/shaders/shader_library.h"
 #include "yuggoth/renderer/shaders/pipeline_library.h"
-#include "yuggoth/graphics_device/include/buffer_manager.h"
+#include "yuggoth/graphics_device/systems/buffer_manager.h"
 #include "yuggoth/scene/core/scene.h"
 #include "yuggoth/scene/core/entity.h"
 
@@ -16,7 +16,7 @@ Renderer::Renderer(const RendererContext &renderer_context)
 void Renderer::Create() {
   auto image_ci = ImageCreateInformation::CreateTexture2D(100, 100, Walle::Format::E_R32G32B32A32_SFLOAT, 1);
   image_ci.usage_ |= ImageUsageMaskBits::E_STORAGE_BIT;
-  raytrace_image_ = Image(image_ci, SamplerSpecification());
+  raytrace_image_ = Image(image_ci, SamplerCreateInformation());
 }
 
 void Renderer::OnViewportResize(uint32_t width, uint32_t height) {

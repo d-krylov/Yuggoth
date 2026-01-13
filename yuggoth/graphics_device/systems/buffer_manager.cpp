@@ -1,7 +1,7 @@
-#include "yuggoth/graphics_device/include/buffer_manager.h"
+#include "buffer_manager.h"
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/asset/model/mesh.h"
-#include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/core/tools/core.h"
 #include "yuggoth/scene/components/light.h"
 #include "yuggoth/graphics/core/graphics_types.h"
 
@@ -14,8 +14,8 @@ BufferManager::BufferManager() {
 void BufferManager::Create() {
   Walle::BufferUsageMask USAGE = Walle::BufferUsageMaskBits::E_STORAGE_BUFFER_BIT | CommonMasks::BUFFER_USAGE_SOURCES_AS;
   AddBufferAllocator<Staging>(BufferCreateInformation::CreateStagingBuffer(100_MiB));
-  AddBufferAllocator<Index32>(BufferCreateInformation::CreateCPUBuffer(100_MiB, USAGE | Walle::BufferUsageMaskBits::E_INDEX_BUFFER_BIT));
-  AddBufferAllocator<Vertex>(BufferCreateInformation::CreateCPUBuffer(100_MiB, USAGE | Walle::BufferUsageMaskBits::E_VERTEX_BUFFER_BIT));
+  AddBufferAllocator<Index32>(BufferCreateInformation::CreateGPUBuffer(100_MiB, USAGE | Walle::BufferUsageMaskBits::E_INDEX_BUFFER_BIT));
+  AddBufferAllocator<Vertex>(BufferCreateInformation::CreateGPUBuffer(100_MiB, USAGE | Walle::BufferUsageMaskBits::E_VERTEX_BUFFER_BIT));
   AddBufferAllocator<IndexedIndirectCommand>(BufferCreateInformation::CreateCPUBuffer(10_MiB, Walle::BufferUsageMaskBits::E_INDIRECT_BUFFER_BIT));
   AddBufferAllocator<TransformMatrix>(BufferCreateInformation::CreateCPUBuffer(10_MiB, Walle::BufferUsageMaskBits::E_STORAGE_BUFFER_BIT));
   AddBufferAllocator<Light>(BufferCreateInformation::CreateCPUBuffer(32_KiB, Walle::BufferUsageMaskBits::E_UNIFORM_BUFFER_BIT));
@@ -36,8 +36,8 @@ void BufferManager::UploadBuffer(CommandBuffer *command_buffer, const BufferRang
   }
 }
 
-void BufferManager::CopyBuffer(CommandBuffer *command_buffer, const BufferRange &buffer_range, std::span<const std::byte> data,
-                               PipelineStageMask2 stage, AccessMask2 access) {
+void BufferManager::CopyBuffer(CommandBuffer *command_buffer, const BufferRange &buffer_range, std::span<const std::byte> data, PipelineStageMask2 stage,
+                               AccessMask2 access) {
   auto &buffer_allocator = GetBufferAllocator(buffer_range.typeid_);
   auto &staging_allocator = GetBufferAllocator(Staging::type_id);
   auto staging_allocation = staging_allocator.allocate(data.size_bytes(), 0);

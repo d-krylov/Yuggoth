@@ -12,7 +12,7 @@ BottomLevelGeometry Renderable::GetBottomLevelGeometry() const {
   auto ibo_address = Buffer::GetBufferDeviceAddress(ibo_buffer_range.buffer_);
   ElementRange vbo_range(vbo_buffer_range.stride_, vbo_buffer_range.offset_, vbo_buffer_range.count_);
   ElementRange ibo_range(ibo_buffer_range.stride_, ibo_buffer_range.offset_, ibo_buffer_range.count_);
-  bottom_level_geometry.AddTriangleGeometry(vbo_address, vbo_range, ibo_address, ibo_range, GeometryMaskBitsKHR::E_OPAQUE_BIT_KHR);
+  bottom_level_geometry.AddTriangleGeometry(vbo_address, vbo_range, ibo_address, ibo_range, Walle::GeometryMaskBitsKHR::E_OPAQUE_BIT_KHR);
   return bottom_level_geometry;
 }
 

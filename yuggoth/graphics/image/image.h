@@ -2,9 +2,8 @@
 #define YUGGOTH_IMAGE_H
 
 #include "yuggoth/asset/core/asset.h"
-#include "image_create_information.h"
+#include "yuggoth/graphics/core/graphics_context_types.h"
 #include "sampler.h"
-#include <vma/vk_mem_alloc.h>
 #include <span>
 
 namespace Yuggoth {
@@ -15,7 +14,7 @@ class Image : public Asset {
 public:
   Image() = default;
 
-  Image(const ImageCreateInformation &image_ci, const std::optional<SamplerSpecification> &sampler_specification);
+  Image(const ImageCreateInformation &image_ci, const std::optional<SamplerCreateInformation> &sampler_specification);
 
   ~Image();
 
@@ -25,8 +24,8 @@ public:
   Image(Image &&other) noexcept;
   Image &operator=(Image &&other) noexcept;
 
-  static VkImageView CreateImageView(VkImage image, Walle::Format format, Walle::ImageViewType type, const Walle::ImageSubresourceRange &subresource);
-  static VkImage CreateImage(const ImageCreateInformation &image_ci, VmaAllocation &out_allocation);
+  static VkImageView CreateImageView(VkImage image, const ImageViewCreateInformation &image_view_ci);
+  static ImageAllocationInformation CreateImage(const ImageCreateInformation &image_ci);
 
   // API
   VkImage GetImage() const;

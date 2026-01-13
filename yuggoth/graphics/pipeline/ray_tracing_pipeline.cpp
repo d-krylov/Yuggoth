@@ -1,7 +1,7 @@
 #include "ray_tracing_pipeline.h"
 #include "yuggoth/graphics/core/graphics_types.h"
 #include "yuggoth/graphics/core/graphics_specifications.h"
-#include "yuggoth/graphics_device/graphics_device.h"
+#include "yuggoth/graphics/core/graphics_context.h"
 
 namespace Yuggoth {
 
@@ -63,7 +63,7 @@ VkPipeline CreateRayTracingPipeline(const RayTracingPipelineSpecification &speci
   pipeline_ci.layout = pipeline_layout;
 
   VkPipeline pipeline = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateRayTracingPipelinesKHR(GraphicsDevice::Get()->GetDevice(), VK_NULL_HANDLE, VK_NULL_HANDLE, 1, pipeline_ci, nullptr, &pipeline));
+  VK_CHECK(vkCreateRayTracingPipelinesKHR(GraphicsContext::Get()->GetDevice(), VK_NULL_HANDLE, VK_NULL_HANDLE, 1, pipeline_ci, nullptr, &pipeline));
   return pipeline;
 }
 

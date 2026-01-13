@@ -2,8 +2,7 @@
 
 namespace Yuggoth {
 
-Transform::Transform(const Vector3f &translation, const Vector3f &euler, const Vector3f &scale)
-  : translation_(translation), euler_(euler), scale_(scale) {
+Transform::Transform(const Vector3f &translation, const Vector3f &euler, const Vector3f &scale) : translation_(translation), euler_(euler), scale_(scale) {
   SetOrientation(euler_);
 }
 

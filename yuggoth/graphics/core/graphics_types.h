@@ -2,14 +2,13 @@
 #define YUGGOTH_GRAPHICS_TYPES_H
 
 #include "structure_tools.h"
-#include "vma_allocator_types.h"
 #include <volk/volk.h>
 
 namespace Yuggoth {
 
-ImageAspectMask GetAspectMask(Format format);
-AccessMask2 GetAccessMaskFromLayout(ImageLayout layout, bool destination);
-PipelineStageMask2 GetPipelineStageMaskFromLayout(ImageLayout layout, bool destination);
+ImageAspectMask GetAspectMask(Walle::Format format);
+AccessMask2 GetAccessMaskFromLayout(Walle::ImageLayout layout, bool destination);
+PipelineStageMask2 GetPipelineStageMaskFromLayout(Walle::ImageLayout layout, bool destination);
 
 namespace CommonMasks {
 

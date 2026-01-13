@@ -1,8 +1,8 @@
 #include "imgui_host.h"
 #include "imgui.h"
 #include "yuggoth/gui/window/window.h"
-#include "yuggoth/core/tools/include/core.h"
-#include "yuggoth/core/tools/include/filesystem.h"
+#include "yuggoth/core/tools/core.h"
+#include "yuggoth/core/tools/filesystem.h"
 #include "external/fonts/IconsFontAwesome6.h"
 #include <GLFW/glfw3.h>
 

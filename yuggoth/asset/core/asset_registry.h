@@ -2,7 +2,7 @@
 #define YUGGOTH_ASSET_REGISTRY_H
 
 #include "ankerl/unordered_dense.h"
-#include "yuggoth/core/tools/include/uuid.h"
+#include "yuggoth/core/tools/uuid.h"
 #include <filesystem>
 
 namespace Yuggoth {

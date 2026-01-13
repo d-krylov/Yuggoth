@@ -1,5 +1,5 @@
-#include "yuggoth/core/tools/include/uuid.h"
-#include "yuggoth/core/tools/include/random_number_generator.h"
+#include "yuggoth/core/tools/uuid.h"
+#include "yuggoth/core/tools/random_number_generator.h"
 
 namespace Yuggoth {
 

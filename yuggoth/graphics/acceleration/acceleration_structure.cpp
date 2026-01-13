@@ -1,5 +1,8 @@
 #include "acceleration_structure.h"
 #include "yuggoth/graphics/buffer/buffer.h"
+#include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/graphics/core/graphics_allocator.h"
+#include "yuggoth/graphics/core/graphics_types.h"
 #include <algorithm>
 
 namespace Yuggoth {
@@ -8,8 +11,8 @@ AccelerationStructure::AccelerationStructure(const BottomLevelGeometry &bottom_g
   auto acceleration_structure_sizes = GetAccelerationStructureSize(bottom_geometry);
   auto main_size = acceleration_structure_sizes.accelerationStructureSize;
   auto buffer_information = Buffer::CreateBuffer(BufferCreateInformation::CreateAccelerationStructureBuffer(main_size));
-  acceleration_buffer_ = buffer_information.first;
-  buffer_allocation_ = buffer_information.second.allocation_;
+  acceleration_buffer_ = buffer_information.buffer_handle_;
+  buffer_allocation_ = buffer_information.allocation_;
   auto scratch_ci = BufferCreateInformation::CreateGPUBuffer(acceleration_structure_sizes.buildScratchSize, CommonMasks::BUFFER_USAGE_SCRATCH_AS);
   Buffer scratch_buffer(scratch_ci);
   AccelerationSpecification specification;
@@ -25,8 +28,8 @@ AccelerationStructure::AccelerationStructure(std::span<const BLASInstances> bott
   auto acceleration_structure_sizes = GetAccelerationStructureSize(primitive_count);
   auto main_size = acceleration_structure_sizes.accelerationStructureSize;
   auto buffer_information = Buffer::CreateBuffer(BufferCreateInformation::CreateAccelerationStructureBuffer(main_size));
-  acceleration_buffer_ = buffer_information.first;
-  buffer_allocation_ = buffer_information.second.allocation_;
+  acceleration_buffer_ = buffer_information.buffer_handle_;
+  buffer_allocation_ = buffer_information.allocation_;
   auto scratch_ci = BufferCreateInformation::CreateGPUBuffer(acceleration_structure_sizes.buildScratchSize, CommonMasks::BUFFER_USAGE_SCRATCH_AS);
   Buffer scratch_buffer(scratch_ci);
   AccelerationSpecification specification;
@@ -38,9 +41,9 @@ AccelerationStructure::AccelerationStructure(std::span<const BLASInstances> bott
 }
 
 AccelerationStructure::~AccelerationStructure() {
-  vkDestroyAccelerationStructureKHR(GraphicsDevice::Get()->GetDevice(), acceleration_structure_, nullptr);
+  vkDestroyAccelerationStructureKHR(GraphicsContext::Get()->GetDevice(), acceleration_structure_, nullptr);
   if (buffer_allocation_ != nullptr && acceleration_buffer_ != nullptr) {
-    GraphicsDevice::Get()->DestroyBuffer(acceleration_buffer_, buffer_allocation_);
+    GraphicsAllocator::Get()->DestroyBuffer(acceleration_buffer_, buffer_allocation_);
   }
 }
 

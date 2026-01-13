@@ -2,7 +2,7 @@
 #define YUGGOTH_MATERIAL_MANAGER_H
 
 #include <vector>
-#include "yuggoth/core/tools/include/uuid.h"
+#include "yuggoth/core/tools/uuid.h"
 #include "yuggoth/graphics/descriptors/descriptor_set.h"
 #include "yuggoth/graphics/descriptors/descriptor_pool.h"
 

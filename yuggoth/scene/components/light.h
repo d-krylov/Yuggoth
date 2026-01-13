@@ -2,7 +2,7 @@
 #define YUGGOTH_LIGHT_H
 
 #include "yuggoth/mathematics/include/mathematics_types.h"
-#include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/core/tools/core.h"
 
 namespace Yuggoth {
 

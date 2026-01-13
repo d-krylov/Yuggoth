@@ -8,15 +8,6 @@ namespace Yuggoth {
 
 class ShaderModule;
 
-struct SamplerSpecification {
-  Walle::Filter min_filter_ = Walle::Filter::E_LINEAR;
-  Walle::Filter mag_filter_ = Walle::Filter::E_LINEAR;
-  Walle::SamplerMipmapMode mipmap_mode_ = Walle::SamplerMipmapMode::E_LINEAR;
-  Walle::SamplerAddressMode address_mode_u_ = Walle::SamplerAddressMode::E_CLAMP_TO_EDGE;
-  Walle::SamplerAddressMode address_mode_v_ = Walle::SamplerAddressMode::E_CLAMP_TO_EDGE;
-  Walle::SamplerAddressMode address_mode_w_ = Walle::SamplerAddressMode::E_CLAMP_TO_EDGE;
-};
-
 struct DescriptorSetSpecification {
   std::vector<Walle::DescriptorSetLayoutBinding> descriptor_set_bindings_;
   Walle::DescriptorSetLayoutCreateMask descriptor_set_create_mask_;

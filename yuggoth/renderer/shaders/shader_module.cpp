@@ -1,6 +1,6 @@
 #include <SPIRV-Reflect/spirv_reflect.h>
-#include "yuggoth/core/tools/include/type_tools.h"
-#include "yuggoth/core/tools/include/filesystem.h"
+#include "yuggoth/core/tools/type_tools.h"
+#include "yuggoth/core/tools/filesystem.h"
 #include "yuggoth/graphics/core/graphics_specifications.h"
 #include "shader_module.h"
 #include <algorithm>
@@ -21,8 +21,7 @@ void MergeDescriptorSetBindings(std::unordered_map<std::string, BindingInformati
   }
 }
 
-void MergePushConstants(std::unordered_map<std::string, PushConstantRange> &destination,
-                        const std::unordered_map<std::string, PushConstantRange> &source) {
+void MergePushConstants(std::unordered_map<std::string, PushConstantRange> &destination, const std::unordered_map<std::string, PushConstantRange> &source) {
   for (const auto &[name, range] : source) {
     if (auto it = destination.find(name); it == destination.end()) {
       destination.emplace(name, range);
@@ -108,9 +107,8 @@ ShaderModule::ShaderModule(const std::filesystem::path &path) {
   ParseShaderInputs(spv_module);
 }
 
-std::vector<DescriptorSetSpecification>
-ShaderModule::CreateDescriptorSetSpecifications(std::span<const ShaderModule *const> shader_modules,
-                                                std::unordered_map<uint32_t, DescriptorSetLayoutCreateMask> masks) {
+std::vector<DescriptorSetSpecification> ShaderModule::CreateDescriptorSetSpecifications(std::span<const ShaderModule *const> shader_modules,
+                                                                                        std::unordered_map<uint32_t, DescriptorSetLayoutCreateMask> masks) {
   std::unordered_map<uint32_t, DescriptorSetSpecification> set_specifications;
   std::unordered_map<std::string, BindingInformation> descriptor_sets_bindings;
   for (const auto *shader_module : shader_modules) {

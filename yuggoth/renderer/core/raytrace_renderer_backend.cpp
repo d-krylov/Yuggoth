@@ -1,7 +1,7 @@
 #include "raytrace_renderer_backend.h"
 #include "yuggoth/renderer/shaders/pipeline_library.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/graphics_device/include/buffer_manager.h"
+#include "yuggoth/graphics_device/systems/buffer_manager.h"
 #include "yuggoth/scene/core/scene.h"
 #include "renderer.h"
 
@@ -41,8 +41,8 @@ void RaytraceRendererBackend::Draw(CommandBuffer *command_buffer, Scene *scene, 
 
   command_buffer->CommandPushConstants(raytrace_pipeline.GetPipelineLayout(), ShaderStageMaskBits::E_RAYGEN_BIT_KHR, camera->GetPosition(), 0);
 
-  command_buffer->CommandTraceRay(shader_binding_table_.GetRaygenRegion(), shader_binding_table_.GetMissRegion(),
-                                  shader_binding_table_.GetHitRegion(), shader_binding_table_.GetCallableRegion(), width, height, 1);
+  command_buffer->CommandTraceRay(shader_binding_table_.GetRaygenRegion(), shader_binding_table_.GetMissRegion(), shader_binding_table_.GetHitRegion(),
+                                  shader_binding_table_.GetCallableRegion(), width, height, 1);
 }
 
 } // namespace Yuggoth

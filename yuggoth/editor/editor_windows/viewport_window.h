@@ -2,7 +2,7 @@
 #define YUGGOTH_VIEWPORT_WINDOW_H
 
 #include "yuggoth/editor/core/editor_window.h"
-#include "yuggoth/core/tools/include/core_types.h"
+#include "yuggoth/core/tools/core_types.h"
 
 namespace Yuggoth {
 

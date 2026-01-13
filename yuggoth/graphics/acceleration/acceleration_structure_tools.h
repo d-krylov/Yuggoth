@@ -1,7 +1,6 @@
 #ifndef YUGGOTH_ACCELERATION_STRUCTURE_TOOLS_H
 #define YUGGOTH_ACCELERATION_STRUCTURE_TOOLS_H
 
-#include "yuggoth/graphics_device/graphics_device.h"
 #include "yuggoth/mathematics/include/mathematics_types.h"
 #include "bottom_level_geometry.h"
 
@@ -16,13 +15,12 @@ struct BLASInstances {
   VkAccelerationStructureKHR acceleration_structure_{VK_NULL_HANDLE};
 };
 
-AccelerationStructureBuildSizesInfoKHR GetAccelerationStructureSize(uint32_t instances);
-AccelerationStructureBuildSizesInfoKHR GetAccelerationStructureSize(const BottomLevelGeometry &bottom_geometry);
-VkAccelerationStructureKHR CreateAccelerationStructure(VkBuffer buffer, AccelerationStructureTypeKHR type, std::size_t offset, std::size_t size);
-AccelerationStructureBuildGeometryInfoKHR GetBuildGeometryInformation(std::span<const AccelerationStructureGeometryKHR> geometries,
-                                                                      VkDeviceAddress scratch_buffer,
-                                                                      VkAccelerationStructureKHR acceleration_structure,
-                                                                      AccelerationStructureTypeKHR type);
+Walle::AccelerationStructureBuildSizesInfoKHR GetAccelerationStructureSize(uint32_t instances);
+Walle::AccelerationStructureBuildSizesInfoKHR GetAccelerationStructureSize(const BottomLevelGeometry &bottom_geometry);
+VkAccelerationStructureKHR CreateAccelerationStructure(VkBuffer buffer, Walle::AccelerationStructureTypeKHR type, std::size_t offset, std::size_t size);
+Walle::AccelerationStructureBuildGeometryInfoKHR GetBuildGeometryInformation(std::span<const Walle::AccelerationStructureGeometryKHR> geometries,
+                                                                             VkDeviceAddress scratch_buffer, VkAccelerationStructureKHR acceleration_structure,
+                                                                             Walle::AccelerationStructureTypeKHR type);
 
 } // namespace Yuggoth
 

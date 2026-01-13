@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_COMMAND_POOL_H
 #define YUGGOTH_COMMAND_POOL_H
 
-#include "yuggoth/graphics_device/graphics_device.h"
+#include "walle/walle.h"
 
 namespace Yuggoth {
 

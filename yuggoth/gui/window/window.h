@@ -3,7 +3,8 @@
 
 #include <string_view>
 #include <functional>
-#include "yuggoth/core/tools/include/core_types.h"
+#include "yuggoth/core/tools/core_types.h"
+#include <vulkan/vulkan.h>
 
 struct GLFWwindow;
 
@@ -29,6 +30,9 @@ public:
 
   void Invoke(Event &event);
   void SetEventHandler(const EventHandler &handler);
+
+  VkSurfaceKHR CreateSurface(VkInstance instance);
+  static std::vector<const char *> GetRequiredInstanceExtensions();
 
 private:
   GLFWwindow *native_window_{nullptr};

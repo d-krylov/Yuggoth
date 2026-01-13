@@ -1,8 +1,9 @@
 #ifndef YUGGOTH_BOTTOM_LEVEL_GEOMETRY_H
 #define YUGGOTH_BOTTOM_LEVEL_GEOMETRY_H
 
-#include "yuggoth/graphics_device/graphics_device.h"
-#include "yuggoth/core/tools/include/core_types.h"
+#include "yuggoth/core/tools/core_types.h"
+#include "walle/walle.h"
+#include <vector>
 #include <span>
 
 namespace Yuggoth {
@@ -11,18 +12,18 @@ class BottomLevelGeometry {
 public:
   void AddTriangleGeometry(VkDeviceAddress vbo_device_address, const ElementRange &vbo_range, //
                            VkDeviceAddress ibo_device_address, const ElementRange &ibo_range, //
-                           GeometryMaskKHR mask);
+                           Walle::GeometryMaskKHR mask);
 
-  std::span<const AccelerationStructureGeometryKHR> GetGeometries() const;
-  std::span<const AccelerationStructureBuildRangeInfoKHR> GetRanges() const;
+  std::span<const Walle::AccelerationStructureGeometryKHR> GetGeometries() const;
+  std::span<const Walle::AccelerationStructureBuildRangeInfoKHR> GetRanges() const;
 
   std::vector<uint32_t> GetPrimitiveCounts() const;
 
   std::size_t GetGeometryCount() const;
 
 private:
-  std::vector<AccelerationStructureGeometryKHR> geometries_;
-  std::vector<AccelerationStructureBuildRangeInfoKHR> ranges_;
+  std::vector<Walle::AccelerationStructureGeometryKHR> geometries_;
+  std::vector<Walle::AccelerationStructureBuildRangeInfoKHR> ranges_;
 };
 
 } // namespace Yuggoth

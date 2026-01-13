@@ -1,10 +1,10 @@
-#include "yuggoth/graphics_device/include/buffer_allocator.h"
+#include "buffer_allocator.h"
 
 namespace Yuggoth {
 
 BufferRange BufferAllocator::allocate(uint32_t count, uint32_t alignment) {
   auto size = count * stride_;
-  auto offset = allocator_->Allocate(size, alignment, VirtualAllocationCreateMaskBits::E_STRATEGY_MIN_OFFSET_BIT);
+  auto offset = allocator_->Allocate(size, alignment, Walle::VirtualAllocationCreateMaskBits::E_STRATEGY_MIN_OFFSET_BIT);
   BufferRange buffer_range_information;
   buffer_range_information.buffer_ = buffer_->GetHandle();
   buffer_range_information.offset_ = offset / stride_;

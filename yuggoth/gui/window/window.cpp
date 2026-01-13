@@ -2,6 +2,7 @@
 #include "mouse_events.h"
 #include "key_events.h"
 #include "window_events.h"
+#include "yuggoth/graphics/core/structure_tools.h"
 #include <GLFW/glfw3.h>
 
 namespace Yuggoth {
@@ -138,6 +139,19 @@ void Window::Invoke(Event &event) {
 
 void Window::SetEventHandler(const EventHandler &handler) {
   event_handler_ = handler;
+}
+
+VkSurfaceKHR Window::CreateSurface(VkInstance instance) {
+  VkSurfaceKHR surface = VK_NULL_HANDLE;
+  VK_CHECK(glfwCreateWindowSurface(instance, native_window_, nullptr, &surface));
+  return surface;
+}
+
+std::vector<const char *> Window::GetRequiredInstanceExtensions() {
+  glfwInit();
+  uint32_t extensions_count = 0;
+  auto extensions = glfwGetRequiredInstanceExtensions(&extensions_count);
+  return std::vector(extensions, extensions + extensions_count);
 }
 
 } // namespace Yuggoth

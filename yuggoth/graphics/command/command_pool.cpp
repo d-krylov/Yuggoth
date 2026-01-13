@@ -1,4 +1,6 @@
 #include "command_pool.h"
+#include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/graphics/core/graphics_types.h"
 
 namespace Yuggoth {
 
@@ -7,7 +9,7 @@ CommandPool::CommandPool(uint32_t queue_family_index) {
 }
 
 CommandPool::~CommandPool() {
-  vkDestroyCommandPool(GraphicsDevice::Get()->GetDevice(), command_pool_, nullptr);
+  vkDestroyCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_, nullptr);
 }
 
 CommandPool::CommandPool(CommandPool &&other) noexcept {
@@ -20,12 +22,12 @@ CommandPool &CommandPool::operator=(CommandPool &&other) noexcept {
 }
 
 VkCommandPool CommandPool::CreateCommandPool(uint32_t queue_family_index) {
-  CommandPoolCreateInfo command_pool_ci;
-  command_pool_ci.flags = CommandPoolCreateMaskBits::E_RESET_COMMAND_BUFFER_BIT;
+  Walle::CommandPoolCreateInfo command_pool_ci;
+  command_pool_ci.flags = Walle::CommandPoolCreateMaskBits::E_RESET_COMMAND_BUFFER_BIT;
   command_pool_ci.queueFamilyIndex = queue_family_index;
 
   VkCommandPool command_pool = VK_NULL_HANDLE;
-  VK_CHECK(vkCreateCommandPool(GraphicsDevice::Get()->GetDevice(), command_pool_ci, 0, &command_pool));
+  VK_CHECK(vkCreateCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_ci, 0, &command_pool));
   return command_pool;
 }
 
@@ -34,7 +36,7 @@ VkCommandPool CommandPool::GetHandle() const {
 }
 
 void CommandPool::Reset() {
-  vkResetCommandPool(GraphicsDevice::Get()->GetDevice(), command_pool_, 0);
+  vkResetCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_, 0);
 }
 
 } // namespace Yuggoth

@@ -1,11 +1,12 @@
 #include "acceleration_structure.h"
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/graphics/command/command_buffer.h"
+#include "yuggoth/graphics/core/graphics_context.h"
 
 namespace Yuggoth {
 
 void AccelerationStructure::BuildBLAS(const BottomLevelGeometry &bottom_geometry, const AccelerationSpecification &specification) {
-  auto type = AccelerationStructureTypeKHR::E_BOTTOM_LEVEL_KHR;
+  auto type = Walle::AccelerationStructureTypeKHR::E_BOTTOM_LEVEL_KHR;
 
   auto geometries = bottom_geometry.GetGeometries();
 
@@ -15,8 +16,8 @@ void AccelerationStructure::BuildBLAS(const BottomLevelGeometry &bottom_geometry
   auto build_ranges = bottom_geometry.GetRanges();
   auto build_range_pointer = reinterpret_cast<const VkAccelerationStructureBuildRangeInfoKHR *>(build_ranges.data());
 
-  CommandBuffer command_buffer(GraphicsDevice::Get()->GetGraphicsQueueIndex());
-  command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
+  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_buffer.Begin(Walle::CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   vkCmdBuildAccelerationStructuresKHR(command_buffer.GetHandle(), 1, geometry_info, &build_range_pointer);
   command_buffer.End();
   command_buffer.Submit();

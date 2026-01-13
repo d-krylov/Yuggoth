@@ -1,5 +1,5 @@
 #include "linear_allocator.h"
-#include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/core/tools/core.h"
 
 namespace Yuggoth {
 

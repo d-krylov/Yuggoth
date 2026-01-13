@@ -1,14 +1,15 @@
 #include "shader_binding_table.h"
-#include "yuggoth/graphics_device/graphics_device.h"
-#include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/core/tools/core.h"
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/graphics/command/command_buffer.h"
+#include <vector>
 
 namespace Yuggoth {
 
 std::size_t GetShaderBindingTableSize(uint32_t miss, uint32_t hit, uint32_t callable) {
   auto raygen_group = 1;
-  const auto &raytacing_properties = GraphicsDevice::Get()->GetPhysicalDeviceRayTracingPipelineProperties();
+  const auto &raytacing_properties = GraphicsContext::Get()->GetPhysicalDeviceProperties().physical_device_raytracing_pipeline_properties_;
   auto aligned_handle_size = AlignUp(raytacing_properties.shaderGroupHandleSize, raytacing_properties.shaderGroupHandleAlignment);
   auto raygen_region_size = AlignUp(raygen_group * aligned_handle_size, raytacing_properties.shaderGroupBaseAlignment);
   auto miss_region_size = AlignUp(miss * aligned_handle_size, raytacing_properties.shaderGroupBaseAlignment);
@@ -18,7 +19,7 @@ std::size_t GetShaderBindingTableSize(uint32_t miss, uint32_t hit, uint32_t call
 }
 
 void ShaderBindingTable::SetRegions(uint32_t miss, uint32_t hit, uint32_t callable) {
-  const auto &raytacing_properties = GraphicsDevice::Get()->GetPhysicalDeviceRayTracingPipelineProperties();
+  const auto &raytacing_properties = GraphicsContext::Get()->GetPhysicalDeviceProperties().physical_device_raytracing_pipeline_properties_;
   auto aligned_handle_size = AlignUp(raytacing_properties.shaderGroupHandleSize, raytacing_properties.shaderGroupHandleAlignment);
   auto group_alignment = raytacing_properties.shaderGroupBaseAlignment;
   auto raygen_group = 1;
@@ -43,7 +44,7 @@ void ShaderBindingTable::SetRegions(uint32_t miss, uint32_t hit, uint32_t callab
 }
 
 void CopyRegion(std::span<const std::byte> source, Buffer &destination, uint32_t count, uint32_t &offset, uint32_t &index) {
-  const auto &raytacing_properties = GraphicsDevice::Get()->GetPhysicalDeviceRayTracingPipelineProperties();
+  const auto &raytacing_properties = GraphicsContext::Get()->GetPhysicalDeviceProperties().physical_device_raytracing_pipeline_properties_;
   auto handle_size = raytacing_properties.shaderGroupHandleSize;
   auto aligned_handle_size = AlignUp(raytacing_properties.shaderGroupHandleSize, raytacing_properties.shaderGroupHandleAlignment);
   for (auto i = 0; i < count; i++) {
@@ -55,14 +56,14 @@ void CopyRegion(std::span<const std::byte> source, Buffer &destination, uint32_t
 }
 
 void ShaderBindingTable::CreateShaderBindingTable(VkPipeline pipeline, uint32_t miss, uint32_t hit, uint32_t callable) {
-  const auto &raytracing_properties = GraphicsDevice::Get()->GetPhysicalDeviceRayTracingPipelineProperties();
+  const auto &raytracing_properties = GraphicsContext::Get()->GetPhysicalDeviceProperties().physical_device_raytracing_pipeline_properties_;
   auto handle_size = raytracing_properties.shaderGroupHandleSize;
 
   auto raygen_group = 1;
   auto group_count = raygen_group + miss + hit + callable;
 
   std::vector<std::byte> handles(group_count * handle_size);
-  VK_CHECK(vkGetRayTracingShaderGroupHandlesKHR(GraphicsDevice::Get()->GetDevice(), pipeline, 0, group_count, handles.size(), handles.data()));
+  VK_CHECK(vkGetRayTracingShaderGroupHandlesKHR(GraphicsContext::Get()->GetDevice(), pipeline, 0, group_count, handles.size(), handles.data()));
 
   auto buffer_size = GetShaderBindingTableSize(miss, hit, callable);
   auto aligned_buffer_size = AlignUp(buffer_size, raytracing_properties.shaderGroupHandleAlignment);
@@ -70,8 +71,8 @@ void ShaderBindingTable::CreateShaderBindingTable(VkPipeline pipeline, uint32_t 
   Buffer staging_buffer(BufferCreateInformation::CreateStagingBuffer(buffer_size));
 
   auto buffer_information = Buffer::CreateBuffer(BufferCreateInformation::CreateGPUBuffer(aligned_buffer_size, CommonMasks::BUFFER_USAGE_SBT));
-  sbt_buffer_ = buffer_information.first;
-  sbt_buffer_allocation_ = buffer_information.second.allocation_;
+  sbt_buffer_ = buffer_information.buffer_handle_;
+  sbt_buffer_allocation_ = buffer_information.allocation_;
 
   SetRegions(miss, hit, callable);
 
@@ -81,7 +82,7 @@ void ShaderBindingTable::CreateShaderBindingTable(VkPipeline pipeline, uint32_t 
   CopyRegion(handles, staging_buffer, hit, offset, index);
   CopyRegion(handles, staging_buffer, callable, offset, index);
 
-  CommandBuffer command_buffer(GraphicsDevice::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   command_buffer.CommandCopyBuffer(staging_buffer.GetHandle(), sbt_buffer_, BufferCopy(0, 0, staging_buffer.GetSize()));
   command_buffer.End();

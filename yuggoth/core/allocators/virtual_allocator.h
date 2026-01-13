@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_VIRTUAL_ALLOCATOR_H
 #define YUGGOTH_VIRTUAL_ALLOCATOR_H
 
-#include "yuggoth/graphics/core/vma_allocator_types.h"
+#include "walle/walle.h"
 #include <unordered_map>
 #include <vector>
 
@@ -28,7 +28,7 @@ public:
 
   void Destroy();
 
-  std::size_t Allocate(std::size_t size, std::size_t alignment, VirtualAllocationCreateMask mask);
+  std::size_t Allocate(std::size_t size, std::size_t alignment, Walle::VirtualAllocationCreateMask mask);
 
   std::size_t GetSize() const;
 

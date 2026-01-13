@@ -1,5 +1,5 @@
 #include "virtual_allocator.h"
-#include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/core/tools/core.h"
 
 #include <utility>
 
@@ -28,7 +28,7 @@ VirtualAllocator &VirtualAllocator::operator=(VirtualAllocator &&other) noexcept
   return *this;
 }
 
-std::size_t VirtualAllocator::Allocate(std::size_t size, std::size_t alignment, VirtualAllocationCreateMask mask) {
+std::size_t VirtualAllocator::Allocate(std::size_t size, std::size_t alignment, Walle::VirtualAllocationCreateMask mask) {
   VmaVirtualAllocationCreateInfo allocation_ci{};
   allocation_ci.size = size;
   allocation_ci.flags = mask.GetValue();

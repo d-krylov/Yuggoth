@@ -5,7 +5,7 @@
 #include "camera.h"
 #include "light.h"
 #include "model_component.h"
-#include "yuggoth/core/tools/include/uuid.h"
+#include "yuggoth/core/tools/uuid.h"
 #include "yuggoth/mathematics/include/transform.h"
 #include <entt/entity/fwd.hpp>
 

@@ -20,6 +20,28 @@ struct ImageCreateInformation {
   Walle::ImageViewType image_view_type_;
 };
 
+struct ImageViewCreateInformation {
+
+  static ImageViewCreateInformation CreateDefault(Walle::ImageViewType image_view_type, Walle::Format format);
+
+  Walle::Format format_ = Walle::Format::E_UNDEFINED;
+  Walle::ImageViewType image_view_type_;
+  Walle::ImageAspectMask aspect_;
+  uint32_t base_level_ = 0;
+  uint32_t base_layer_ = 0;
+  uint32_t level_count_ = 1;
+  uint32_t layer_count_ = 1;
+};
+
+struct SamplerCreateInformation {
+  Walle::Filter min_filter_ = Walle::Filter::E_LINEAR;
+  Walle::Filter mag_filter_ = Walle::Filter::E_LINEAR;
+  Walle::SamplerMipmapMode mipmap_mode_ = Walle::SamplerMipmapMode::E_LINEAR;
+  Walle::SamplerAddressMode address_mode_u_ = Walle::SamplerAddressMode::E_CLAMP_TO_EDGE;
+  Walle::SamplerAddressMode address_mode_v_ = Walle::SamplerAddressMode::E_CLAMP_TO_EDGE;
+  Walle::SamplerAddressMode address_mode_w_ = Walle::SamplerAddressMode::E_CLAMP_TO_EDGE;
+};
+
 } // namespace Yuggoth
 
 #endif // YUGGOTH_IMAGE_CREATE_INFORMATION_H

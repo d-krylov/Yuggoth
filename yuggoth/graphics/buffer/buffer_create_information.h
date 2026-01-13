@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_BUFFER_CREATE_INFORMATION_H
 #define YUGGOTH_BUFFER_CREATE_INFORMATION_H
 
-#include "yuggoth/graphics/core/vma_allocator_types.h"
+#include "walle/walle.h"
 
 namespace Yuggoth {
 
@@ -12,7 +12,7 @@ struct BufferCreateInformation {
   static BufferCreateInformation CreateAccelerationStructureBuffer(uint64_t size);
 
   uint64_t buffer_size_{0};
-  AllocationCreateMask allocator_mask_;
+  Walle::AllocationCreateMask allocator_mask_;
   Walle::BufferUsageMask buffer_usage_;
   Walle::MemoryPropertyMask required_memory_property_ = Walle::MemoryPropertyMask();
   Walle::MemoryPropertyMask preferred_memory_property_ = Walle::MemoryPropertyMask();

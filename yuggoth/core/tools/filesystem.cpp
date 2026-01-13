@@ -1,5 +1,5 @@
-#include "yuggoth/core/tools/include/filesystem.h"
-#include "yuggoth/core/tools/include/core.h"
+#include "yuggoth/core/tools/filesystem.h"
+#include "yuggoth/core/tools/core.h"
 #include "config/yuggoth_config.h"
 #include <fstream>
 

@@ -36,9 +36,8 @@ public:
   std::vector<Walle::VertexInputAttributeDescription> GetVertexInputAttributes() const;
 
   static std::vector<Walle::PushConstantRange> CreatePushConstantSpecification(std::span<const ShaderModule *const> shader_modules);
-  static std::vector<DescriptorSetSpecification>
-  CreateDescriptorSetSpecifications(std::span<const ShaderModule *const> shader_modules,
-                                    std::unordered_map<uint32_t, Walle::DescriptorSetLayoutCreateMask> masks);
+  static std::vector<DescriptorSetSpecification> CreateDescriptorSetSpecifications(std::span<const ShaderModule *const> shader_modules,
+                                                                                   std::unordered_map<uint32_t, Walle::DescriptorSetLayoutCreateMask> masks);
 
 protected:
   void ParsePushConstants(const SpvReflectShaderModule &module);

@@ -1,11 +1,15 @@
 #include "window_manager.h"
 #include <GLFW/glfw3.h>
 #include <format>
+#include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/graphics/core/structure_tools.h"
 
 namespace Yuggoth {
 
-WindowManager::WindowManager() : window_(1920, 1080, "Yuggoth Engine"), swapchain_(window_.GetNativeWindow()) {
-  command_pool_ = CommandPool(GraphicsDevice::Get()->GetGraphicsQueueIndex());
+WindowManager::WindowManager()
+  : window_(1920, 1080, "Yuggoth Engine"), //
+    surface_(window_.CreateSurface(GraphicsContext::Get()->GetInstance())), swapchain_(surface_) {
+  command_pool_ = CommandPool(GraphicsContext::Get()->GetGraphicsQueueIndex());
   Create();
 }
 
@@ -15,7 +19,7 @@ void WindowManager::Create() {
   render_finished_semaphores_.resize(object_count);
 
   for (auto i = 0; i < object_count; ++i) {
-    frame_fences_.emplace_back(FenceCreateMaskBits::E_SIGNALED_BIT);
+    frame_fences_.emplace_back(Walle::FenceCreateMaskBits::E_SIGNALED_BIT);
     command_buffers_.emplace_back(command_pool_.GetHandle());
   }
 }
@@ -31,7 +35,7 @@ CommandBuffer *WindowManager::BeginFrame() {
 
   if ((status == VK_ERROR_OUT_OF_DATE_KHR) || (status == VK_SUBOPTIMAL_KHR)) {
     if (status == VK_ERROR_OUT_OF_DATE_KHR) {
-      swapchain_.Recreate();
+      swapchain_.Recreate(surface_);
     }
     return nullptr;
   } else {
@@ -40,7 +44,7 @@ CommandBuffer *WindowManager::BeginFrame() {
 
   current_fence.Reset();
   current_command_buffer.Reset();
-  current_command_buffer.Begin(CommandBufferUsageMask());
+  current_command_buffer.Begin(Walle::CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
 
   return &current_command_buffer;
 }
@@ -54,9 +58,9 @@ void WindowManager::EndFrame(CommandBuffer &command_buffer) {
   auto &render_finished_semaphore = render_finished_semaphores_[image_index];
   auto &fence = frame_fences_[frame_index_];
 
-  PipelineStageMask wait_stage = PipelineStageMaskBits::E_COLOR_ATTACHMENT_OUTPUT_BIT;
+  Walle::PipelineStageMask wait_stage = Walle::PipelineStageMaskBits::E_COLOR_ATTACHMENT_OUTPUT_BIT;
 
-  SubmitInfo submit;
+  Walle::SubmitInfo submit;
   submit.waitSemaphoreCount = 1;
   submit.pWaitSemaphores = image_available_semaphore.get();
   submit.pWaitDstStageMask = &wait_stage;
@@ -65,7 +69,7 @@ void WindowManager::EndFrame(CommandBuffer &command_buffer) {
   submit.signalSemaphoreCount = 1;
   submit.pSignalSemaphores = render_finished_semaphore.get();
 
-  VK_CHECK(vkQueueSubmit(GraphicsDevice::Get()->GetGraphicsQueue(), 1, submit, fence.GetHandle()));
+  VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit, fence.GetHandle()));
 
   swapchain_.Present(render_finished_semaphore.get());
 
@@ -90,6 +94,10 @@ void WindowManager::PollEvents() {
 
 double WindowManager::GetTime() {
   return glfwGetTime();
+}
+
+const Surface *WindowManager::GetSurface() const {
+  return &surface_;
 }
 
 } // namespace Yuggoth

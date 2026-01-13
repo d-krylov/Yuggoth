@@ -20,6 +20,8 @@ public:
 
   const Swapchain *GetSwapchain() const;
 
+  const Surface *GetSurface() const;
+
   const Window *GetWindow() const;
 
   void SetEventHandler(EventHandler handler);
@@ -33,6 +35,7 @@ protected:
 
 private:
   Window window_;
+  Surface surface_;
   Swapchain swapchain_;
   CommandPool command_pool_;
   std::vector<CommandBuffer> command_buffers_;
