@@ -1,21 +1,20 @@
 #ifndef YUGGOTH_DESCRIPTOR_SET_H
 #define YUGGOTH_DESCRIPTOR_SET_H
 
-#include "walle/walle.h"
+#include <walle/walle.h>
+#include <yuggoth/core/tools/yuggoth_macros.h>
 #include <span>
 
 namespace Yuggoth {
 
 class DescriptorSet {
 public:
-  DescriptorSet() = default;
+  DISABLE_COPY_SEMANTICS(DescriptorSet)
 
+  DescriptorSet() = default;
   DescriptorSet(VkDescriptorPool descriptor_pool, VkDescriptorSetLayout set_layout, uint32_t descriptors_count);
 
   ~DescriptorSet();
-
-  DescriptorSet(const DescriptorSet &) = delete;
-  DescriptorSet &operator=(const DescriptorSet &) = delete;
 
   DescriptorSet(DescriptorSet &&other) noexcept;
   DescriptorSet &operator=(DescriptorSet &&other) noexcept;

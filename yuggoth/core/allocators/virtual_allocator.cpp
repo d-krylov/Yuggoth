@@ -1,6 +1,4 @@
 #include "virtual_allocator.h"
-#include "yuggoth/core/tools/core.h"
-
 #include <utility>
 
 namespace Yuggoth {
@@ -16,16 +14,18 @@ VirtualAllocator::~VirtualAllocator() {
 }
 
 VirtualAllocator::VirtualAllocator(VirtualAllocator &&other) noexcept {
-  size_ = std::exchange(other.size_, 0);
-  virtual_block_ = std::exchange(other.virtual_block_, VK_NULL_HANDLE);
-  allocations_ = std::move(other.allocations_);
+  Swap(other);
 }
 
 VirtualAllocator &VirtualAllocator::operator=(VirtualAllocator &&other) noexcept {
+  Swap(other);
+  return *this;
+}
+
+void VirtualAllocator::Swap(VirtualAllocator &other) noexcept {
   std::swap(size_, other.size_);
   std::swap(virtual_block_, other.virtual_block_);
   std::swap(allocations_, other.allocations_);
-  return *this;
 }
 
 std::size_t VirtualAllocator::Allocate(std::size_t size, std::size_t alignment, Walle::VirtualAllocationCreateMask mask) {

@@ -28,6 +28,16 @@ void HierarchyWindow::AddEntity() {
     scene->CreateEntityWithName("Rigid Body");
   }
 
+  if (ImGui::BeginMenu("World")) {
+    if (ImGui::Selectable("Terrain")) {
+      auto terrain_entity = scene->CreateEntityWithName("Terrain");
+      auto &terrain_component = terrain_entity.AddComponent<TerrainComponent>();
+      terrain_component.terrain_ = MakeIntrusivePointer<Terrain>();
+    }
+
+    ImGui::EndMenu();
+  }
+
   if (ImGui::BeginMenu("Primitive")) {
 
     if (ImGui::Selectable("Box")) {

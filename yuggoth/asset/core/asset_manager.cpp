@@ -1,10 +1,9 @@
 #include "asset_manager.h"
 #include "yuggoth/asset/model/model_storage.h"
 #include "yuggoth/asset/model/model.h"
-#include "yuggoth/graphics_device/systems/buffer_manager.h"
+#include <yuggoth/graphics_device/core/graphics_device.h>
 #include "yuggoth/core/tools/image_wrapper.h"
 #include "yuggoth/graphics/command/command_buffer.h"
-#include "yuggoth/graphics_device/core/graphics_device.h"
 #include "yuggoth/graphics/core/graphics_context.h"
 #include <print>
 
@@ -21,8 +20,8 @@ void AssetManager::Update() {
         auto *model = static_cast<Renderable *>(asset_it->second.get());
         auto vertices = model->GetVertexBufferRange();
         auto indices = model->GetIndexBufferRange();
-        create_context_.buffer_manager_->GetBufferAllocator(Vertex::type_id).free(vertices.offset_ * vertices.stride_);
-        create_context_.buffer_manager_->GetBufferAllocator(Index32::type_id).free(indices.offset_ * indices.stride_);
+        create_context_.graphics_device_->GetResourceManager().FreeRangeInStaticBuffer(vertices);
+        create_context_.graphics_device_->GetResourceManager().FreeRangeInStaticBuffer(indices);
       }
 
       assets_.erase(asset_it);
@@ -38,18 +37,6 @@ IntrusivePointer<Model> AssetManager::RegisterModel(PrimitiveKind primitive_kind
     auto uuid = primitives_uuids_[primitive_kind];
     return static_pointer_cast<Model>(assets_.at(uuid));
   }
-
-  auto primitive = GetPrimitive(primitive_kind);
-  SetNormals(primitive.vertices_, primitive.indices_);
-
-  auto mesh_buffer_range = PutMeshDataInBuffers(primitive);
-
-  auto model = MakeIntrusivePointer<Model>(mesh_buffer_range.first, mesh_buffer_range.second);
-
-  assets_[model->uuid_] = model;
-  primitives_uuids_[primitive_kind] = model->uuid_;
-
-  return model;
 }
 
 IntrusivePointer<Model> AssetManager::RegisterModel(const std::filesystem::path &path) {
@@ -60,8 +47,10 @@ IntrusivePointer<Model> AssetManager::RegisterModel(const std::filesystem::path 
 
   ModelStorage model_storage;
   auto mesh_data = model_storage.Load(path);
-  auto mesh_buffer_range = PutMeshDataInBuffers(mesh_data);
-  auto model = MakeIntrusivePointer<Model>(mesh_buffer_range.first, mesh_buffer_range.second, path);
+  auto vertex_buffer_range = create_context_.graphics_device_->GetResourceManager().UploadStaticBuffer<Vertex>(mesh_data.GetVertices());
+  auto index_buffer_range = create_context_.graphics_device_->GetResourceManager().UploadStaticBuffer<uint32_t>(mesh_data.GetIndices());
+
+  auto model = MakeIntrusivePointer<Model>(vertex_buffer_range, index_buffer_range, path);
 
   RegisterModelImages(model_storage);
   asset_storage_.AddModelStorage(model->uuid_, std::move(model_storage));
@@ -74,27 +63,6 @@ IntrusivePointer<Model> AssetManager::RegisterModel(const std::filesystem::path 
 
 const AssetStorage &AssetManager::GetAssetStorage() const {
   return asset_storage_;
-}
-
-MeshBufferRange AssetManager::PutMeshDataInBuffers(const MeshData &mesh_data) {
-  auto buffer_manager = create_context_.buffer_manager_;
-
-  auto &vertex_allocator = buffer_manager->GetBufferAllocator(Vertex::type_id);
-  auto &index_allocator = buffer_manager->GetBufferAllocator(Index32::type_id);
-
-  auto vertices_range = vertex_allocator.allocate(mesh_data.vertices_.size(), 0);
-  auto indices_range = index_allocator.allocate(mesh_data.indices_.size(), 0);
-
-  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
-  command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
-
-  buffer_manager->UploadBuffer(&command_buffer, vertices_range, std::as_bytes(mesh_data.GetVertices()));
-  buffer_manager->UploadBuffer(&command_buffer, indices_range, std::as_bytes(mesh_data.GetIndices()));
-
-  command_buffer.End();
-  command_buffer.Submit();
-
-  return MeshBufferRange(vertices_range, indices_range);
 }
 
 void AssetManager::RegisterModelImages(const ModelStorage &model_storage) {
@@ -117,7 +85,7 @@ void AssetManager::RegisterModelImages(const ModelStorage &model_storage) {
   }
 
   offset = 0;
-  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(QueueType::GRAPHICS);
   command_buffer.Begin(Walle::CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   for (const auto &image_wrapper : image_wrappers) {
     image_create_information.extent_.width = image_wrapper.GetWidth();

@@ -14,7 +14,7 @@ class Image : public Asset {
 public:
   Image() = default;
 
-  Image(const ImageCreateInformation &image_ci, const std::optional<SamplerCreateInformation> &sampler_specification);
+  Image(const ImageCreateInformation &image_ci, const std::optional<SamplerCreateInformation> &sampler_ci);
 
   ~Image();
 

@@ -1,6 +1,7 @@
 #include "yuggoth/graphics/core/graphics_context.h"
 #include "yuggoth/graphics/core/graphics_allocator.h"
-#include "yuggoth/graphics_device/systems/buffer_manager.h"
+#include <yuggoth/graphics_device/core/graphics_device.h>
+#include <yuggoth/asset/model/mesh.h>
 #include "application_window.h"
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
@@ -24,7 +25,6 @@ void ApplicationWindow::DrawMemoryStatistics() {
 
 void ApplicationWindow::DrawSystemStatistics() {
   const auto &physical_device_properties = GraphicsContext::Get()->GetPhysicalDeviceProperties();
-
   if (ImGui::CollapsingHeader("System")) {
     ImGui::Text("Device Name: %s", physical_device_properties.physical_device_properties_2.properties.deviceName);
   }
@@ -56,19 +56,20 @@ void DrawBufferAllocatorBar(std::size_t buffer_size, const std::span<MemoryBlock
 }
 
 void ApplicationWindow::DrawBufferAllocator() {
-  auto vertex_allocator = GetEditorContext()->buffer_manager_->GetBufferAllocator(Vertex::type_id).allocator();
-  auto index_allocator = GetEditorContext()->buffer_manager_->GetBufferAllocator(Index32::type_id).allocator();
+  auto &vertex_allocator = GetEditorContext()->graphics_device->GetResourceManager().GetStaticBufferAllocator<Vertex>();
+  auto &index_allocator = GetEditorContext()->graphics_device->GetResourceManager().GetStaticBufferAllocator<uint32_t>();
+
   if (ImGui::CollapsingHeader("Buffer Allocator")) {
-    auto vertices = vertex_allocator->GetAllocatorMap();
-    auto indices = index_allocator->GetAllocatorMap();
+    auto vertices = vertex_allocator.allocator_.GetAllocatorMap();
+    auto indices = index_allocator.allocator_.GetAllocatorMap();
 
     ImGui::Text("Vertex Buffer");
     ImGui::SameLine();
-    DrawBufferAllocatorBar(vertex_allocator->GetSize(), vertices);
+    DrawBufferAllocatorBar(vertex_allocator.allocator_.GetSize(), vertices);
 
     ImGui::Text("Index Buffer ");
     ImGui::SameLine();
-    DrawBufferAllocatorBar(index_allocator->GetSize(), indices);
+    DrawBufferAllocatorBar(index_allocator.allocator_.GetSize(), indices);
   }
 }
 

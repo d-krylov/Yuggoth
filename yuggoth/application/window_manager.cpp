@@ -9,7 +9,7 @@ namespace Yuggoth {
 WindowManager::WindowManager()
   : window_(1920, 1080, "Yuggoth Engine"), //
     surface_(window_.CreateSurface(GraphicsContext::Get()->GetInstance())), swapchain_(surface_) {
-  command_pool_ = CommandPool(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_pool_ = CommandPool(QueueType::GRAPHICS);
   Create();
 }
 

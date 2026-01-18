@@ -6,12 +6,12 @@
 
 namespace Yuggoth {
 
-CommandBuffer::CommandBuffer(const VkCommandPool command_pool) : command_pool_(command_pool), own_command_pool_(false) {
+CommandBuffer::CommandBuffer(const VkCommandPool command_pool) : queue_type_(QueueType::GRAPHICS), command_pool_(command_pool), own_command_pool_(false) {
   command_buffer_ = CommandBuffer::AllocateCommandBuffer(command_pool_, CommandBufferLevel::E_PRIMARY);
 }
 
-CommandBuffer::CommandBuffer(uint32_t queue_family_index) : own_command_pool_(true) {
-  command_pool_ = CommandPool::CreateCommandPool(queue_family_index);
+CommandBuffer::CommandBuffer(QueueType queue_type) : queue_type_(queue_type), own_command_pool_(true) {
+  command_pool_ = CommandPool::CreateCommandPool(queue_type);
   command_buffer_ = CommandBuffer::AllocateCommandBuffer(command_pool_, CommandBufferLevel::E_PRIMARY);
 }
 
@@ -51,9 +51,10 @@ void CommandBuffer::Submit() {
   SubmitInfo submit_info;
   submit_info.commandBufferCount = 1;
   submit_info.pCommandBuffers = get();
+  auto queue_information = GraphicsContext::Get()->GetQueueInformation(queue_type_);
 
   Fence fence;
-  VK_CHECK(vkQueueSubmit(GraphicsContext::Get()->GetGraphicsQueue(), 1, submit_info, fence.GetHandle()));
+  VK_CHECK(vkQueueSubmit(queue_information.queue_, 1, submit_info, fence.GetHandle()));
   fence.Wait();
 }
 

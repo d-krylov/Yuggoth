@@ -34,7 +34,7 @@ struct GraphicsAllocatorStatistics {
 struct AllocationCreateInformation {
   Walle::AllocationCreateMask allocation_create_mask_;
   Walle::MemoryPropertyMask required_memory_property_;
-  Walle::MemoryPropertyMask preferred_memory_property_;
+  std::string allocation_name_;
 };
 
 struct PhysicalDeviceFeatures {
@@ -70,11 +70,16 @@ enum class QueueType {
   TRANSFER
 };
 
-inline constexpr auto QUEUE_COUNT = std::to_underlying(QueueType::TRANSFER) + 1;
+inline constexpr auto QUEUE_GRAPHICS_INDEX = std::to_underlying(QueueType::GRAPHICS);
+inline constexpr auto QUEUE_COMPUTE_INDEX = std::to_underlying(QueueType::COMPUTE);
+inline constexpr auto QUEUE_TRANSFER_INDEX = std::to_underlying(QueueType::TRANSFER);
+inline constexpr auto QUEUE_INDEX_COUNT = QUEUE_TRANSFER_INDEX + 1;
 
 struct QueueInformation {
-  std::array<VkQueue, QUEUE_COUNT> queues_ = {};
-  std::array<uint32_t, QUEUE_COUNT> queue_indices_ = {};
+  VkQueue queue_ = VK_NULL_HANDLE;
+  int32_t family_index_ = -1;
+  int32_t queue_index;
+  Walle::QueueMask queue_mask_;
 };
 
 } // namespace Yuggoth

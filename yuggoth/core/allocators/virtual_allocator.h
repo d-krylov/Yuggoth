@@ -38,6 +38,9 @@ public:
 
   void Clear();
 
+protected:
+  void Swap(VirtualAllocator &other) noexcept;
+
 private:
   std::size_t size_{0};
   VmaVirtualBlock virtual_block_{VK_NULL_HANDLE};

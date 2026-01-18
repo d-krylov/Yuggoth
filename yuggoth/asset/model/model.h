@@ -7,10 +7,10 @@ namespace Yuggoth {
 
 class Model : public Renderable {
 public:
-  Model(const BufferRange &vertices_range, const BufferRange &indices_range, const std::filesystem::path &path = "");
+  Model(const StaticBufferRange &vertices_range, const StaticBufferRange &indices_range, const std::filesystem::path &path = "");
 
-  BufferRange GetVertexBufferRange() const override;
-  BufferRange GetIndexBufferRange() const override;
+  StaticBufferRange GetVertexBufferRange() const override;
+  StaticBufferRange GetIndexBufferRange() const override;
 
   const std::filesystem::path &GetPath() const override;
 
@@ -18,8 +18,8 @@ public:
 
 private:
   std::filesystem::path path_;
-  BufferRange vertices_range_;
-  BufferRange indices_range_;
+  StaticBufferRange vertices_range_;
+  StaticBufferRange indices_range_;
 };
 
 } // namespace Yuggoth

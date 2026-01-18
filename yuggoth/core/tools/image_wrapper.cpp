@@ -9,7 +9,7 @@ ImageWrapper::ImageWrapper(const std::filesystem::path &image_path) {
 }
 
 ImageWrapper::~ImageWrapper() {
-  // stbi_image_free(image_);
+  stbi_image_free(image_);
 }
 
 std::span<const std::byte> ImageWrapper::GetData() const {
@@ -24,6 +24,22 @@ int32_t ImageWrapper::GetWidth() const {
 
 int32_t ImageWrapper::GetHeight() const {
   return height_;
+}
+
+ImageWrapper::ImageWrapper(ImageWrapper &&other) noexcept {
+  Swap(other);
+}
+
+ImageWrapper &ImageWrapper::operator=(ImageWrapper &&other) noexcept {
+  Swap(other);
+  return *this;
+}
+
+void ImageWrapper::Swap(ImageWrapper &other) {
+  std::swap(width_, other.width_);
+  std::swap(height_, other.height_);
+  std::swap(channels_, other.channels_);
+  std::swap(image_, other.image_);
 }
 
 } // namespace Yuggoth

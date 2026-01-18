@@ -21,12 +21,21 @@ void DrawCameramWidget(Camera &camera) {
   camera.SetOrientation(orientation);
 }
 
+void DrawTerrainWidget(Terrain &terrain) {
+  Vector2i size = terrain.GetSize();
+  auto density = terrain.GetDensity();
+  ImGui::DragInt2("Size", glm::value_ptr(size), 1.0f, 0, INT_MAX);
+  ImGui::DragFloat2("Density", glm::value_ptr(density), 1.0f, 0, FLT_MAX);
+  terrain.SetSize(size);
+  terrain.SetDensity(density);
+}
+
 void DrawTransformWidget(Transform &transform) {
   auto position = transform.GetTranslation();
   auto rotation = transform.GetRotation();
   auto scale = transform.GetScale();
   ImGui::DragFloat3("Translation", glm::value_ptr(position));
-  ImGui::DragFloat3("Scale", glm::value_ptr(scale));
+  ImGui::DragFloat3("Scale", glm::value_ptr(scale), 0.1f, 0.0f, FLT_MAX);
   ImGui::SliderAngle("X", &rotation.x);
   ImGui::SliderAngle("Y", &rotation.y);
   ImGui::SliderAngle("Z", &rotation.z);
@@ -60,6 +69,11 @@ void InspectorWindow::OnImGui() {
     if (selected_entity.HasComponent<Light>()) {
       auto &light = selected_entity.GetComponent<Light>();
       DrawLightWidget(light);
+    }
+
+    if (selected_entity.HasComponent<TerrainComponent>()) {
+      auto &terrain = selected_entity.GetComponent<TerrainComponent>();
+      DrawTerrainWidget(*terrain.terrain_);
     }
   }
 

@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_COMMAND_POOL_H
 #define YUGGOTH_COMMAND_POOL_H
 
-#include "walle/walle.h"
+#include "yuggoth/graphics/core/graphics_context_types.h"
 
 namespace Yuggoth {
 
@@ -9,7 +9,7 @@ class CommandPool {
 public:
   CommandPool() = default;
 
-  CommandPool(uint32_t queue_family_index);
+  CommandPool(QueueType queue_type);
 
   ~CommandPool();
 
@@ -19,14 +19,16 @@ public:
   CommandPool(CommandPool &&other) noexcept;
   CommandPool &operator=(CommandPool &&other) noexcept;
 
-  static VkCommandPool CreateCommandPool(uint32_t queue_family_index);
+  static VkCommandPool CreateCommandPool(QueueType queue_type);
 
   void Reset();
 
   VkCommandPool GetHandle() const;
+  QueueType GetQueueType() const;
 
 private:
   VkCommandPool command_pool_{VK_NULL_HANDLE};
+  QueueType queue_type_ = QueueType::GRAPHICS;
 };
 
 } // namespace Yuggoth

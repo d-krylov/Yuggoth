@@ -1,6 +1,5 @@
 #include "shader_binding_table.h"
 #include "yuggoth/graphics/core/graphics_context.h"
-#include "yuggoth/core/tools/core.h"
 #include "yuggoth/graphics/buffer/buffer.h"
 #include "yuggoth/graphics/command/command_buffer.h"
 #include <vector>
@@ -70,7 +69,7 @@ void ShaderBindingTable::CreateShaderBindingTable(VkPipeline pipeline, uint32_t 
 
   Buffer staging_buffer(BufferCreateInformation::CreateStagingBuffer(buffer_size));
 
-  auto buffer_information = Buffer::CreateBuffer(BufferCreateInformation::CreateGPUBuffer(aligned_buffer_size, CommonMasks::BUFFER_USAGE_SBT));
+  auto buffer_information = Buffer::CreateBuffer(BufferCreateInformation::CreateShaderBindingTableBuffer(aligned_buffer_size));
   sbt_buffer_ = buffer_information.buffer_handle_;
   sbt_buffer_allocation_ = buffer_information.allocation_;
 
@@ -82,7 +81,7 @@ void ShaderBindingTable::CreateShaderBindingTable(VkPipeline pipeline, uint32_t 
   CopyRegion(handles, staging_buffer, hit, offset, index);
   CopyRegion(handles, staging_buffer, callable, offset, index);
 
-  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(QueueType::GRAPHICS);
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   command_buffer.CommandCopyBuffer(staging_buffer.GetHandle(), sbt_buffer_, BufferCopy(0, 0, staging_buffer.GetSize()));
   command_buffer.End();

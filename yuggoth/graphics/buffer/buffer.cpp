@@ -51,8 +51,8 @@ BufferAllocationInformation Buffer::CreateBuffer(const BufferCreateInformation &
   buffer_ci.sharingMode = Walle::SharingMode::E_EXCLUSIVE;
   AllocationCreateInformation allocation_ci;
   allocation_ci.allocation_create_mask_ = buffer_create_information.allocator_mask_;
-  allocation_ci.required_memory_property_ = buffer_create_information.required_memory_property_;
-  allocation_ci.preferred_memory_property_ = buffer_create_information.preferred_memory_property_;
+  allocation_ci.required_memory_property_ = buffer_create_information.memory_property_;
+  allocation_ci.allocation_name_ = buffer_create_information.buffer_name_;
   auto buffer_information = GraphicsAllocator::Get()->AllocateBuffer(buffer_ci, allocation_ci);
   return buffer_information;
 }

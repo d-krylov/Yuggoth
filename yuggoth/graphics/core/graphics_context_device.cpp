@@ -73,14 +73,52 @@ void GraphicsContext::SetPhysicalDeviceFeatures() {
 
 bool EvaluatePhysicalDevice(const VkPhysicalDevice physical_device) {
 
-  VkPhysicalDeviceProperties device_properties{};
-  vkGetPhysicalDeviceProperties(physical_device, &device_properties);
+  Walle::PhysicalDeviceProperties2 physical_device_properties;
+  vkGetPhysicalDeviceProperties2(physical_device, physical_device_properties);
 
   bool b = true;
-  b &= (device_properties.apiVersion >= VK_API_VERSION_1_3);
-  b &= (device_properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU);
+  b &= (physical_device_properties.properties.apiVersion >= VK_API_VERSION_1_3);
+  b &= (physical_device_properties.properties.deviceType == Walle::PhysicalDeviceType::E_DISCRETE_GPU);
 
   return b;
+}
+
+bool FindQueue(std::span<const Walle::QueueFamilyProperties> properties, QueueType queue_type, std::span<QueueInformation> queue_inforamtion,
+               std::span<uint32_t> queue_offsets, Walle::QueueMask required, Walle::QueueMask ignored) {
+  auto type_index = std::to_underlying(queue_type);
+  for (const auto &[family_index, queue_family_property] : std::views::enumerate(properties)) {
+    if (queue_family_property.queueFlags.HasAnyBits(ignored)) continue;
+    if (queue_family_property.queueFlags.HasBits(required)) {
+      queue_inforamtion[type_index].family_index_ = family_index;
+      queue_inforamtion[type_index].queue_mask_ = queue_family_property.queueFlags;
+      queue_inforamtion[type_index].queue_index = queue_offsets[family_index]++;
+      return true;
+    }
+  }
+  return false;
+}
+
+void GraphicsContext::PickPhysicalDeviceQueues(std::vector<uint32_t> &queue_offsets) {
+  auto properties = Enumerate<Walle::QueueFamilyProperties>(vkGetPhysicalDeviceQueueFamilyProperties, GetPhysicalDevice());
+  queue_offsets.resize(properties.size(), 0);
+
+  Walle::QueueMask GRAPHICS = Walle::QueueMaskBits::E_GRAPHICS_BIT;
+  Walle::QueueMask COMPUTE = Walle::QueueMaskBits::E_COMPUTE_BIT;
+  Walle::QueueMask TRANSFER = Walle::QueueMaskBits::E_TRANSFER_BIT;
+  Walle::QueueMask GRAPHICS_AND_COMPUTE = GRAPHICS | COMPUTE;
+
+  if (!FindQueue(properties, QueueType::GRAPHICS, queue_information_, queue_offsets, GRAPHICS_AND_COMPUTE, Walle::QueueMask(0))) {
+  }
+
+  if (!FindQueue(properties, QueueType::COMPUTE, queue_information_, queue_offsets, COMPUTE, GRAPHICS) &&
+      !FindQueue(properties, QueueType::COMPUTE, queue_information_, queue_offsets, COMPUTE, Walle::QueueMask(0))) {
+    queue_information_[QUEUE_COMPUTE_INDEX] = queue_information_[QUEUE_GRAPHICS_INDEX];
+  }
+
+  if (!FindQueue(properties, QueueType::TRANSFER, queue_information_, queue_offsets, TRANSFER, GRAPHICS_AND_COMPUTE) &&
+      !FindQueue(properties, QueueType::TRANSFER, queue_information_, queue_offsets, COMPUTE, GRAPHICS)) {
+    queue_information_[QUEUE_TRANSFER_INDEX] = queue_information_[QUEUE_COMPUTE_INDEX];
+  }
 }
 
 void GraphicsContext::PickPhysicalDevice() {

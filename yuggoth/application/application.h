@@ -24,7 +24,6 @@ protected:
 
 private:
   WindowManager window_manager_;
-  BufferManager buffer_manager_;
   ShaderLibrary shader_library_;
   PipelineLibrary pipeline_library_;
   GraphicsDevice graphics_device_;

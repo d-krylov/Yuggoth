@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_COMMAND_BUFFER_H
 #define YUGGOTH_COMMAND_BUFFER_H
 
-#include "walle/walle.h"
+#include "yuggoth/graphics/core/graphics_context_types.h"
 #include <string_view>
 #include <span>
 
@@ -15,7 +15,7 @@ public:
 
   CommandBuffer(const VkCommandPool command_pool);
 
-  CommandBuffer(uint32_t queue_family_index);
+  CommandBuffer(QueueType queue_type);
 
   ~CommandBuffer();
 
@@ -104,6 +104,7 @@ public:
 private:
   VkCommandBuffer command_buffer_{VK_NULL_HANDLE};
   VkCommandPool command_pool_{VK_NULL_HANDLE};
+  QueueType queue_type_;
   bool own_command_pool_ = false;
 };
 

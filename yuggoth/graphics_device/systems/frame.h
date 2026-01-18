@@ -8,6 +8,16 @@
 
 namespace Yuggoth {
 
+struct BufferAndAllocation {
+  VkBuffer buffer_ = VK_NULL_HANDLE;
+  VmaAllocation allocation_ = VK_NULL_HANDLE;
+};
+
+struct ImageAndAllocation {
+  VkImage image_ = VK_NULL_HANDLE;
+  VmaAllocation allocation_ = VK_NULL_HANDLE;
+};
+
 struct Frame {
   Frame();
 
@@ -23,10 +33,17 @@ struct Frame {
 
   void OnResize(uint32_t width, uint32_t height);
 
+protected:
+  void BeginDestroy();
+
+public:
   CommandBuffer command_buffer_;
   Fence frame_fence_;
   Image target_image_;
   Image depth_image_;
+
+  std::vector<BufferAndAllocation> destroyed_buffers_;
+  std::vector<ImageAndAllocation> destroyed_images_;
 };
 
 } // namespace Yuggoth

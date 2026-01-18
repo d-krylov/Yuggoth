@@ -7,15 +7,15 @@
 namespace Yuggoth {
 
 Application::Application()
-  : window_manager_(),                                                                 //
-    buffer_manager_(), imgui_host_(window_manager_.GetWindow()),                       //
-    shader_library_(),                                                                 //
-    pipeline_library_(&shader_library_),                                               //
-    imgui_renderer_(window_manager_.GetSurface()->GetSurfaceFormat().format),          //
-    material_manager_(&asset_manager_),                                                //
-    asset_manager_(AssetManagerCreateContext(&buffer_manager_, &material_manager_)),   //
-    scene_manager_(&asset_manager_),                                                   //
-    renderer_(RendererContext(&pipeline_library_, &buffer_manager_, &asset_manager_)), //
+  : window_manager_(),                                                                  //
+    imgui_host_(window_manager_.GetWindow()),                                           //
+    shader_library_(),                                                                  //
+    pipeline_library_(&shader_library_),                                                //
+    imgui_renderer_(window_manager_.GetSurface()->GetSurfaceFormat().format),           //
+    material_manager_(&asset_manager_),                                                 //
+    asset_manager_(AssetManagerCreateContext(&graphics_device_, &material_manager_)),   //
+    scene_manager_(&asset_manager_),                                                    //
+    renderer_(RendererContext(&pipeline_library_, &graphics_device_, &asset_manager_)), //
     editor_() {
 
   OnStart();
@@ -44,7 +44,6 @@ void Application::OnStart() {
   editor_context.scene_manager_ = &scene_manager_;
   editor_context.renderer_ = &renderer_;
   editor_context.asset_manager_ = &asset_manager_;
-  editor_context.buffer_manager_ = &buffer_manager_;
   editor_context.shader_library_ = &shader_library_;
   editor_context.graphics_device = &graphics_device_;
   editor_.SetEditorContext(editor_context);

@@ -8,16 +8,14 @@ namespace Yuggoth {
 
 using namespace Walle;
 
-void VK_CHECK(VkResult result, std::source_location source_location = std::source_location::current());
+Walle::ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect = ImageAspectMaskBits::E_COLOR_BIT, uint32_t base_level = 0,
+                                                      uint32_t level_count = 1, uint32_t base_layer = 0, uint32_t layer_count = 1);
 
-ImageSubresourceRange GetImageSubresourceRange(ImageAspectMask aspect = ImageAspectMaskBits::E_COLOR_BIT, uint32_t base_level = 0, uint32_t level_count = 1,
-                                               uint32_t base_layer = 0, uint32_t layer_count = 1);
-
-PipelineColorBlendAttachmentState GetColorBlendAttachmentState(bool enable, BlendFactor from_color = BlendFactor::E_SRC_ALPHA,
-                                                               BlendFactor to_color = BlendFactor::E_ONE_MINUS_SRC_ALPHA,
-                                                               BlendOp color_operation = BlendOp::E_ADD, BlendFactor from_alpha = BlendFactor::E_ONE,
-                                                               BlendFactor to_alpha = BlendFactor::E_ONE_MINUS_SRC_ALPHA,
-                                                               BlendOp alpha_operation = BlendOp::E_ADD);
+Walle::PipelineColorBlendAttachmentState GetColorBlendAttachmentState(bool enable, BlendFactor from_color = BlendFactor::E_SRC_ALPHA,
+                                                                      BlendFactor to_color = BlendFactor::E_ONE_MINUS_SRC_ALPHA,
+                                                                      BlendOp color_operation = BlendOp::E_ADD, BlendFactor from_alpha = BlendFactor::E_ONE,
+                                                                      BlendFactor to_alpha = BlendFactor::E_ONE_MINUS_SRC_ALPHA,
+                                                                      BlendOp alpha_operation = BlendOp::E_ADD);
 
 } // namespace Yuggoth
 

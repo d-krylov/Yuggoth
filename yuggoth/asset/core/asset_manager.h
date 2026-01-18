@@ -13,8 +13,6 @@ namespace Yuggoth {
 
 class Model;
 
-using MeshBufferRange = std::pair<BufferRange, BufferRange>;
-
 class AssetManager {
 public:
   AssetManager(const AssetManagerCreateContext &create_context);
@@ -29,8 +27,6 @@ public:
   const std::unordered_map<UUID, IntrusivePointer<Asset>> &GetAssets() const;
 
 protected:
-  MeshBufferRange PutMeshDataInBuffers(const MeshData &mesh_data);
-
   void RegisterModelImages(const ModelStorage &model_storage);
 
 private:

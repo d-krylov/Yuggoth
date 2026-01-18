@@ -1,6 +1,6 @@
 #include "image.h"
-#include "yuggoth/graphics/buffer/buffer.h"
-#include "yuggoth/graphics/command/command_buffer.h"
+#include <yuggoth/graphics/buffer/buffer.h>
+#include <yuggoth/graphics/command/command_buffer.h>
 #include "yuggoth/graphics/core/graphics_context.h"
 #include "yuggoth/graphics/core/graphics_allocator.h"
 #include "yuggoth/graphics/core/structure_tools.h"
@@ -54,10 +54,9 @@ void Image::CreateImage() {
   current_layout_ = ImageLayout::E_UNDEFINED;
 }
 
-Image::Image(const ImageCreateInformation &image_ci, const std::optional<SamplerCreateInformation> &sampler_specification)
-  : image_create_information_(image_ci) {
+Image::Image(const ImageCreateInformation &image_ci, const std::optional<SamplerCreateInformation> &sampler_ci) : image_create_information_(image_ci) {
   CreateImage();
-  image_sampler_ = sampler_specification.transform(Sampler::CreateSampler).value_or(VK_NULL_HANDLE);
+  image_sampler_ = sampler_ci.transform(Sampler::CreateSampler).value_or(VK_NULL_HANDLE);
 }
 
 Image::Image(Image &&other) noexcept {
@@ -134,7 +133,7 @@ void Image::SetImageLayout(ImageLayout new_layout, CommandBuffer *command_buffer
 void Image::SetImageData(std::span<const std::byte> data) {
   Buffer buffer(BufferCreateInformation::CreateStagingBuffer(data.size_bytes()));
   buffer.SetData<std::byte>(data);
-  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(QueueType::GRAPHICS);
   command_buffer.Begin(CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   SetImageLayout(ImageLayout::E_TRANSFER_DST_OPTIMAL, &command_buffer);
   command_buffer.CommandCopyBufferToImage(buffer.GetHandle(), GetImage(), image_create_information_.extent_);

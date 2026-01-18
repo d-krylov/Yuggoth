@@ -81,7 +81,7 @@ void AccelerationStructure::BuildTLAS(std::span<const BLASInstances> blas_instan
 
   const VkAccelerationStructureBuildRangeInfoKHR *build_range_pointer = build_range;
 
-  CommandBuffer command_buffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  CommandBuffer command_buffer(QueueType::GRAPHICS);
   command_buffer.Begin(Walle::CommandBufferUsageMaskBits::E_ONE_TIME_SUBMIT_BIT);
   vkCmdBuildAccelerationStructuresKHR(command_buffer.GetHandle(), 1, geometry_info, &build_range_pointer);
   command_buffer.End();

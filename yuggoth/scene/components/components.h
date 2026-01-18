@@ -4,9 +4,12 @@
 #include <string>
 #include "camera.h"
 #include "light.h"
-#include "model_component.h"
 #include "yuggoth/core/tools/uuid.h"
 #include "yuggoth/mathematics/include/transform.h"
+#include <yuggoth/scene/world/terrain.h>
+#include "yuggoth/asset/model/model.h"
+#include "yuggoth/core/intrusive/intrusive_pointer.h"
+#include <memory>
 #include <entt/entity/fwd.hpp>
 
 namespace Yuggoth {
@@ -27,6 +30,14 @@ struct HierarchyComponent {
   entt::entity next_;
   entt::entity previous_;
   entt::entity begin_;
+};
+
+struct ModelComponent {
+  IntrusivePointer<Model> model_;
+};
+
+struct TerrainComponent {
+  IntrusivePointer<Terrain> terrain_;
 };
 
 } // namespace Yuggoth

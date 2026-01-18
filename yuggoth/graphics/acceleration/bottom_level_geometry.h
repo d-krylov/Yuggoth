@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_BOTTOM_LEVEL_GEOMETRY_H
 #define YUGGOTH_BOTTOM_LEVEL_GEOMETRY_H
 
-#include "yuggoth/core/tools/core_types.h"
+#include <yuggoth/core/tools/tools.h>
 #include "walle/walle.h"
 #include <vector>
 #include <span>

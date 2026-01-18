@@ -16,16 +16,16 @@ BottomLevelGeometry Renderable::GetBottomLevelGeometry() const {
   return bottom_level_geometry;
 }
 
-BufferRange Renderable::GetVertexBufferRange() const {
-  return BufferRange();
+StaticBufferRange Renderable::GetVertexBufferRange() const {
+  return StaticBufferRange();
 }
 
-BufferRange Renderable::GetIndexBufferRange() const {
-  return BufferRange();
+StaticBufferRange Renderable::GetIndexBufferRange() const {
+  return StaticBufferRange();
 }
 
-BufferRange Renderable::GetMeshletBufferRange() const {
-  return BufferRange();
+StaticBufferRange Renderable::GetMeshletBufferRange() const {
+  return StaticBufferRange();
 }
 
 const std::filesystem::path &Renderable::GetPath() const {

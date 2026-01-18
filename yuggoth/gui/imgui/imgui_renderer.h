@@ -13,7 +13,7 @@ class Swapchain;
 
 class ImGuiRenderer {
 public:
-  ImGuiRenderer(Format color_format);
+  ImGuiRenderer(Walle::Format color_format);
 
   void RenderDrawData(CommandBuffer &command_buffer);
 

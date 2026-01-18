@@ -1,10 +1,11 @@
 #include "frame.h"
 #include "yuggoth/graphics/core/graphics_context.h"
+#include "yuggoth/graphics/core/graphics_allocator.h"
 
 namespace Yuggoth {
 
 Frame::Frame() {
-  command_buffer_ = CommandBuffer(GraphicsContext::Get()->GetGraphicsQueueIndex());
+  command_buffer_ = CommandBuffer(QueueType::GRAPHICS);
   auto target_ci = ImageCreateInformation::CreateRenderTarget(100, 100, Walle::Format::E_R8G8B8A8_UNORM);
   auto depth_ci = ImageCreateInformation::CreateRenderTarget(100, 100, Walle::Format::E_D32_SFLOAT);
   target_ci.usage_ |= Walle::ImageUsageMaskBits::E_SAMPLED_BIT;
@@ -41,6 +42,16 @@ void Frame::OnResize(uint32_t width, uint32_t height) {
     frame_fence_.Wait();
     target_image_.Resize(width, height);
     depth_image_.Resize(width, height);
+  }
+}
+
+void Frame::BeginDestroy() {
+  for (const auto &buffer_and_allocation : destroyed_buffers_) {
+    GraphicsAllocator::Get()->DestroyBuffer(buffer_and_allocation.buffer_, buffer_and_allocation.allocation_);
+  }
+
+  for (const auto &image_and_allocation : destroyed_images_) {
+    GraphicsAllocator::Get()->DestroyImage(image_and_allocation.image_, image_and_allocation.allocation_);
   }
 }
 

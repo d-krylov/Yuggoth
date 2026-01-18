@@ -1,7 +1,6 @@
 #include "renderer.h"
 #include "yuggoth/renderer/shaders/shader_library.h"
 #include "yuggoth/renderer/shaders/pipeline_library.h"
-#include "yuggoth/graphics_device/systems/buffer_manager.h"
 #include "yuggoth/scene/core/scene.h"
 #include "yuggoth/scene/core/entity.h"
 

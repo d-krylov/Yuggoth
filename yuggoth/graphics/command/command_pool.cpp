@@ -4,8 +4,8 @@
 
 namespace Yuggoth {
 
-CommandPool::CommandPool(uint32_t queue_family_index) {
-  command_pool_ = CommandPool::CreateCommandPool(queue_family_index);
+CommandPool::CommandPool(QueueType queue_type) {
+  command_pool_ = CommandPool::CreateCommandPool(queue_type);
 }
 
 CommandPool::~CommandPool() {
@@ -21,10 +21,10 @@ CommandPool &CommandPool::operator=(CommandPool &&other) noexcept {
   return *this;
 }
 
-VkCommandPool CommandPool::CreateCommandPool(uint32_t queue_family_index) {
+VkCommandPool CommandPool::CreateCommandPool(QueueType queue_type) {
   Walle::CommandPoolCreateInfo command_pool_ci;
   command_pool_ci.flags = Walle::CommandPoolCreateMaskBits::E_RESET_COMMAND_BUFFER_BIT;
-  command_pool_ci.queueFamilyIndex = queue_family_index;
+  command_pool_ci.queueFamilyIndex = GraphicsContext::Get()->GetQueueInformation(queue_type).family_index_;
 
   VkCommandPool command_pool = VK_NULL_HANDLE;
   VK_CHECK(vkCreateCommandPool(GraphicsContext::Get()->GetDevice(), command_pool_ci, 0, &command_pool));
@@ -33,6 +33,10 @@ VkCommandPool CommandPool::CreateCommandPool(uint32_t queue_family_index) {
 
 VkCommandPool CommandPool::GetHandle() const {
   return command_pool_;
+}
+
+QueueType CommandPool::GetQueueType() const {
+  return queue_type_;
 }
 
 void CommandPool::Reset() {

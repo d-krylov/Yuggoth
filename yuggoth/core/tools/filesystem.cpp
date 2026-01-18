@@ -1,6 +1,6 @@
-#include "yuggoth/core/tools/filesystem.h"
-#include "yuggoth/core/tools/core.h"
-#include "config/yuggoth_config.h"
+#include "filesystem.h"
+#include "yuggoth_asserts.h"
+#include <config/yuggoth_config.h>
 #include <fstream>
 
 namespace Yuggoth {
@@ -18,8 +18,8 @@ std::filesystem::path FileSystem::GetYuggothShaderBinaryDirectory() {
 }
 
 std::vector<uint8_t> FileSystem::ReadBinaryFile(const std::filesystem::path &path) {
-  auto size = std::filesystem::file_size(path);
   CORE_ASSERT(std::filesystem::exists(path), "Invalid path");
+  auto size = std::filesystem::file_size(path);
   std::vector<uint8_t> buffer(size);
   std::ifstream input_file(path.string(), std::ios_base::binary);
   input_file.read(reinterpret_cast<char *>(buffer.data()), size);

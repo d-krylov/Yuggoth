@@ -2,7 +2,7 @@
 #include "mouse_events.h"
 #include "key_events.h"
 #include "window_events.h"
-#include "yuggoth/graphics/core/structure_tools.h"
+#include "yuggoth/core/tools/yuggoth_asserts.h"
 #include <GLFW/glfw3.h>
 
 namespace Yuggoth {

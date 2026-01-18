@@ -3,7 +3,7 @@
 
 #include <string_view>
 #include <functional>
-#include "yuggoth/core/tools/core_types.h"
+#include <yuggoth/core/tools/tools.h>
 #include <vulkan/vulkan.h>
 
 struct GLFWwindow;

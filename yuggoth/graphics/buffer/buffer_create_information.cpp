@@ -6,7 +6,7 @@ BufferCreateInformation BufferCreateInformation::CreateGPUBuffer(uint64_t size, 
   BufferCreateInformation buffer_ci;
   buffer_ci.buffer_size_ = size;
   buffer_ci.buffer_usage_ = usage | Walle::BufferUsageMaskBits::E_TRANSFER_DST_BIT;
-  buffer_ci.required_memory_property_ = Walle::MemoryPropertyMaskBits::E_DEVICE_LOCAL_BIT;
+  buffer_ci.memory_property_ = Walle::MemoryPropertyMaskBits::E_DEVICE_LOCAL_BIT;
   return buffer_ci;
 }
 
@@ -15,7 +15,7 @@ BufferCreateInformation BufferCreateInformation::CreateCPUBuffer(uint64_t size, 
   buffer_ci.buffer_size_ = size;
   buffer_ci.buffer_usage_ = usage;
   buffer_ci.allocator_mask_ = mapped ? Walle::AllocationCreateMaskBits::E_MAPPED_BIT : Walle::AllocationCreateMask();
-  buffer_ci.required_memory_property_ = Walle::MemoryPropertyMaskBits::E_HOST_VISIBLE_BIT;
+  buffer_ci.memory_property_ = Walle::MemoryPropertyMaskBits::E_HOST_VISIBLE_BIT;
   return buffer_ci;
 }
 
@@ -24,8 +24,15 @@ BufferCreateInformation BufferCreateInformation::CreateAccelerationStructureBuff
   buffer_ci.buffer_size_ = size;
   buffer_ci.buffer_usage_ |= Walle::BufferUsageMaskBits::E_ACCELERATION_STRUCTURE_STORAGE_BIT_KHR;
   buffer_ci.buffer_usage_ |= Walle::BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT;
-  buffer_ci.required_memory_property_ = Walle::MemoryPropertyMaskBits::E_DEVICE_LOCAL_BIT;
+  buffer_ci.memory_property_ = Walle::MemoryPropertyMaskBits::E_DEVICE_LOCAL_BIT;
   return buffer_ci;
+}
+
+BufferCreateInformation BufferCreateInformation::CreateShaderBindingTableBuffer(uint64_t size) {
+  Walle::BufferUsageMask sbt_usage_mask;
+  sbt_usage_mask |= Walle::BufferUsageMaskBits::E_SHADER_BINDING_TABLE_BIT_KHR;
+  sbt_usage_mask |= Walle::BufferUsageMaskBits::E_SHADER_DEVICE_ADDRESS_BIT;
+  return BufferCreateInformation::CreateGPUBuffer(size, sbt_usage_mask);
 }
 
 BufferCreateInformation BufferCreateInformation::CreateStagingBuffer(uint64_t size) {

@@ -1,7 +1,7 @@
 #ifndef YUGGOTH_SHADER_BINDING_TABLE_H
 #define YUGGOTH_SHADER_BINDING_TABLE_H
 
-#include "yuggoth/core/tools/core_types.h"
+#include "yuggoth/core/tools/tools.h"
 #include "yuggoth/graphics/core/graphics_types.h"
 
 namespace Yuggoth {

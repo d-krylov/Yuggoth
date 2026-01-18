@@ -12,18 +12,18 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
 
   const auto &shader_modules = specification.shader_modules_;
 
-  std::vector<ShaderModuleCreateInfo> shader_modules_cis(shader_modules.size());
-  std::vector<PipelineShaderStageCreateInfo> shader_stages_cis(shader_modules.size());
+  std::vector<Walle::ShaderModuleCreateInfo> shader_modules_cis(shader_modules.size());
+  std::vector<Walle::PipelineShaderStageCreateInfo> shader_stages_cis(shader_modules.size());
 
   for (auto i = 0; i < specification.shader_modules_.size(); i++) {
 
     auto binary_data = shader_modules[i]->GetBinaryData();
 
-    ShaderModuleCreateInfo shader_module_ci;
+    Walle::ShaderModuleCreateInfo shader_module_ci;
     shader_modules_cis[i].codeSize = binary_data.size_bytes();
     shader_modules_cis[i].pCode = reinterpret_cast<const uint32_t *>(binary_data.data());
 
-    PipelineShaderStageCreateInfo shader_stage_ci;
+    Walle::PipelineShaderStageCreateInfo shader_stage_ci;
     shader_stages_cis[i].stage = shader_modules[i]->GetShaderStage();
     shader_stages_cis[i].pNext = &shader_modules_cis[i];
     shader_stages_cis[i].pSpecializationInfo = nullptr;
@@ -49,21 +49,18 @@ VkPipeline CreateGraphicsPipeline(const GraphicsPipelineSpecification &specifica
     vertex_input_state_ci.pVertexAttributeDescriptions = specification.vertex_inputs_.data();
   }
 
-  PipelineInputAssemblyStateCreateInfo input_assembly_state_ci;
+  Walle::PipelineInputAssemblyStateCreateInfo input_assembly_state_ci;
   input_assembly_state_ci.topology = PrimitiveTopology::E_TRIANGLE_LIST;
 
-  PipelineViewportStateCreateInfo viewport_state_ci;
-
+  Walle::PipelineViewportStateCreateInfo viewport_state_ci;
   viewport_state_ci.viewportCount = 1;
   viewport_state_ci.scissorCount = 1;
 
   Walle::PipelineRasterizationStateCreateInfo rasterization_state_ci;
-
   rasterization_state_ci.lineWidth = 1.0f;
   rasterization_state_ci.frontFace = FrontFace::E_COUNTER_CLOCKWISE;
   rasterization_state_ci.polygonMode = PolygonMode::E_FILL;
   rasterization_state_ci.cullMode = specification.cull_mode_;
-
   rasterization_state_ci.depthBiasEnable = false;
 
   Walle::PipelineDynamicStateCreateInfo dynamic_state_ci;

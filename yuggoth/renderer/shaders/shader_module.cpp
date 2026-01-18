@@ -32,9 +32,9 @@ void MergePushConstants(std::unordered_map<std::string, PushConstantRange> &dest
   }
 }
 
-VertexInputAttributeDescription ToVertexInputAttributeDescription(const SpvReflectInterfaceVariable *spv_interface, uint32_t offset) {
-  VertexInputAttributeDescription out;
-  auto format = static_cast<Format>(spv_interface->format);
+Walle::VertexInputAttributeDescription ToVertexInputAttributeDescription(const SpvReflectInterfaceVariable *spv_interface, uint32_t offset) {
+  Walle::VertexInputAttributeDescription out;
+  auto format = static_cast<Walle::Format>(spv_interface->format);
   out.location = spv_interface->location;
   out.binding = 0;
   out.format = format;
@@ -127,7 +127,7 @@ std::vector<DescriptorSetSpecification> ShaderModule::CreateDescriptorSetSpecifi
     specification.descriptor_set_create_mask_ = masks[set];
 
     for (const auto &binding : bindings) {
-      DescriptorSetLayoutBinding descriptor_set_binding;
+      Walle::DescriptorSetLayoutBinding descriptor_set_binding;
       descriptor_set_binding.binding = binding.binding_;
       descriptor_set_binding.descriptorType = binding.type_;
       descriptor_set_binding.descriptorCount = binding.count_;

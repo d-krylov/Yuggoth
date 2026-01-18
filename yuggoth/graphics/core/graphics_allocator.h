@@ -2,6 +2,7 @@
 #define YUGGOTH_GRAPHICS_ALLOCATOR_H
 
 #include "graphics_context_types.h"
+#include <yuggoth/core/tools/yuggoth_macros.h>
 #include <span>
 
 namespace Yuggoth {
@@ -10,6 +11,9 @@ struct BufferCreateInformation;
 
 class GraphicsAllocator {
 public:
+  DISABLE_COPY_SEMANTICS(GraphicsAllocator)
+  DISABLE_MOVE_SEMANTICS(GraphicsAllocator)
+
   GraphicsAllocator();
 
   ~GraphicsAllocator();

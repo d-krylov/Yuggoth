@@ -48,8 +48,8 @@ private:
   std::vector<uint8_t> spirv_;
   Walle::ShaderStageMaskBits shader_stage_;
   std::unordered_map<std::string, BindingInformation> set_bindings_;
-  std::unordered_map<std::string, PushConstantRange> push_constants_;
-  std::unordered_map<std::string, VertexInputAttributeDescription> inputs_;
+  std::unordered_map<std::string, Walle::PushConstantRange> push_constants_;
+  std::unordered_map<std::string, Walle::VertexInputAttributeDescription> inputs_;
 };
 
 } // namespace Yuggoth

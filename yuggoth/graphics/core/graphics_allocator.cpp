@@ -1,7 +1,8 @@
 #include "graphics_allocator.h"
-#include "yuggoth/core/tools/core.h"
 #include "graphics_context.h"
 #include "graphics_types.h"
+#include <yuggoth/core/logger/logger.h>
+#include <spdlog/spdlog.h>
 #define VMA_IMPLEMENTATION
 #include <vma/vk_mem_alloc.h>
 #include <cassert>
@@ -75,7 +76,7 @@ BufferAllocationInformation GraphicsAllocator::AllocateBuffer(const Walle::Buffe
   vma_allocation_ci.flags = allocation_ci.allocation_create_mask_.GetValue();
   vma_allocation_ci.usage = has_cpu ? VMA_MEMORY_USAGE_AUTO_PREFER_HOST : VMA_MEMORY_USAGE_AUTO_PREFER_DEVICE;
   vma_allocation_ci.requiredFlags = allocation_ci.required_memory_property_.GetValue();
-  vma_allocation_ci.preferredFlags = allocation_ci.preferred_memory_property_.GetValue();
+  vma_allocation_ci.preferredFlags = 0;
   vma_allocation_ci.memoryTypeBits = 0;
   vma_allocation_ci.pool = nullptr;
   vma_allocation_ci.pUserData = nullptr;
@@ -86,9 +87,15 @@ BufferAllocationInformation GraphicsAllocator::AllocateBuffer(const Walle::Buffe
   VkBuffer buffer = VK_NULL_HANDLE;
   VK_CHECK(vmaCreateBuffer(graphics_allocator_, buffer_ci, &vma_allocation_ci, &buffer, &allocation, &allocation_info));
 
+  vmaSetAllocationName(graphics_allocator_, allocation, allocation_ci.allocation_name_.c_str());
+
   VkMemoryPropertyFlags memory_property;
   vmaGetAllocationMemoryProperties(graphics_allocator_, allocation, &memory_property);
   Walle::MemoryPropertyMask memory_property_mask(memory_property);
+
+  auto memory_string = Walle::ToString(memory_property_mask);
+
+  YUGGOTH_LOG_CORE_INFORMATION("Allocated buffer - name: {0} size: {1}, property: {2}", allocation_ci.allocation_name_, allocation_info.size, memory_string);
 
   graphics_allocator_statistics_.allocated_buffers_count_++;
   graphics_allocator_statistics_.allocated_buffer_memory_ += allocation_info.size;
@@ -113,7 +120,7 @@ void GraphicsAllocator::UnmapMemory(VmaAllocation allocation) {
 }
 
 void GraphicsAllocator::CopyMemoryToAllocation(std::span<const std::byte> source, VmaAllocation destination, std::size_t offset) {
-  vmaCopyMemoryToAllocation(graphics_allocator_, source.data(), destination, offset, source.size());
+  VK_CHECK(vmaCopyMemoryToAllocation(graphics_allocator_, source.data(), destination, offset, source.size()));
 }
 
 void GraphicsAllocator::DestroyImage(VkImage image, VmaAllocation vma_allocation) {
@@ -124,7 +131,17 @@ void GraphicsAllocator::DestroyImage(VkImage image, VmaAllocation vma_allocation
 void GraphicsAllocator::DestroyBuffer(VkBuffer buffer, VmaAllocation vma_allocation) {
   VmaAllocationInfo allocation_info{};
   vmaGetAllocationInfo(graphics_allocator_, vma_allocation, &allocation_info);
+
+  VkMemoryPropertyFlags memory_property;
+  vmaGetAllocationMemoryProperties(graphics_allocator_, vma_allocation, &memory_property);
+  Walle::MemoryPropertyMask memory_property_mask(memory_property);
+
+  auto memory_string = Walle::ToString(memory_property_mask);
+
+  YUGGOTH_LOG_CORE_INFORMATION("Freed buffer - name: {0}, size: {1}, property: {2}", allocation_info.pName, allocation_info.size, memory_string);
+
   vmaDestroyBuffer(graphics_allocator_, buffer, vma_allocation);
+
   graphics_allocator_statistics_.allocated_buffer_memory_ -= allocation_info.size;
   graphics_allocator_statistics_.allocated_buffers_count_--;
 }

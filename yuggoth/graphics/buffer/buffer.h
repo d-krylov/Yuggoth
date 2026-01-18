@@ -3,20 +3,19 @@
 
 #include "yuggoth/graphics/core/graphics_context_types.h"
 #include "buffer_create_information.h"
+#include <yuggoth/core/tools/yuggoth_macros.h>
 #include <span>
 
 namespace Yuggoth {
 
 class Buffer {
 public:
-  Buffer() = default;
+  DISABLE_COPY_SEMANTICS(Buffer);
 
+  Buffer() = default;
   Buffer(const BufferCreateInformation &buffer_ci);
 
   ~Buffer();
-
-  Buffer(const Buffer &) = delete;
-  Buffer &operator=(const Buffer &) = delete;
 
   Buffer(Buffer &&other) noexcept;
   Buffer &operator=(Buffer &&other) noexcept;

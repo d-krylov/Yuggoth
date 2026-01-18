@@ -36,20 +36,6 @@ PipelineStageMask2 GetPipelineStageMaskFromLayout(Walle::ImageLayout layout, boo
   }
 }
 
-PipelineStageMask2 StageMaskFromBufferUsage(Walle::BufferUsageMask usage) {
-  PipelineStageMask2 mask;
-  BufferUsageMask vertices_mask = BufferUsageMaskBits::E_VERTEX_BUFFER_BIT | BufferUsageMaskBits::E_INDEX_BUFFER_BIT;
-  BufferUsageMask acceleration_mask = BufferUsageMaskBits::E_ACCELERATION_STRUCTURE_BUILD_INPUT_READ_ONLY_BIT_KHR;
-  BufferUsageMask indirect_mask = BufferUsageMaskBits::E_INDIRECT_BUFFER_BIT;
-  BufferUsageMask common_mask = BufferUsageMaskBits::E_STORAGE_BUFFER_BIT | BufferUsageMaskBits::E_UNIFORM_BUFFER_BIT;
-
-  PipelineStageMaskBits2::E_ALL_GRAPHICS_BIT | PipelineStageMaskBits2::E_COMPUTE_SHADER_BIT;
-
-  mask |= usage.HasAnyBits(vertices_mask) ? PipelineStageMaskBits2::E_VERTEX_INPUT_BIT : PipelineStageMask2();
-  mask |= usage.HasBits(acceleration_mask) ? PipelineStageMaskBits2::E_ACCELERATION_STRUCTURE_BUILD_BIT_KHR : PipelineStageMask2();
-  mask |= usage.HasBits(indirect_mask) ? PipelineStageMaskBits2::E_DRAW_INDIRECT_BIT : PipelineStageMask2();
-}
-
 uint32_t GetImageNumberMipLevels(const Walle::Extent3D &extent) {
   auto size = std::max<uint32_t>(std::max<uint32_t>(extent.width, extent.height), extent.depth);
   return std::bit_width(size);

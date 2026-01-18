@@ -61,6 +61,24 @@ DescriptorSet &DescriptorSet::operator=(DescriptorSet &&other) noexcept {
   return *this;
 }
 
+VkDescriptorSet AllocateBindlessSet(VkDescriptorPool descriptor_pool, uint32_t descriptors_count) {
+  auto number_of_descriptors = descriptors_count;
+
+  Walle::DescriptorSetVariableDescriptorCountAllocateInfo descriptor_set_count_ai;
+  descriptor_set_count_ai.descriptorSetCount = 1;
+  descriptor_set_count_ai.pDescriptorCounts = &number_of_descriptors;
+
+  Walle::DescriptorSetAllocateInfo descriptor_set_ai;
+  descriptor_set_ai.pNext = &descriptor_set_count_ai;
+  descriptor_set_ai.descriptorPool = descriptor_pool;
+  descriptor_set_ai.descriptorSetCount = 1;
+  // descriptor_set_ai.pSetLayouts = &set_layout;
+
+  VkDescriptorSet descriptor_set = VK_NULL_HANDLE;
+  VK_CHECK(vkAllocateDescriptorSets(GraphicsContext::Get()->GetDevice(), descriptor_set_ai, &descriptor_set));
+  return descriptor_set;
+}
+
 VkDescriptorSet DescriptorSet::AllocateDescriptorSet(VkDescriptorPool descriptor_pool, VkDescriptorSetLayout set_layout, uint32_t descriptors_count) {
   Walle::DescriptorSetVariableDescriptorCountAllocateInfo descriptor_set_count_ai;
   descriptor_set_count_ai.descriptorSetCount = 1;

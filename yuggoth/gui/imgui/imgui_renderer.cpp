@@ -1,7 +1,7 @@
 #include "imgui_renderer.h"
 #include "imgui.h"
 #include "ImGuizmo.h"
-#include "yuggoth/core/tools/core.h"
+#include "yuggoth/core/tools/tools.h"
 #include "yuggoth/core/tools/filesystem.h"
 #include "yuggoth/graphics/command/command_buffer.h"
 #include "yuggoth/graphics/presentation/swapchain.h"
@@ -12,10 +12,10 @@
 
 namespace Yuggoth {
 
-ImGuiRenderer::ImGuiRenderer(Format color_format) {
+ImGuiRenderer::ImGuiRenderer(Walle::Format color_format) {
   auto shaders_root = FileSystem::GetYuggothShaderBinaryDirectory();
 
-  auto push_descriptor_mask = DescriptorSetLayoutCreateMaskBits::E_PUSH_DESCRIPTOR_BIT;
+  auto push_descriptor_mask = Walle::DescriptorSetLayoutCreateMaskBits::E_PUSH_DESCRIPTOR_BIT;
 
   ShaderModule gui_vert(shaders_root / "gui" / "gui.vert.spv");
   ShaderModule gui_frag(shaders_root / "gui" / "gui.frag.spv");
@@ -166,7 +166,7 @@ void ImGuiRenderer::End(CommandBuffer &command_buffer, VkImageView image_view, c
   color[0].imageView = image_view;
   color[0].imageLayout = Walle::ImageLayout::E_COLOR_ATTACHMENT_OPTIMAL;
   color[0].loadOp = Walle::AttachmentLoadOp::E_CLEAR;
-  color[0].storeOp = AttachmentStoreOp::E_STORE;
+  color[0].storeOp = Walle::AttachmentStoreOp::E_STORE;
   color[0].clearValue = {0.0f, 0.0f, 0.0f, 1.0f};
 
   command_buffer.CommandBeginRendering(extent, color);

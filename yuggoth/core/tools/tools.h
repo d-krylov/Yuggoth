@@ -1,5 +1,5 @@
-#ifndef YUGGOTH_CORE_TYPES_H
-#define YUGGOTH_CORE_TYPES_H
+#ifndef YUGGOTH_TOOLS_H
+#define YUGGOTH_TOOLS_H
 
 #include <cstdint>
 #include <utility>
@@ -14,7 +14,11 @@ constexpr inline std::size_t operator""_MiB(unsigned long long int x) {
   return 1024_KiB * x;
 }
 
-template <class T> inline constexpr std::size_t GetTypeId() {
+constexpr inline std::size_t AlignUp(std::size_t value, std::size_t alignment) {
+  return (value + alignment - 1) & ~(alignment - 1);
+}
+
+template <typename T> inline constexpr std::size_t GetTypeId() {
   static int x;
   return reinterpret_cast<std::size_t>(&x);
 }
@@ -30,4 +34,4 @@ struct ElementRange {
 
 } // namespace Yuggoth
 
-#endif // YUGGOTH_CORE_TYPES_H
+#endif // YUGGOTH_TOOLS_H

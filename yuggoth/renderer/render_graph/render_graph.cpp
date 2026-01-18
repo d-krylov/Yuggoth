@@ -1,3 +1,3 @@
-#include "model_component.h"
+#include "render_graph.h"
 
 namespace Yuggoth {} // namespace Yuggoth

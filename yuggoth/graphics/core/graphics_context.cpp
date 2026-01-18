@@ -38,15 +38,28 @@ const PhysicalDeviceProperties &GraphicsContext::GetPhysicalDeviceProperties() c
 }
 
 int32_t GraphicsContext::GetGraphicsQueueIndex() const {
-  auto index = std::to_underlying(QueueType::GRAPHICS);
-  assert(queue_information_.queue_indices_[index] != -1);
-  return queue_information_.queue_indices_[index];
+  assert(queue_information_[QUEUE_GRAPHICS_INDEX].family_index_ != -1);
+  return queue_information_[QUEUE_GRAPHICS_INDEX].family_index_;
 }
 
 VkQueue GraphicsContext::GetGraphicsQueue() const {
-  auto index = std::to_underlying(QueueType::GRAPHICS);
-  assert(queue_information_.queues_[index] != VK_NULL_HANDLE);
-  return queue_information_.queues_[index];
+  assert(queue_information_[QUEUE_GRAPHICS_INDEX].queue_ != VK_NULL_HANDLE);
+  return queue_information_[QUEUE_GRAPHICS_INDEX].queue_;
+}
+
+int32_t GraphicsContext::GetTransferQueueIndex() const {
+  assert(queue_information_[QUEUE_TRANSFER_INDEX].family_index_ != -1);
+  return queue_information_[QUEUE_TRANSFER_INDEX].family_index_;
+}
+
+VkQueue GraphicsContext::GetTransferQueue() const {
+  assert(queue_information_[QUEUE_TRANSFER_INDEX].queue_ != VK_NULL_HANDLE);
+  return queue_information_[QUEUE_TRANSFER_INDEX].queue_;
+}
+
+const QueueInformation &GraphicsContext::GetQueueInformation(QueueType queue_type) const {
+  auto queue_type_index = std::to_underlying(queue_type);
+  return queue_information_[queue_type_index];
 }
 
 // PRIVATE
@@ -119,31 +132,25 @@ std::vector<const char *> GetRequiredDeviceExtensions() {
   };
 }
 
-std::array<int32_t, 3> PickPhysicalDeviceQueues(const VkPhysicalDevice physical_device) {
-  std::array<int32_t, 3> queue_indices = {-1, -1, -1};
-  auto common_mask = QueueMaskBits::E_GRAPHICS_BIT | QueueMaskBits::E_COMPUTE_BIT;
-  auto queue_properties = Enumerate<QueueFamilyProperties>(vkGetPhysicalDeviceQueueFamilyProperties, physical_device);
-  auto common_queue = std::ranges::find_if(queue_properties, [&](const auto &p) { return p.queueFlags.HasBits(common_mask); });
-  auto common_index = std::ranges::distance(queue_properties.begin(), common_queue);
-  queue_indices.fill(common_index);
-  return queue_indices;
-}
-
 void GraphicsContext::CreateDevice() {
-  auto queue_indices = PickPhysicalDeviceQueues(physical_device_);
 
-  auto graphics_index = std::to_underlying(QueueType::GRAPHICS);
-  queue_information_.queue_indices_[graphics_index] = queue_indices[0];
+  std::vector<uint32_t> queue_offsets;
+  PickPhysicalDeviceQueues(queue_offsets);
 
-  std::array queue_priorities = {0.0f};
   std::vector<DeviceQueueCreateInfo> device_queue_cis;
 
-  DeviceQueueCreateInfo queue_ci;
-  queue_ci.queueFamilyIndex = queue_indices[0];
-  queue_ci.pQueuePriorities = queue_priorities.data();
-  queue_ci.queueCount = 1;
+  std::array queue_priorities = {0.0f};
+  for (auto family_index = 0; family_index < queue_offsets.size(); family_index++) {
 
-  device_queue_cis.emplace_back(queue_ci);
+    if (queue_offsets[family_index] == 0) continue;
+
+    DeviceQueueCreateInfo queue_ci;
+    queue_ci.queueFamilyIndex = family_index;
+    queue_ci.pQueuePriorities = queue_priorities.data();
+    queue_ci.queueCount = queue_offsets[family_index];
+
+    device_queue_cis.emplace_back(queue_ci);
+  }
 
   auto required_device_extensions = GetRequiredDeviceExtensions();
 
@@ -158,7 +165,9 @@ void GraphicsContext::CreateDevice() {
 
   volkLoadDevice(device_);
 
-  vkGetDeviceQueue(GetDevice(), GetGraphicsQueueIndex(), 0, &queue_information_.queues_[graphics_index]);
+  for (int i = 0; i < QUEUE_INDEX_COUNT; i++) {
+    vkGetDeviceQueue(GetDevice(), queue_information_[i].family_index_, queue_information_[i].queue_index, &queue_information_[i].queue_);
+  }
 }
 
 void GraphicsContext::CreateGraphicsContext(const GraphicsContextCreateInformation &graphics_context_ci) {

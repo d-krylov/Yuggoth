@@ -1,6 +1,5 @@
 #include "acceleration_structure_tools.h"
 #include "yuggoth/graphics/core/graphics_context.h"
-#include "yuggoth/graphics/core/structure_tools.h"
 
 namespace Yuggoth {
 

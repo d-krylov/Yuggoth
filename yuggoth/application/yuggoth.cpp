@@ -2,6 +2,8 @@
 #include "yuggoth/core/threading/task_system.h"
 #include "yuggoth/graphics/core/graphics_context.h"
 #include "yuggoth/graphics/core/graphics_allocator.h"
+#include <yuggoth/core/logger/logger.h>
+#include "yuggoth/core/allocators/object_pool.h"
 
 VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(Walle::DebugUtilsMessageSeverityMaskBitsEXT severity,  //
                                              Walle::DebugUtilsMessageTypeMaskEXT type,              //
@@ -12,6 +14,8 @@ VKAPI_ATTR VkBool32 VKAPI_CALL DebugCallback(Walle::DebugUtilsMessageSeverityMas
 }
 
 int main(int argc, char **argv) {
+
+  Yuggoth::Logger logger(Yuggoth::Logger::LogLevel::INFORMATION);
 
   Yuggoth::GraphicsContextCreateInformation graphics_context_ci;
   graphics_context_ci.enable_debug = true;

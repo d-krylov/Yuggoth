@@ -2,22 +2,18 @@
 #define YUGGOTH_MESH_H
 
 #include "yuggoth/mathematics/include/mathematics_types.h"
-#include "yuggoth/core/tools/core.h"
+#include <span>
 #include <vector>
 
 namespace Yuggoth {
 
 struct Vertex {
-  static inline const std::size_t type_id = GetTypeId<Vertex>();
-
   Vector3f position_;
   Vector3f normal_;
   Vector2f uv_;
 };
 
 struct Mesh {
-  static inline const std::size_t type_id = GetTypeId<Mesh>();
-
   int32_t material_index_ = -1;
   int32_t vertices_offset_ = -1;
   int32_t indices_offset_ = -1;

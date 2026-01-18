@@ -2,7 +2,8 @@
 #ifndef YUGGOTH_PIPELINE_H
 #define YUGGOTH_PIPELINE_H
 
-#include "yuggoth/renderer/shaders/shader_module.h"
+#include <yuggoth/renderer/shaders/shader_module.h>
+#include <yuggoth/core/tools/yuggoth_macros.h>
 
 namespace Yuggoth {
 
@@ -11,12 +12,11 @@ std::vector<VkDescriptorSetLayout> CreateDescriptorSetLayouts(std::span<const De
 
 class Pipeline {
 public:
+  DISABLE_COPY_SEMANTICS(Pipeline)
+
   Pipeline() = default;
 
   ~Pipeline();
-
-  Pipeline(const Pipeline &) = delete;
-  Pipeline &operator=(const Pipeline &) = delete;
 
   Pipeline(Pipeline &&other) noexcept;
   Pipeline &operator=(Pipeline &&other) noexcept;

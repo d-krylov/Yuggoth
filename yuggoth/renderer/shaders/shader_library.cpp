@@ -1,5 +1,4 @@
 #include "shader_library.h"
-#include "yuggoth/core/tools/core.h"
 #include "yuggoth/core/tools/filesystem.h"
 #include <print>
 
